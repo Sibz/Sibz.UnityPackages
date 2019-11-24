@@ -1,0 +1,8 @@
+{
+  "name": "com.sibz.uxml-list",
+  "displayName": "Sibz: UXML List",
+  "version": "1.0.0",
+  "description": "Simple list element bindable to list or array properties",
+  "author": "",
+  "license": "ISC"
+}
