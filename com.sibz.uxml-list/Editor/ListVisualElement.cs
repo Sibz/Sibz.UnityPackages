@@ -8,6 +8,7 @@ namespace Sibz.UXMLList
     public class ListVisualElement : BindableElement
     {
         public string Label { get; set; }
+        public bool ShowSize { get; set; }
 
         private Label LabelElement = new Label();
         public static readonly string ussClassName = "sibz-list-field";
@@ -21,11 +22,13 @@ namespace Sibz.UXMLList
         {
             UxmlStringAttributeDescription m_PropertyPath;
             UxmlStringAttributeDescription m_Label;
+            //UxmlBoolAttributeDescription m_ShowSize;
 
             public UxmlTraits()
             {
                 m_PropertyPath = new UxmlStringAttributeDescription { name = "binding-path" };
                 m_Label = new UxmlStringAttributeDescription { name = "label" };
+                //m_ShowSize = new UxmlBoolAttributeDescription { name = "show-size" };
             }
 
             public override void Init(VisualElement ve, IUxmlAttributes bag, CreationContext cc)
@@ -46,7 +49,7 @@ namespace Sibz.UXMLList
 
                 string label = m_Label.GetValueFromBag(bag, cc);
 
-
+                //field.ShowSize = m_ShowSize.GetValueFromBag(bag, cc);
                 field.Label = label;
                 field.LabelElement.text = label;
                 if (string.IsNullOrEmpty(label))
@@ -126,8 +129,9 @@ namespace Sibz.UXMLList
                         case SerializedPropertyType.ArraySize:
                             var field = new IntegerField { bindingPath = prop.propertyPath };
                             field.SetValueWithoutNotify(prop.intValue); // This avoids the OnValueChanged/Rebind feedback loop.
-                            field.style.display = DisplayStyle.None;
+                            field.style.display = ShowSize ? DisplayStyle.Flex : DisplayStyle.None;
                             field.RegisterValueChangedCallback(UpdateList);
+                            field.label = "Size";
                             ListContents.Add(field);
                             break;
 
@@ -149,7 +153,6 @@ namespace Sibz.UXMLList
 
         private void UpdateList(ChangeEvent<int> changeEvent)
         {
-
             this.Unbind();
             m_SO.UpdateIfRequiredOrScript();
             m_SO.ApplyModifiedProperties();
