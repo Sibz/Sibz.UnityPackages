@@ -16,6 +16,9 @@ namespace Sibz.UXMLList
         public bool DisablePropertyLabel { get; set; }
         public bool ShowAddButton { get; set; } = true;
         public string AddButtonText { get; set; } = "+";
+        public bool ShowDeleteAllButton { get; set; } = true;
+        public string DeleteAllButtonText { get; set; } = "Clear List";
+
 
         public override VisualElement contentContainer => m_ListContentContainer ?? base.contentContainer;
         #endregion
@@ -27,20 +30,27 @@ namespace Sibz.UXMLList
 
         private string m_ListPropertyBindingPath;
 
+        //private bool m_DeleteRequested;
+
         protected class ListElementsFactory : ListElementsFactoryBase
         {
             public override void Init(ListVisualElement element)
             {
-                AddNewItemButton.text = element.AddButtonText;
-                AddNewItemButton.style.display = element.ShowAddButton ? DisplayStyle.Flex : DisplayStyle.None;
+                AddButton.text = element.AddButtonText;
+                AddButton.style.display = element.ShowAddButton ? DisplayStyle.Flex : DisplayStyle.None;
+
+                DeleteAllButton.text = element.DeleteAllButtonText;
+                DeleteAllButton.style.display = element.ShowDeleteAllButton ? DisplayStyle.Flex : DisplayStyle.None;
 
                 Label.text = element.Label;
                 Label.style.visibility = string.IsNullOrEmpty(element.Label) ? Visibility.Hidden : Visibility.Visible;
 
                 HeaderSection.style.display =
-                    AddNewItemButton.style.display == DisplayStyle.Flex ||
+                    AddButton.style.display == DisplayStyle.Flex ||
                     Label.style.visibility == Visibility.Visible
                     ? DisplayStyle.Flex : DisplayStyle.None;
+
+                DeleteConfirmationSection.style.display = DisplayStyle.None;
             }
         }
 
@@ -49,20 +59,28 @@ namespace Sibz.UXMLList
         {
             UxmlStringAttributeDescription m_PropertyPath;
             UxmlStringAttributeDescription m_Label;
-            UxmlStringAttributeDescription m_AddButtonText;
+
             UxmlBoolAttributeDescription m_DisableLabelContextMenu;
             UxmlBoolAttributeDescription m_DisablePropertyLabel;
+
             UxmlBoolAttributeDescription m_ShowAddButton;
+            UxmlStringAttributeDescription m_AddButtonText;
+
+            UxmlBoolAttributeDescription m_ShowDeleteAllButton;
+            UxmlStringAttributeDescription m_DeleteAllButtonText;
+
             //UxmlBoolAttributeDescription m_ShowSize;
 
             public UxmlTraits()
             {
                 m_PropertyPath = new UxmlStringAttributeDescription { name = "binding-path" };
                 m_Label = new UxmlStringAttributeDescription { name = "label" };
-                m_AddButtonText = new UxmlStringAttributeDescription { name = "add-button-text", defaultValue ="+" };
                 m_DisableLabelContextMenu = new UxmlBoolAttributeDescription { name = "disable-label-context-menu" };
                 m_DisablePropertyLabel = new UxmlBoolAttributeDescription { name = "disable-property-label" };
                 m_ShowAddButton = new UxmlBoolAttributeDescription { name = "show-add-button", defaultValue = true };
+                m_AddButtonText = new UxmlStringAttributeDescription { name = "add-button-text", defaultValue = "+" };
+                m_ShowDeleteAllButton = new UxmlBoolAttributeDescription { name = "show-deleteAll-button", defaultValue = true };
+                m_DeleteAllButtonText = new UxmlStringAttributeDescription { name = "deleteall-button-text", defaultValue = "Clear List" };
                 //m_ShowSize = new UxmlBoolAttributeDescription { name = "show-size" };
             }
 
@@ -84,9 +102,13 @@ namespace Sibz.UXMLList
 
                 field.DisableLabelContextMenu = m_DisableLabelContextMenu.GetValueFromBag(bag, cc);
                 field.DisablePropertyLabel = m_DisablePropertyLabel.GetValueFromBag(bag, cc);
-                field.ShowAddButton = m_ShowAddButton.GetValueFromBag(bag, cc);
                 field.Label = m_Label.GetValueFromBag(bag, cc);
-                field.AddButtonText = m_AddButtonText.GetValueFromBag(bag,cc);
+
+                field.ShowAddButton = m_ShowAddButton.GetValueFromBag(bag, cc);
+                field.AddButtonText = m_AddButtonText.GetValueFromBag(bag, cc);
+
+                field.ShowDeleteAllButton = m_ShowDeleteAllButton.GetValueFromBag(bag, cc);
+                field.DeleteAllButtonText = m_DeleteAllButtonText.GetValueFromBag(bag, cc);
 
                 field.m_ListElementsFactory.Init(field);
             }
@@ -100,7 +122,11 @@ namespace Sibz.UXMLList
 
             Add(m_ListElementsFactory.HeaderSection);
 
+            Add(m_ListElementsFactory.DeleteConfirmationSection);
+
             CreateContentContainer();
+
+
 
             RegisterOutsideEvents();
 
@@ -128,15 +154,44 @@ namespace Sibz.UXMLList
         private void RegisterOutsideEvents()
         {
             //          m_ListElementsFactory.AddNewItemButton.RegisterCallback<MouseUpEvent>(AddNewItemHandler);
-            m_ListElementsFactory.AddNewItemButton.clicked += () =>
+            m_ListElementsFactory.AddButton.clicked += () =>
             {
-                SendEvent(new AddItemButtonClickEvent { target = m_ListElementsFactory.AddNewItemButton, ListProperty = ListProperty });
+                SendEvent(new AddButtonClickEvent { target = m_ListElementsFactory.AddButton, ListProperty = ListProperty });
             };
-            m_ListElementsFactory.AddNewItemButton.RegisterCallback<AddItemButtonClickEvent>(AddNewItemHandler);
+            m_ListElementsFactory.AddButton.RegisterCallback<AddButtonClickEvent>(AddButtonClickHandler);
+
+
+            m_ListElementsFactory.DeleteAllButton.clicked += () =>
+                SendEvent(new DeleteAllButtonClickEvent
+                {
+                    target = m_ListElementsFactory.DeleteAllButton,
+                    Element = this,
+                    ListProperty = ListProperty,
+                    Button = DeleteAllButtonClickEvent.ButtonType.InitialClick
+                });
+            m_ListElementsFactory.DeleteAllYesButton.clicked += () =>
+                SendEvent(new DeleteAllButtonClickEvent
+                {
+                    target = m_ListElementsFactory.DeleteAllButton,
+                    Element = this,
+                    ListProperty = ListProperty,
+                    Button = DeleteAllButtonClickEvent.ButtonType.Yes
+                });
+            m_ListElementsFactory.DeleteAllNoButton.clicked += () =>
+                SendEvent(new DeleteAllButtonClickEvent
+                {
+                    target = m_ListElementsFactory.DeleteAllButton,
+                    Element = this,
+                    ListProperty = ListProperty,
+                    Button = DeleteAllButtonClickEvent.ButtonType.No
+                });
+            m_ListElementsFactory.DeleteAllButton.RegisterCallback<DeleteAllButtonClickEvent>(DeleteAllButtonClickHandler);
+            m_ListElementsFactory.DeleteAllYesButton.RegisterCallback<DeleteAllButtonClickEvent>(DeleteAllButtonClickHandler);
+            m_ListElementsFactory.DeleteAllNoButton.RegisterCallback<DeleteAllButtonClickEvent>(DeleteAllButtonClickHandler);
 
         }
 
-        protected virtual void AddNewItemHandler(AddItemButtonClickEvent e)
+        protected virtual void AddButtonClickHandler(AddButtonClickEvent e)
         {
             if (e.ListProperty.isArray)
             {
@@ -145,9 +200,43 @@ namespace Sibz.UXMLList
             }
         }
 
-        public class AddItemButtonClickEvent : EventBase<AddItemButtonClickEvent>
+        public class AddButtonClickEvent : EventBase<AddButtonClickEvent>
         {
             public SerializedProperty ListProperty { get; set; }
+        }
+
+        protected virtual void DeleteAllButtonClickHandler(DeleteAllButtonClickEvent e)
+        {
+            switch (e.Button)
+            {
+                case DeleteAllButtonClickEvent.ButtonType.InitialClick:
+                    m_ListElementsFactory.HeaderSection.style.display = DisplayStyle.None;
+                    m_ListElementsFactory.DeleteConfirmationSection.style.display = DisplayStyle.Flex;
+                    break;
+                case DeleteAllButtonClickEvent.ButtonType.Yes:
+                    e.ListProperty.ClearArray();
+                    e.ListProperty.serializedObject.ApplyModifiedProperties();
+                    goto case DeleteAllButtonClickEvent.ButtonType.No;
+                case DeleteAllButtonClickEvent.ButtonType.No:
+                default:
+                    m_ListElementsFactory.HeaderSection.style.display = DisplayStyle.Flex;
+                    m_ListElementsFactory.DeleteConfirmationSection.style.display = DisplayStyle.None;
+                    break;
+            }
+        }
+
+        public class DeleteAllButtonClickEvent : EventBase<DeleteAllButtonClickEvent>
+        {
+            public ListVisualElement Element { get; set; }
+            public SerializedProperty ListProperty { get; set; }
+            public ButtonType Button { get; set; }
+
+            public enum ButtonType
+            {
+                InitialClick,
+                Yes,
+                No
+            }
         }
         #endregion
 
