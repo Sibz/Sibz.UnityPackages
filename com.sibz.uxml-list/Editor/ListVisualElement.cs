@@ -9,6 +9,8 @@ namespace Sibz.UXMLList
     {
         public string Label { get; set; }
         public bool ShowSize { get; set; }
+        public bool DisableLabelContextMenu { get; set; }
+        public bool DisablePropertyLabel { get; set; }
 
         private Label LabelElement = new Label();
         public static readonly string ussClassName = "sibz-list-field";
@@ -22,12 +24,16 @@ namespace Sibz.UXMLList
         {
             UxmlStringAttributeDescription m_PropertyPath;
             UxmlStringAttributeDescription m_Label;
+            UxmlBoolAttributeDescription m_DisableLabelContextMenu;
+            UxmlBoolAttributeDescription m_DisablePropertyLabel;
             //UxmlBoolAttributeDescription m_ShowSize;
 
             public UxmlTraits()
             {
                 m_PropertyPath = new UxmlStringAttributeDescription { name = "binding-path" };
                 m_Label = new UxmlStringAttributeDescription { name = "label" };
+                m_DisableLabelContextMenu = new UxmlBoolAttributeDescription { name = "disable-label-context-menu" };
+                m_DisablePropertyLabel = new UxmlBoolAttributeDescription { name = "disable-property-label" };
                 //m_ShowSize = new UxmlBoolAttributeDescription { name = "show-size" };
             }
 
@@ -49,6 +55,8 @@ namespace Sibz.UXMLList
 
                 string label = m_Label.GetValueFromBag(bag, cc);
 
+                field.DisableLabelContextMenu = m_DisableLabelContextMenu.GetValueFromBag(bag, cc);
+                field.DisablePropertyLabel = m_DisablePropertyLabel.GetValueFromBag(bag, cc);
                 //field.ShowSize = m_ShowSize.GetValueFromBag(bag, cc);
                 field.Label = label;
                 field.LabelElement.text = label;
@@ -136,7 +144,33 @@ namespace Sibz.UXMLList
                             break;
 
                         default:
-                            ListContents.Add(new PropertyField(prop));
+                            var f = new PropertyField(prop);
+                            ListContents.Add(f);
+                            if (DisablePropertyLabel)
+                            {
+                                f.RegisterCallback<AttachToPanelEvent>((e) =>
+                                    {
+
+                                        if (f.Q<Label>() is Label)
+                                        {
+                                            f.Q<Label>().style.display = DisplayStyle.None;
+                                        }
+                                        //Debug.Log(f.childCount);
+                                    });
+                            }
+
+                            if (!DisablePropertyLabel && DisableLabelContextMenu)
+                            {
+                                f.RegisterCallback<MouseUpEvent>((e) =>
+                                    {
+                                        //Debug.Log(((Label)e.target).parent?.parent.GetType());
+                                        if (e.target is Label && ((Label)e.target).parent?.parent == f)
+                                        {
+                                            e.StopPropagation();
+                                        }
+                                    }, TrickleDown.TrickleDown);
+                            }
+
                             break;
                     }
 
