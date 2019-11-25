@@ -7,33 +7,62 @@ namespace Sibz.UXMLList
 {
     public class ListVisualElement : BindableElement
     {
+        public static readonly string UssClassName = "sibz-list";
+
+        #region Public Properties
         public string Label { get; set; }
         public bool ShowSize { get; set; }
         public bool DisableLabelContextMenu { get; set; }
         public bool DisablePropertyLabel { get; set; }
+        public bool ShowAddButton { get; set; } = true;
+        public string AddButtonText { get; set; } = "+";
 
-        private Label LabelElement = new Label();
-        public static readonly string ussClassName = "sibz-list-field";
+        public override VisualElement contentContainer => m_ListContentContainer ?? base.contentContainer;
+        #endregion
 
-        private SerializedObject m_SO;
+        protected VisualElement m_ListContentContainer;
+        protected SerializedObject m_SerializedObject;
+        protected SerializedProperty ListProperty => m_SerializedObject.FindProperty(m_ListPropertyBindingPath);
+        protected readonly ListElementsFactory m_ListElementsFactory = new ListElementsFactory();
 
-        public VisualElement ListContents;
+        private string m_ListPropertyBindingPath;
+
+        protected class ListElementsFactory : ListElementsFactoryBase
+        {
+            public override void Init(ListVisualElement element)
+            {
+                AddNewItemButton.text = element.AddButtonText;
+                AddNewItemButton.style.display = element.ShowAddButton ? DisplayStyle.Flex : DisplayStyle.None;
+
+                Label.text = element.Label;
+                Label.style.visibility = string.IsNullOrEmpty(element.Label) ? Visibility.Hidden : Visibility.Visible;
+
+                HeaderSection.style.display =
+                    AddNewItemButton.style.display == DisplayStyle.Flex ||
+                    Label.style.visibility == Visibility.Visible
+                    ? DisplayStyle.Flex : DisplayStyle.None;
+            }
+        }
 
         public new class UxmlFactory : UxmlFactory<ListVisualElement, UxmlTraits> { }
         public new class UxmlTraits : VisualElement.UxmlTraits
         {
             UxmlStringAttributeDescription m_PropertyPath;
             UxmlStringAttributeDescription m_Label;
+            UxmlStringAttributeDescription m_AddButtonText;
             UxmlBoolAttributeDescription m_DisableLabelContextMenu;
             UxmlBoolAttributeDescription m_DisablePropertyLabel;
+            UxmlBoolAttributeDescription m_ShowAddButton;
             //UxmlBoolAttributeDescription m_ShowSize;
 
             public UxmlTraits()
             {
                 m_PropertyPath = new UxmlStringAttributeDescription { name = "binding-path" };
                 m_Label = new UxmlStringAttributeDescription { name = "label" };
+                m_AddButtonText = new UxmlStringAttributeDescription { name = "add-button-text", defaultValue ="+" };
                 m_DisableLabelContextMenu = new UxmlBoolAttributeDescription { name = "disable-label-context-menu" };
                 m_DisablePropertyLabel = new UxmlBoolAttributeDescription { name = "disable-property-label" };
+                m_ShowAddButton = new UxmlBoolAttributeDescription { name = "show-add-button", defaultValue = true };
                 //m_ShowSize = new UxmlBoolAttributeDescription { name = "show-size" };
             }
 
@@ -53,47 +82,74 @@ namespace Sibz.UXMLList
                     field.bindingPath = propPath;
                 }
 
-                string label = m_Label.GetValueFromBag(bag, cc);
-
                 field.DisableLabelContextMenu = m_DisableLabelContextMenu.GetValueFromBag(bag, cc);
                 field.DisablePropertyLabel = m_DisablePropertyLabel.GetValueFromBag(bag, cc);
-                //field.ShowSize = m_ShowSize.GetValueFromBag(bag, cc);
-                field.Label = label;
-                field.LabelElement.text = label;
-                if (string.IsNullOrEmpty(label))
-                {
-                    field.LabelElement.style.display = DisplayStyle.None;
-                }
-                else
-                {
-                    field.LabelElement.style.display = DisplayStyle.Flex;
-                }
+                field.ShowAddButton = m_ShowAddButton.GetValueFromBag(bag, cc);
+                field.Label = m_Label.GetValueFromBag(bag, cc);
+                field.AddButtonText = m_AddButtonText.GetValueFromBag(bag,cc);
+
+                field.m_ListElementsFactory.Init(field);
             }
         }
-
-        public override VisualElement contentContainer => ListContents ?? base.contentContainer;
 
         public ListVisualElement() : this(null, string.Empty) { }
         public ListVisualElement(SerializedProperty property) : this(property, string.Empty) { }
         public ListVisualElement(SerializedProperty property, string label)
         {
-            AddToClassList(ussClassName);
+            AddToClassList(UssClassName);
 
-            Add(LabelElement);
+            Add(m_ListElementsFactory.HeaderSection);
 
-            VisualElement listContents = new VisualElement { name = "list-contents" };
-            Add(listContents);
-            ListContents = listContents;
+            CreateContentContainer();
+
+            RegisterOutsideEvents();
+
+            Label = label;
 
             if (property == null)
             {
                 return;
             }
 
-            m_SO = property.serializedObject;
+            m_SerializedObject = property.serializedObject;
 
             bindingPath = property.propertyPath;
         }
+
+        private void CreateContentContainer()
+        {
+            VisualElement listContents = new VisualElement { name = "list-content" };
+            listContents.AddToClassList("sibz-list-container");
+            Add(listContents);
+            m_ListContentContainer = listContents;
+        }
+
+        #region Event Registration &  Handlers
+        private void RegisterOutsideEvents()
+        {
+            //          m_ListElementsFactory.AddNewItemButton.RegisterCallback<MouseUpEvent>(AddNewItemHandler);
+            m_ListElementsFactory.AddNewItemButton.clicked += () =>
+            {
+                SendEvent(new AddItemButtonClickEvent { target = m_ListElementsFactory.AddNewItemButton, ListProperty = ListProperty });
+            };
+            m_ListElementsFactory.AddNewItemButton.RegisterCallback<AddItemButtonClickEvent>(AddNewItemHandler);
+
+        }
+
+        protected virtual void AddNewItemHandler(AddItemButtonClickEvent e)
+        {
+            if (e.ListProperty.isArray)
+            {
+                e.ListProperty.InsertArrayElementAtIndex(e.ListProperty.arraySize);
+                e.ListProperty.serializedObject.ApplyModifiedProperties();
+            }
+        }
+
+        public class AddItemButtonClickEvent : EventBase<AddItemButtonClickEvent>
+        {
+            public SerializedProperty ListProperty { get; set; }
+        }
+        #endregion
 
         protected override void ExecuteDefaultActionAtTarget(EventBase evt)
         {
@@ -103,11 +159,10 @@ namespace Sibz.UXMLList
                 &&
                 type.GetProperty("bindProperty").GetValue(evt) is SerializedProperty property)
             {
-
-
                 Reset(property);
 
-                m_SO = property.serializedObject;
+                m_SerializedObject = property.serializedObject;
+                m_ListPropertyBindingPath = ((ListVisualElement)evt.target).bindingPath;
 
                 // Don't allow the binding of `this` to continue because `this` is not
                 // the actually bound field, it is just a container.
@@ -117,7 +172,7 @@ namespace Sibz.UXMLList
 
         private void Reset(SerializedProperty prop)
         {
-            ListContents.Clear();
+            m_ListContentContainer.Clear();
             if (prop.isArray)
             {
 
@@ -140,12 +195,12 @@ namespace Sibz.UXMLList
                             field.style.display = ShowSize ? DisplayStyle.Flex : DisplayStyle.None;
                             field.RegisterValueChangedCallback(UpdateList);
                             field.label = "Size";
-                            ListContents.Add(field);
+                            m_ListContentContainer.Add(field);
                             break;
 
                         default:
                             var f = new PropertyField(prop);
-                            ListContents.Add(f);
+                            m_ListContentContainer.Add(f);
                             if (DisablePropertyLabel)
                             {
                                 f.RegisterCallback<AttachToPanelEvent>((e) =>
@@ -181,16 +236,16 @@ namespace Sibz.UXMLList
             }
             else
             {
-                ListContents.Add(new Label("Error, Bound item is not a list or array"));
+                m_ListContentContainer.Add(new Label("Error, Bound item is not a list or array"));
             }
         }
 
         private void UpdateList(ChangeEvent<int> changeEvent)
         {
             this.Unbind();
-            m_SO.UpdateIfRequiredOrScript();
-            m_SO.ApplyModifiedProperties();
-            this.Bind(m_SO);
+            m_SerializedObject.UpdateIfRequiredOrScript();
+            m_SerializedObject.ApplyModifiedProperties();
+            this.Bind(m_SerializedObject);
             changeEvent.StopImmediatePropagation();
         }
     }
