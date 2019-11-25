@@ -2,7 +2,7 @@
   "name": "com.sibz.editorlist",
   "displayName": "Sibz: Editor List",
   "version": "1.0.1",
-  "description": "",
+  "description": "A class with a List as a property that behaves just like a list.",
   "author": "",
   "license": "ISC"
 }
