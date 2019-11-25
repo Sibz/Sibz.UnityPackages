@@ -261,10 +261,11 @@ namespace Sibz.UXMLList
 
         private void Reset(SerializedProperty prop)
         {
+
             m_ListContentContainer.Clear();
             if (prop.isArray)
             {
-
+                m_ListElementsFactory.DeleteAllButton.SetEnabled(prop.arraySize > 0);
                 var endProperty = prop.GetEndProperty();
 
                 prop.NextVisible(true);
@@ -335,6 +336,7 @@ namespace Sibz.UXMLList
             m_SerializedObject.UpdateIfRequiredOrScript();
             m_SerializedObject.ApplyModifiedProperties();
             this.Bind(m_SerializedObject);
+            m_ListElementsFactory.DeleteAllButton.SetEnabled(ListProperty.arraySize > 0);
             changeEvent.StopImmediatePropagation();
         }
     }
