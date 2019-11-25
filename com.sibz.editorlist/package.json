@@ -1,8 +1,13 @@
 {
   "name": "com.sibz.editorlist",
   "displayName": "Sibz: Editor List",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "A class with a List as a property that behaves just like a list.",
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "repository": {
+    "type": "git", 
+    "url": "https://github.com/Sibz/Sibz.UnityPackages.git", 
+    "directory": "com.sibz.editorlist" 
+  }
 }
