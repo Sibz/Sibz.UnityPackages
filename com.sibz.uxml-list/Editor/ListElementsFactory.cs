@@ -1,275 +1,180 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Sibz.UXMLList
 {
-    public interface IListControlAccesor
+    public class ListElementsFactory : ListElementsFactoryBase
     {
+        public ListElementsFactory(ListVisualElement owner) : base(owner) { }
 
-        ListElementsFactoryBase.ControlsClass Controls { get; set; }
-    }
-    public interface IListElement : IListControlAccesor
-    {
-        ListVisualElement ListElement { get; set; }
-    }
-
-    public interface IListElementInstantiator : IListElement
-    {
-        void Instantiate();
-    }
-    public interface IListElementInitialisor : IListElement
-    {
-        void Initialise();
-    }
-    public interface IListElementEventBinder : IListElement
-    {
-        void BindEventRaiser(Action eventRaiser);
-        EventCallback<EventBase> Callback { get; }
-    }
-    public interface IListElementEventType
-    {
-        SerializedProperty ListProperty { get; set; }
-    }
-
-
-    /// <summary>
-    /// Creates and stores the elements used around the ListVisualElement
-    /// </summary>
-    public abstract class ListElementsFactoryBase
-    {
-        protected static readonly string CLASS_PREFIX = "sibz-list";
-        private readonly ListVisualElement m_Owner;
-
-        private readonly Dictionary<string, VisualElement> m_OutsideElements = new Dictionary<string, VisualElement>();
-
-        public TElement CreateElement<TElement>() where TElement : VisualElement, new()
+        public class HeaderSection : VisualElement, IListElementInstantiator
         {
-            TElement item = new TElement();
-            Type type = item.GetType();
-            item.AddToClassList($"{CLASS_PREFIX}" + AddSpacesToSentence(type.Name));
-            if (item is IListElement)
+            public ListVisualElement ListElement { get; set; }
+            public ControlsClass Controls { get; set; }
+
+            public void Instantiate()
             {
-                (item as IListElement).ListElement = m_Owner;
-                (item as IListElement).Controls = Controls;
+                style.flexDirection = FlexDirection.Row;
+                Add(Controls.HeaderLabel);
+                Add(Controls.DeleteAllButton);
+                Add(Controls.AddButton);
             }
-            if (item is IListElementInstantiator)
-            {
-                (item as IListElementInstantiator).Instantiate();
-            }
-            if (TryGetEventType(item, type, out Type eventType))
-            {
-                BindEventRaiser<TElement>(item as IListElementEventBinder, eventType, type);
-                EventRegistration(item as IListElementEventBinder, eventType, type);
-            }
-
-            return item;
-        }
-        private bool TryGetEventType(VisualElement item, Type elementType, out Type eventType)
-        {
-            eventType = null;
-            if (item is IListElementEventBinder)
-            {
-                eventType = elementType.GetNestedTypes().Where(x => x.GetInterfaces().Any(iface => iface.Name == nameof(IListElementEventType))).FirstOrDefault();
-            }
-
-            return eventType is Type;
-        }
-        private void BindEventRaiser<TElement>(IListElementEventBinder item, Type eventType, Type elementType) where TElement : VisualElement
-        {
-            item.BindEventRaiser(new Action(() =>
-            {
-                var eventInstance = Activator.CreateInstance(eventType) as EventBase;
-                eventInstance.target = item as TElement;
-                (eventInstance as IListElementEventType).ListProperty = m_Owner.ListProperty;
-                (item as TElement).SendEvent(eventInstance);
-            }));
-        }
-        private void EventRegistration(IListElementEventBinder item, Type eventType, Type elementType)
-        {
-            var methods = elementType.GetMethods().Where(m => m.Name == nameof(VisualElement.RegisterCallback)).ToList();
-            methods.FirstOrDefault()?.MakeGenericMethod(eventType).Invoke(item, new object[] { (item as IListElementEventBinder).Callback, null });
-            //
-        }
-        public T CreateElement<T>(object userData) where T : VisualElement, new()
-        {
-            T item = CreateElement<T>();
-            item.userData = userData;
-            return item;
         }
 
-        public T GetOrCreateElement<T>(string name) where T : VisualElement, new()
+        public class HeaderLabel : Label, IListElementInstantiator, IListElementInitialisor
         {
-            if (!m_OutsideElements.ContainsKey(name))
+            public ListVisualElement ListElement { get; set; }
+            public ControlsClass Controls { get; set; }
+
+            public void Instantiate()
             {
-                m_OutsideElements.Add(name, CreateElement<T>());
+                style.flexGrow = 1;
+                style.unityTextAlign = TextAnchor.MiddleLeft;
             }
-            return m_OutsideElements[name] as T;
+
+            public void Initialise()
+            {
+                Controls.HeaderLabel.text = ListElement.Label;
+                Controls.HeaderLabel.style.visibility = string.IsNullOrEmpty(ListElement.Label) ? Visibility.Hidden : Visibility.Visible;
+            }
         }
 
-        //public VisualElement this[Type t]
-        //{
-        //    get
-        //    {
-        //        if (!t.IsSubclassOf(typeof(VisualElement)))
-        //        {
-        //            throw new TypeAccessException("Type of visual element expected");
-        //        }
-
-        //        if (!m_OutsideElements.ContainsKey(t))
-        //        {
-        //            m_OutsideElements.Add(t, Activator.CreateInstance(t) as VisualElement);
-        //        }
-
-        //        return m_OutsideElements[t];
-        //    }
-        //}
-
-        //protected void AddInstantisor<T>(Action<VisualElement, ListVisualElement, ListElementsFactoryBase> instantisor) where T : VisualElement, new()
-        //{
-        //    if (!(instantisor is Action<VisualElement, ListVisualElement, ListElementsFactoryBase>))
-        //    {
-        //        return;
-        //    }
-
-        //    var t = typeof(T);
-        //    if (m_Instantiators.ContainsKey(t))
-        //    {
-        //        m_Instantiators[t] = instantisor;
-        //    }
-        //    else
-        //    {
-        //        m_Instantiators.Add(t, instantisor);
-        //    }
-        //    if (m_OutsideElements.ContainsKey(t))
-        //    {
-        //        m_Instantiators[t](m_OutsideElements[t], m_Owner, this);
-        //    }
-        //}
-
-        //protected void AddInitialisor<T>(Action<ListElementsFactoryBase, ListVisualElement> initiator) where T : VisualElement, new()
-        //{
-        //    if (!(initiator is Action<ListElementsFactoryBase, ListVisualElement>))
-        //    {
-        //        return;
-        //    }
-
-        //    var t = typeof(T);
-        //    if (m_Initialisors.ContainsKey(t))
-        //    {
-        //        m_Initialisors[t] = initiator;
-        //    }
-        //    else
-        //    {
-        //        m_Initialisors.Add(t, initiator);
-        //    }
-        //}
-
-        #region Controls
-        //public class HeaderSection : VisualElement { }
-        //public class HeaderLabel : Label { }
-        //public class AddButton : Button { }
-        //public class DeleteAllButton : Button { }
-        //public class DeleteAllConfirmSection : VisualElement { }
-        //public class DeleteAllConfirmLabel : Label { }
-        //public class DeleteAllYesButton : Button { }
-        //public class DeleteAllNoButton : Button { }
-        //public class ItemsSection : VisualElement { }
-
-        //public class MoveUpButton : Button { }
-        //public class MoveDownButton : Button { }
-        //public class DeleteItemButton : Button { }
-
-        public ControlsClass Controls { get; protected set; }
-        public class ControlsClass
+        public class AddButton : Button, IListElementInitialisor, IListElementClickable<AddButton.AddActionEvent>
         {
-            protected ListElementsFactoryBase m_Base;
-            public VisualElement HeaderSection => GetOrCreateUsingNested<VisualElement>(nameof(HeaderSection));
-            public Label HeaderLabel => GetOrCreateUsingNested<Label>(nameof(HeaderLabel));
-            public Button AddButton => GetOrCreateUsingNested<Button>(nameof(AddButton));
-            public Button DeleteAllButton => GetOrCreateUsingNested<Button>(nameof(DeleteAllButton));
-            public VisualElement DeleteAllConfirmSection => GetOrCreateUsingNested<VisualElement>(nameof(DeleteAllConfirmSection));
-            public Label DeleteAllConfirmLabel => GetOrCreateUsingNested<Label>(nameof(DeleteAllConfirmLabel));
-            public Button DeleteAllYesButton => GetOrCreateUsingNested<Button>(nameof(DeleteAllYesButton));
-            public Button DeleteAllNoButton => GetOrCreateUsingNested<Button>(nameof(DeleteAllNoButton));
-            public VisualElement ItemsSection => GetOrCreateUsingNested<VisualElement>(nameof(ItemsSection));
+            public ListVisualElement ListElement { get; set; }
+            public ControlsClass Controls { get; set; }
 
-            public Button NewMoveUpButton => CreateUsingNested<Button>(nameof(NewMoveUpButton));
-            public Button NewMoveDownButton => CreateUsingNested<Button>(nameof(NewMoveDownButton));
-            public Button NewDeleteItemButton => CreateUsingNested<Button>(nameof(NewDeleteItemButton));
-
-            public ControlsClass(ListElementsFactoryBase baseFactory)
+            public class AddActionEvent : EventBase<AddActionEvent>, IListEventWithListProperty
             {
-                m_Base = baseFactory;
+                public SerializedProperty ListProperty { get; set; }
             }
-            public T GetOrCreateUsingNested<T>(string name) where T : VisualElement, new()
+
+            public void Initialise()
             {
-                var t = typeof(T);
-                var getOrCreateMethod = m_Base.GetType().GetMethod(nameof(ListElementsFactoryBase.GetOrCreateElement));
-                var nestedType = m_Base.GetType().GetNestedTypes().Where(x => x.Name == name && (x.IsSubclassOf(t) || x.IsSubclassOf(t.BaseType))).FirstOrDefault();
-                if (nestedType != null)
+                text = ListElement.AddButtonText;
+                style.display = ListElement.ShowAddButton ? DisplayStyle.Flex : DisplayStyle.None;
+            }
+
+            public void OnClicked(AddActionEvent eventData)
+            {
+                var listProperty = eventData.ListProperty;
+                if (listProperty.isArray)
                 {
-                    return getOrCreateMethod.MakeGenericMethod(nestedType).Invoke(m_Base, new object[1] { name }) as T;
-                }
-                return m_Base.GetOrCreateElement<T>(name);
-            }
-            public T CreateUsingNested<T>(string name) where T : VisualElement, new()
-            {
-                var t = typeof(T);
-                var getOrCreateMethod = m_Base.GetType().GetMethod(nameof(ListElementsFactoryBase.CreateElement));
-                var nestedType = m_Base.GetType().GetNestedTypes().Where(x => x.Name == name && (x.IsSubclassOf(t) || x.IsSubclassOf(t.BaseType))).FirstOrDefault();
-                if (nestedType != null)
-                {
-                    return getOrCreateMethod.MakeGenericMethod(nestedType).Invoke(m_Base, new object[0]) as T;
-                }
-                return m_Base.CreateElement<T>();
-            }
-        }
-        #endregion
-
-        public ListElementsFactoryBase(ListVisualElement owner)
-        {
-            m_Owner = owner;
-            Controls = new ControlsClass(this);
-            if (m_Owner is IListControlAccesor)
-            {
-                m_Owner.Controls = Controls;
-            }
-        }
-
-        public virtual void Init(ListVisualElement element, Func<SerializedProperty> listPropertyGetter)
-        {
-            foreach (var item in m_OutsideElements.Values)
-            {
-                if (item is IListElementInitialisor)
-                {
-                    (item as IListElementInitialisor).Initialise();
+                    listProperty.InsertArrayElementAtIndex(listProperty.arraySize);
+                    listProperty.serializedObject.ApplyModifiedProperties();
                 }
             }
         }
 
-        private string AddSpacesToSentence(string text)
+        public class DeleteAllButton : Button, IListElementInitialisor, IListElementClickable<DeleteAllButton.DeleteAllButtonClickedEvent>
         {
-            if (string.IsNullOrWhiteSpace(text))
+            public ListVisualElement ListElement { get; set; }
+            public ControlsClass Controls { get; set; }
+
+            public EventCallback<EventBase> ClickedCallback => (e) =>
             {
-                return "";
+
+            };
+            public void BindEventRaiser(Action eventRaiser) { clicked += eventRaiser; }
+
+            public class DeleteAllButtonClickedEvent : EventBase<DeleteAllButtonClickedEvent>, IListEventWithListProperty
+            {
+                public SerializedProperty ListProperty { get; set; }
             }
 
-            System.Text.StringBuilder newText = new System.Text.StringBuilder(text.Length * 2);
-            newText.Append(text[0]);
-            for (int i = 1; i < text.Length; i++)
+            public void Initialise()
             {
-                if (char.IsUpper(text[i]) && text[i - 1] != ' ')
-                {
-                    newText.Append('-');
-                }
-
-                newText.Append(text[i]);
+                text = ListElement.DeleteAllButtonText;
             }
-            return newText.ToString();
+
+            public void OnClicked(DeleteAllButtonClickedEvent eventData)
+            {
+                Controls.HeaderSection.style.display = DisplayStyle.None;
+                Controls.DeleteAllConfirmSection.style.display = DisplayStyle.Flex;
+            }
+        }
+
+        public class DeleteAllConfirmSection : VisualElement, IListElementInstantiator
+        {
+            public ListVisualElement ListElement { get; set; }
+            public ControlsClass Controls { get; set; }
+
+            public void Instantiate()
+            {
+                style.flexDirection = FlexDirection.Row;
+                style.display = DisplayStyle.None;
+                Add(Controls.DeleteAllConfirmLabel);
+                Add(Controls.DeleteAllYesButton);
+                Add(Controls.DeleteAllNoButton);
+            }
+        }
+
+        public class DeleteAllConfirmLabel : Label, IListElementInstantiator, IListElementInitialisor
+        {
+
+            public ListVisualElement ListElement { get; set; }
+            public ControlsClass Controls { get; set; }
+
+            public void Initialise()
+            {
+                text = "Are you sure?";
+            }
+
+            public void Instantiate()
+            {
+                style.unityTextAlign = TextAnchor.MiddleRight;
+                style.flexGrow = 1;
+            }
+        }
+
+        public class DeleteAllYesButton : Button, IListElementInitialisor, IListElementClickable<DeleteAllYesButton.DeleteAllConfirmedAction>
+        {
+            public ListVisualElement ListElement { get; set; }
+            public ControlsClass Controls { get; set; }
+
+            public class DeleteAllConfirmedAction : EventBase<DeleteAllConfirmedAction>, IListEventWithListProperty
+            {
+                public SerializedProperty ListProperty { get; set; }
+            }
+
+            public void Initialise()
+            {
+                text = "Yes";
+            }
+
+            public void OnClicked(DeleteAllConfirmedAction eventData)
+            {
+                eventData.ListProperty.ClearArray();
+                eventData.ListProperty.serializedObject.ApplyModifiedProperties();
+                Controls.HeaderSection.style.display = DisplayStyle.Flex;
+                Controls.DeleteAllConfirmSection.style.display = DisplayStyle.None;
+            }
+        }
+
+        public class DeleteAllNoButton : Button, IListElementInitialisor, IListElementClickable<DeleteAllNoButton.DeleteAllCanceledAction>
+        {
+
+            public ListVisualElement ListElement { get; set; }
+            public ControlsClass Controls { get; set; }
+
+            public class DeleteAllCanceledAction : EventBase<DeleteAllCanceledAction>, IListEventWithListProperty
+            {
+                public SerializedProperty ListProperty { get; set; }
+            }
+
+            public void Initialise()
+            {
+                text = "No";
+            }
+
+            public void OnClicked(DeleteAllCanceledAction eventData)
+            {
+                Controls.HeaderSection.style.display = DisplayStyle.Flex;
+                Controls.DeleteAllConfirmSection.style.display = DisplayStyle.None;
+            }
         }
     }
+
 }
