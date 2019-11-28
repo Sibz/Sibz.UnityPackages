@@ -1,40 +1,128 @@
-﻿using UnityEditor;
+﻿using System;
+using System.Collections.Generic;
+using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Sibz.UXMLList
 {
-    public class ListVisualElement : BindableElement
+    public class ListVisualElement : BindableElement, IListControlAccesor
     {
+        public static readonly string UssClassName = "sibz-list";
+
+        public ListElementsFactoryBase.ControlsClass Controls { get; set; }
+
+        public const string ADD_BUTTON_TEXT = "+";
+        public const string DELETE_ALL_BUTTON_TEXT = "Clear List";
+        public const string DELETE_ALL_CONFIRM_LABEL_TEXT = "Are you sure?";
+        public const string DELETE_ALL_YES_BUTTON_TEXT = "Yes";
+        public const string DELETE_ALL_NO_BUTTON_TEXT = "No";
+        public const string DELETE_ITEM_BUTTON_TEXT = "-";
+        public const string MOVE_UP_BUTTON_TEXT = "↑";
+        public const string MOVE_DOWN_BUTTON_TEXT = "↓";
+
+        #region Public Properties
         public string Label { get; set; }
         public bool ShowSize { get; set; }
         public bool DisableLabelContextMenu { get; set; }
         public bool DisablePropertyLabel { get; set; }
 
-        private Label LabelElement = new Label();
-        public static readonly string ussClassName = "sibz-list-field";
+        public bool HideAddButton { get; set; }
+        public bool HideDeleteAllButton { get; set; }
+        public bool HideDeleteItemButton { get; set; }
+        public bool HideReorderItemButtons { get; set; }
 
-        private SerializedObject m_SO;
+        public string AddButtonText { get; set; } = ADD_BUTTON_TEXT;
+        public string DeleteAllButtonText { get; set; } = DELETE_ALL_YES_BUTTON_TEXT;
+        public string DeleteAllConfirmLabelText { get; set; } = DELETE_ALL_CONFIRM_LABEL_TEXT;
+        public string DeleteAllYesButtonText { get; set; } = DELETE_ALL_YES_BUTTON_TEXT;
+        public string DeleteAllNoButtonText { get; set; } = DELETE_ALL_NO_BUTTON_TEXT;
 
-        public VisualElement ListContents;
+
+        public string DeleteItemButtonText { get; set; } = DELETE_ITEM_BUTTON_TEXT;
+        public string ReorderItemUpButtonText { get; set; } = MOVE_UP_BUTTON_TEXT;
+        public string ReorderItemDownButtonText { get; set; } = MOVE_DOWN_BUTTON_TEXT;
+
+
+        public SerializedProperty ListProperty => m_SerializedObject.FindProperty(m_ListPropertyBindingPath);
+
+        public override VisualElement contentContainer => m_ListContentContainer ?? base.contentContainer;
+        #endregion
+
+        protected VisualElement m_ListContentContainer;
+        protected SerializedObject m_SerializedObject;
+
+        protected readonly ListElementsFactory m_ListElementsFactory;
+
+        private string m_ListPropertyBindingPath;
+
+        public ListVisualElement() : this(null, string.Empty) { }
+        public ListVisualElement(SerializedProperty property) : this(property, string.Empty) { }
+        public ListVisualElement(SerializedProperty property, string label)
+        {
+
+            m_ListElementsFactory = new ListElementsFactory(this);
+            AddToClassList(UssClassName);
+
+            Add(m_ListElementsFactory.Controls.HeaderSection);
+
+            Add(m_ListElementsFactory.Controls.DeleteAllConfirmSection);
+
+            Add(m_ListElementsFactory.Controls.ItemsSection);
+
+            m_ListContentContainer = m_ListElementsFactory.Controls.ItemsSection;
+
+        }
 
         public new class UxmlFactory : UxmlFactory<ListVisualElement, UxmlTraits> { }
         public new class UxmlTraits : VisualElement.UxmlTraits
         {
             UxmlStringAttributeDescription m_PropertyPath;
+
             UxmlStringAttributeDescription m_Label;
+            //UxmlBoolAttributeDescription m_ShowSize;
             UxmlBoolAttributeDescription m_DisableLabelContextMenu;
             UxmlBoolAttributeDescription m_DisablePropertyLabel;
-            //UxmlBoolAttributeDescription m_ShowSize;
+
+            UxmlBoolAttributeDescription m_HideAddButton;
+            UxmlBoolAttributeDescription m_HideDeleteAllButton;
+            UxmlBoolAttributeDescription m_HideDeleteItemButton;
+            UxmlBoolAttributeDescription m_HideReorderItemButtons;
+
+            UxmlStringAttributeDescription m_AddButtonText;
+            UxmlStringAttributeDescription m_DeleteAllButtonText;
+            UxmlStringAttributeDescription m_DeleteAllConfirmLabelText;
+            UxmlStringAttributeDescription m_DeleteAllYesButtonText;
+            UxmlStringAttributeDescription m_DeleteAllNoButtonText;
+            UxmlStringAttributeDescription m_DeleteItemButtonText;
+            UxmlStringAttributeDescription m_ReorderItemUpButtonText;
+            UxmlStringAttributeDescription m_ReorderItemDownButtonText;
+
+
 
             public UxmlTraits()
             {
                 m_PropertyPath = new UxmlStringAttributeDescription { name = "binding-path" };
                 m_Label = new UxmlStringAttributeDescription { name = "label" };
+                //m_ShowSize = new UxmlBoolAttributeDescription { name = "show-size" };
                 m_DisableLabelContextMenu = new UxmlBoolAttributeDescription { name = "disable-label-context-menu" };
                 m_DisablePropertyLabel = new UxmlBoolAttributeDescription { name = "disable-property-label" };
-                //m_ShowSize = new UxmlBoolAttributeDescription { name = "show-size" };
+
+                m_HideAddButton = new UxmlBoolAttributeDescription { name = "hide-add-button"};
+                m_HideDeleteAllButton = new UxmlBoolAttributeDescription { name = "hide-delete-all-button"};
+                m_HideDeleteItemButton = new UxmlBoolAttributeDescription { name = "hide-delete-item-button" };
+                m_HideReorderItemButtons = new UxmlBoolAttributeDescription { name = "hide-reorder-item-buttons" };
+
+                m_AddButtonText = new UxmlStringAttributeDescription { name = "add-button-text", defaultValue = ADD_BUTTON_TEXT };
+                m_DeleteAllButtonText = new UxmlStringAttributeDescription { name = "delete-all-button-text", defaultValue = DELETE_ALL_BUTTON_TEXT };
+                m_DeleteAllConfirmLabelText = new UxmlStringAttributeDescription { name = "delete-all-confirm-label-text", defaultValue = DELETE_ALL_CONFIRM_LABEL_TEXT };
+                m_DeleteAllYesButtonText = new UxmlStringAttributeDescription { name = "delete-all-yes-button-text", defaultValue = DELETE_ALL_YES_BUTTON_TEXT };
+                m_DeleteAllNoButtonText = new UxmlStringAttributeDescription { name = "delete-all-no-button-text", defaultValue = DELETE_ALL_NO_BUTTON_TEXT };
+                m_DeleteItemButtonText = new UxmlStringAttributeDescription { name = "delete-item-button-text", defaultValue = DELETE_ITEM_BUTTON_TEXT };
+                m_ReorderItemUpButtonText = new UxmlStringAttributeDescription { name = "reorder-item-up-button-text", defaultValue = MOVE_UP_BUTTON_TEXT };
+                m_ReorderItemDownButtonText = new UxmlStringAttributeDescription { name = "reorder-item-down-button-text", defaultValue = MOVE_DOWN_BUTTON_TEXT };
+
             }
 
             public override void Init(VisualElement ve, IUxmlAttributes bag, CreationContext cc)
@@ -53,51 +141,33 @@ namespace Sibz.UXMLList
                     field.bindingPath = propPath;
                 }
 
-                string label = m_Label.GetValueFromBag(bag, cc);
-
+                field.Label = m_Label.GetValueFromBag(bag, cc);
                 field.DisableLabelContextMenu = m_DisableLabelContextMenu.GetValueFromBag(bag, cc);
                 field.DisablePropertyLabel = m_DisablePropertyLabel.GetValueFromBag(bag, cc);
-                //field.ShowSize = m_ShowSize.GetValueFromBag(bag, cc);
-                field.Label = label;
-                field.LabelElement.text = label;
-                if (string.IsNullOrEmpty(label))
-                {
-                    field.LabelElement.style.display = DisplayStyle.None;
-                }
-                else
-                {
-                    field.LabelElement.style.display = DisplayStyle.Flex;
-                }
+
+                field.HideAddButton = m_HideAddButton.GetValueFromBag(bag, cc);
+                field.HideDeleteAllButton = m_HideDeleteAllButton.GetValueFromBag(bag, cc);
+                field.HideDeleteItemButton = m_HideDeleteItemButton.GetValueFromBag(bag, cc);
+                field.HideReorderItemButtons = m_HideReorderItemButtons.GetValueFromBag(bag, cc);
+
+                field.AddButtonText = m_AddButtonText.GetValueFromBag(bag, cc);
+                field.DeleteAllButtonText = m_DeleteAllButtonText.GetValueFromBag(bag, cc);
+                field.DeleteAllConfirmLabelText = m_DeleteAllConfirmLabelText.GetValueFromBag(bag, cc);
+                field.DeleteAllYesButtonText = m_DeleteAllYesButtonText.GetValueFromBag(bag, cc);
+                field.DeleteAllNoButtonText = m_DeleteAllNoButtonText.GetValueFromBag(bag, cc);
+                field.DeleteItemButtonText = m_DeleteItemButtonText.GetValueFromBag(bag, cc);
+                field.ReorderItemUpButtonText = m_ReorderItemUpButtonText.GetValueFromBag(bag, cc);
+                field.ReorderItemDownButtonText = m_ReorderItemDownButtonText.GetValueFromBag(bag, cc);
+
+                field.m_ListElementsFactory.Init();
             }
-        }
-
-        public override VisualElement contentContainer => ListContents ?? base.contentContainer;
-
-        public ListVisualElement() : this(null, string.Empty) { }
-        public ListVisualElement(SerializedProperty property) : this(property, string.Empty) { }
-        public ListVisualElement(SerializedProperty property, string label)
-        {
-            AddToClassList(ussClassName);
-
-            Add(LabelElement);
-
-            VisualElement listContents = new VisualElement { name = "list-contents" };
-            Add(listContents);
-            ListContents = listContents;
-
-            if (property == null)
-            {
-                return;
-            }
-
-            m_SO = property.serializedObject;
-
-            bindingPath = property.propertyPath;
         }
 
         protected override void ExecuteDefaultActionAtTarget(EventBase evt)
         {
             base.ExecuteDefaultActionAtTarget(evt);
+            //m_ListElementsFactory.Reset();
+            //evt.StopPropagation();
             System.Type type = evt.GetType();
             if (type.Name == "SerializedPropertyBindEvent"
                 &&
@@ -105,93 +175,95 @@ namespace Sibz.UXMLList
             {
 
 
-                Reset(property);
+                m_SerializedObject = property.serializedObject;
+                m_ListPropertyBindingPath = ((ListVisualElement)evt.target).bindingPath;
 
-                m_SO = property.serializedObject;
-
+                m_ListElementsFactory.Reset();
                 // Don't allow the binding of `this` to continue because `this` is not
                 // the actually bound field, it is just a container.
                 evt.StopPropagation();
             }
         }
 
-        private void Reset(SerializedProperty prop)
-        {
-            ListContents.Clear();
-            if (prop.isArray)
-            {
+        //private void Reset(SerializedProperty prop)
+        //{
 
-                var endProperty = prop.GetEndProperty();
+        //    m_ListContentContainer.Clear();
+        //    if (prop.isArray)
+        //    {
+        //        m_ListElementsFactory.Controls.DeleteAllButton.SetEnabled(prop.arraySize > 0);
+        //        var endProperty = prop.GetEndProperty();
 
-                prop.NextVisible(true);
-                do
-                {
+        //        prop.NextVisible(true);
+        //        do
+        //        {
 
-                    if (SerializedProperty.EqualContents(prop, endProperty))
-                    {
-                        break;
-                    }
+        //            if (SerializedProperty.EqualContents(prop, endProperty))
+        //            {
+        //                break;
+        //            }
 
-                    switch (prop.propertyType)
-                    {
-                        case SerializedPropertyType.ArraySize:
-                            var field = new IntegerField { bindingPath = prop.propertyPath };
-                            field.SetValueWithoutNotify(prop.intValue); // This avoids the OnValueChanged/Rebind feedback loop.
-                            field.style.display = ShowSize ? DisplayStyle.Flex : DisplayStyle.None;
-                            field.RegisterValueChangedCallback(UpdateList);
-                            field.label = "Size";
-                            ListContents.Add(field);
-                            break;
+        //            switch (prop.propertyType)
+        //            {
+        //                case SerializedPropertyType.ArraySize:
+        //                    var field = new IntegerField { bindingPath = prop.propertyPath };
+        //                    field.SetValueWithoutNotify(prop.intValue); // This avoids the OnValueChanged/Rebind feedback loop.
+        //                    field.style.display = ShowSize ? DisplayStyle.Flex : DisplayStyle.None;
+        //                    field.RegisterValueChangedCallback(UpdateList);
+        //                    field.label = "Size";
+        //                    m_ListContentContainer.Add(field);
+        //                    break;
 
-                        default:
-                            var f = new PropertyField(prop);
-                            ListContents.Add(f);
-                            if (DisablePropertyLabel)
-                            {
-                                f.RegisterCallback<AttachToPanelEvent>((e) =>
-                                    {
+        //                default:
+        //                    var f = new PropertyField(prop);
+        //                    m_ListContentContainer.Add(f);
+        //                    if (DisablePropertyLabel)
+        //                    {
+        //                        f.RegisterCallback<AttachToPanelEvent>((e) =>
+        //                            {
 
-                                        if (f.Q<Label>() is Label)
-                                        {
-                                            f.Q<Label>().style.display = DisplayStyle.None;
-                                        }
-                                        //Debug.Log(f.childCount);
-                                    });
-                            }
+        //                                if (f.Q<Label>() is Label)
+        //                                {
+        //                                    f.Q<Label>().style.display = DisplayStyle.None;
+        //                                }
+        //                            });
+        //                    }
 
-                            if (!DisablePropertyLabel && DisableLabelContextMenu)
-                            {
-                                f.RegisterCallback<MouseUpEvent>((e) =>
-                                    {
-                                        //Debug.Log(((Label)e.target).parent?.parent.GetType());
-                                        if (e.target is Label && ((Label)e.target).parent?.parent == f)
-                                        {
-                                            e.StopPropagation();
-                                        }
-                                    }, TrickleDown.TrickleDown);
-                            }
+        //                    if (!DisablePropertyLabel && DisableLabelContextMenu)
+        //                    {
+        //                        f.RegisterCallback<MouseUpEvent>((e) =>
+        //                            {
+        //                                if (e.target is Label && ((Label)e.target).parent?.parent == f)
+        //                                {
+        //                                    e.StopPropagation();
+        //                                }
+        //                            }, TrickleDown.TrickleDown);
+        //                    }
 
-                            break;
-                    }
+        //                    break;
+        //            }
 
-                } while (prop.NextVisible(false));
+        //        } while (prop.NextVisible(false));
 
-                prop.Reset();
+        //        prop.Reset();
 
-            }
-            else
-            {
-                ListContents.Add(new Label("Error, Bound item is not a list or array"));
-            }
-        }
+        //    }
+        //    else
+        //    {
+        //        m_ListContentContainer.Add(new Label("Error, Bound item is not a list or array"));
+        //    }
+        //}
 
-        private void UpdateList(ChangeEvent<int> changeEvent)
-        {
-            this.Unbind();
-            m_SO.UpdateIfRequiredOrScript();
-            m_SO.ApplyModifiedProperties();
-            this.Bind(m_SO);
-            changeEvent.StopImmediatePropagation();
-        }
+        //private void UpdateList(ChangeEvent<int> changeEvent)
+        //{
+        //    this.Unbind();
+        //    m_SerializedObject.UpdateIfRequiredOrScript();
+        //    m_SerializedObject.ApplyModifiedProperties();
+        //    this.Bind(m_SerializedObject);
+
+        //    // Enable/Disable Delete All Button
+        //    m_ListElementsFactory.Controls.DeleteAllButton.SetEnabled(ListProperty.arraySize > 0);
+        //    changeEvent.StopImmediatePropagation();
+        //}
     }
 }
