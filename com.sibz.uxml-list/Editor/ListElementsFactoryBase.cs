@@ -77,7 +77,7 @@ namespace Sibz.UXMLList
         {
             (element as IListElementInitialisor)?.Initialise();
 
-            if (ImplementsOpenGenericInterface(element, typeof(IListElementClickable<>)) && TryGetEventType<TElement>(typeof(IListElementClickable<>), out Type eventType))
+            if (ImplementsOpenGenericInterface(element, typeof(IListElementClickable<>)) && TryGetEventType(typeof(IListElementClickable<>), element.GetType(), out Type eventType))
             {
                 AddEventHandler(element, nameof(Button.clicked), new Action(() =>
                 {
@@ -100,10 +100,8 @@ namespace Sibz.UXMLList
                     iface.GetGenericTypeDefinition().Equals(openGenericInterfaceType));
         }
 
-        private bool TryGetEventType<TElement>(Type openGenericInterfaceType, out Type eventType) where TElement : VisualElement, new()
+        private bool TryGetEventType(Type openGenericInterfaceType, Type elementType, out Type eventType)
         {
-            Type elementType = typeof(TElement);
-
             eventType = null;
 
             eventType = elementType.GetInterfaces()
@@ -117,7 +115,7 @@ namespace Sibz.UXMLList
 
             if (!(eventType is Type))
             {
-                Debug.LogWarning($"{nameof(ListElementsFactoryBase)}.{nameof(TryGetEventType)}: {typeof(IListElementClickable<>).Name} no valid generic type argument found.");
+                Debug.LogWarning($"{nameof(ListElementsFactoryBase)}.{nameof(TryGetEventType)}: {openGenericInterfaceType.Name} no valid generic type argument found on {elementType.Name}.");
             }
 
             return eventType is Type;
@@ -125,7 +123,7 @@ namespace Sibz.UXMLList
 
         private void AddEventHandler<TElement, TProp>(TElement element, string propName, TProp value) where TElement : VisualElement, new() where TProp : Delegate
         {
-            Type elementType = typeof(TElement);
+            Type elementType = element.GetType();
             if (!elementType.GetEvents().Any(t => t.Name == propName && t.EventHandlerType.Equals(typeof(TProp))))
             {
                 Debug.LogWarning($"{nameof(ListElementsFactoryBase)}.{nameof(AddEventHandler)}: unable to find member: {propName} of type {typeof(TProp).Name}");
