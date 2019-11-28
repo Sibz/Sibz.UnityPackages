@@ -120,7 +120,7 @@ namespace Sibz.UXMLList
             }
         }
 
-        public class DeleteAllYesButton : Button, IListElementInitialisor, IListElementClickable<DeleteAllConfirmedAction>
+        public class DeleteAllYesButton : Button, IListElementInitialisor, IListElementClickable<DeleteAllConfirmedEvent>
         {
             public ListVisualElement ListElement { get; set; }
             public ControlsClass Controls { get; set; }
@@ -130,7 +130,7 @@ namespace Sibz.UXMLList
                 text = "Yes";
             }
 
-            public void OnClicked(DeleteAllConfirmedAction eventData)
+            public void OnClicked(DeleteAllConfirmedEvent eventData)
             {
                 eventData.ListProperty.ClearArray();
                 eventData.ListProperty.serializedObject.ApplyModifiedProperties();
@@ -139,7 +139,7 @@ namespace Sibz.UXMLList
             }
         }
 
-        public class DeleteAllNoButton : Button, IListElementInitialisor, IListElementClickable<DeleteAllCanceledAction>
+        public class DeleteAllNoButton : Button, IListElementInitialisor, IListElementClickable<DeleteAllCanceledEvent>
         {
 
             public ListVisualElement ListElement { get; set; }
@@ -150,7 +150,7 @@ namespace Sibz.UXMLList
                 text = "No";
             }
 
-            public void OnClicked(DeleteAllCanceledAction eventData)
+            public void OnClicked(DeleteAllCanceledEvent eventData)
             {
                 Controls.HeaderSection.style.display = DisplayStyle.Flex;
                 Controls.DeleteAllConfirmSection.style.display = DisplayStyle.None;
@@ -172,6 +172,7 @@ namespace Sibz.UXMLList
                     var endProperty = property.GetEndProperty();
 
                     property.NextVisible(true);
+                    int arrayIndex = 0;
                     do
                     {
 
@@ -194,6 +195,7 @@ namespace Sibz.UXMLList
                             default:
                                 var newItemSection = Controls.ItemSection;
                                 newItemSection.Q<PropertyField>()?.BindProperty(property);
+                                (newItemSection as ItemSection).Index = arrayIndex++;
                                 Add(newItemSection);
                                 break;
                         }
@@ -224,6 +226,8 @@ namespace Sibz.UXMLList
         {
             public ListVisualElement ListElement { get; set; }
             public ControlsClass Controls { get; set; }
+
+            public int Index { get; set; }
 
             public void Instantiate()
             {
@@ -271,7 +275,7 @@ namespace Sibz.UXMLList
             }
         }
 
-        public class DeleteItemButton : Button, IListElementInitialisor
+        public class DeleteItemButton : Button, IListElementInitialisor, IListElementClickable<DeleteItemEvent>
         {
             public ListVisualElement ListElement { get; set; }
             public ControlsClass Controls { get; set; }
@@ -281,9 +285,22 @@ namespace Sibz.UXMLList
                 style.display = ListElement.HideDeleteItemButton ? DisplayStyle.None : DisplayStyle.Flex;
                 text = ListElement.DeleteItemButtonText;
             }
+
+            public void OnClicked(DeleteItemEvent eventData)
+            {
+                if (parent is ItemSection)
+                {
+                    int i = (parent as ItemSection).Index;
+                    if (ListElement.ListProperty.arraySize > i && i >= 0)
+                    {
+                        ListElement.ListProperty.DeleteArrayElementAtIndex(i);
+                        ListElement.ListProperty.serializedObject.ApplyModifiedProperties();
+                    }
+                }
+            }
         }
 
-        public class MoveUpButton : Button, IListElementInitialisor
+        public class MoveUpButton : Button, IListElementInitialisor, IListElementClickable<MoveItemUpEvent>
         {
             public ListVisualElement ListElement { get; set; }
             public ControlsClass Controls { get; set; }
@@ -293,9 +310,22 @@ namespace Sibz.UXMLList
                 style.display = ListElement.HideReorderItemButtons ? DisplayStyle.None : DisplayStyle.Flex;
                 text = ListElement.ReorderItemUpButtonText;
             }
+
+            public void OnClicked(MoveItemUpEvent eventData)
+            {
+                if (parent is ItemSection)
+                {
+                    int i = (parent as ItemSection).Index;
+                    if (ListElement.ListProperty.arraySize > i && i > 0)
+                    {
+                        ListElement.ListProperty.MoveArrayElement(i, i-1);
+                        ListElement.ListProperty.serializedObject.ApplyModifiedProperties();
+                    }
+                }
+            }
         }
 
-        public class MoveDownButton : Button, IListElementInitialisor
+        public class MoveDownButton : Button, IListElementInitialisor, IListElementClickable<MoveItemDownEvent>
         {
             public ListVisualElement ListElement { get; set; }
             public ControlsClass Controls { get; set; }
@@ -304,6 +334,19 @@ namespace Sibz.UXMLList
             {
                 style.display = ListElement.HideReorderItemButtons ? DisplayStyle.None : DisplayStyle.Flex;
                 text = ListElement.ReorderItemDownButtonText;
+            }
+
+            public void OnClicked(MoveItemDownEvent eventData)
+            {
+                if (parent is ItemSection)
+                {
+                    int i = (parent as ItemSection).Index;
+                    if (ListElement.ListProperty.arraySize-1 > i && i >= 0)
+                    {
+                        ListElement.ListProperty.MoveArrayElement(i, i+1);
+                        ListElement.ListProperty.serializedObject.ApplyModifiedProperties();
+                    }
+                }
             }
         }
     }

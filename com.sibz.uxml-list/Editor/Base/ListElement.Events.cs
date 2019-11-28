@@ -18,13 +18,29 @@ namespace Sibz.UXMLList
         public SerializedProperty ListProperty { get; set; }
     }
 
-    public class DeleteAllConfirmedAction : EventBase<DeleteAllConfirmedAction>, IListEventWithListProperty
+    public class DeleteAllConfirmedEvent : EventBase<DeleteAllConfirmedEvent>, IListEventWithListProperty
     {
         public SerializedProperty ListProperty { get; set; }
     }
 
-    public class DeleteAllCanceledAction : EventBase<DeleteAllCanceledAction>, IListEventWithListProperty
+    public class DeleteAllCanceledEvent : EventBase<DeleteAllCanceledEvent>, IListEventWithListProperty
     {
         public SerializedProperty ListProperty { get; set; }
     }
+
+    public class DeleteItemEvent : EventBase<DeleteItemEvent>, IListEventWithListProperty
+    {
+        public SerializedProperty ListProperty { get; set; }
+    }
+
+    public class MoveItemUpEvent : EventBase<MoveItemUpEvent>, IListEventWithListProperty
+    {
+        public SerializedProperty ListProperty { get; set; }
+    }
+
+    public class MoveItemDownEvent : EventBase<MoveItemDownEvent>, IListEventWithListProperty
+    {
+        public SerializedProperty ListProperty { get; set; }
+    }
+
 }
