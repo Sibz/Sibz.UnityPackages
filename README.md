@@ -13,9 +13,9 @@ Currently Package manager isn't looking up packages, so you need to add it here 
   "scopedRegistries": [
     {
       "name": "Main",
-      "url": "https://my.company.com/registry",
+      "url": "https://pm.entityzero.com",
       "scopes": [
-        "com.my-company", "com.my-company.tools.foo"
+        "com.sibz"
       ]
     }
    ],
