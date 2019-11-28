@@ -12,7 +12,7 @@ Currently Package manager isn't looking up packages, so you need to add it here 
 ```
   "scopedRegistries": [
     {
-      "name": "Main",
+      "name": "Sibz",
       "url": "https://pm.entityzero.com",
       "scopes": [
         "com.sibz"
