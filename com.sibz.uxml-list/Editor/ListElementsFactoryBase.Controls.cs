@@ -1,6 +1,7 @@
 ﻿
 
 using System.Linq;
+using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 
 namespace Sibz.UXMLList
@@ -22,6 +23,7 @@ namespace Sibz.UXMLList
             public Button DeleteAllNoButton => GetOrCreateUsingNested<Button>(nameof(DeleteAllNoButton));
             public VisualElement ItemsSection => GetOrCreateUsingNested<VisualElement>(nameof(ItemsSection));
 
+            public PropertyField ItemPropertyField => CreateUsingNested<PropertyField>(nameof(ItemPropertyField));
             public Button NewMoveUpButton => CreateUsingNested<Button>(nameof(NewMoveUpButton));
             public Button NewMoveDownButton => CreateUsingNested<Button>(nameof(NewMoveDownButton));
             public Button NewDeleteItemButton => CreateUsingNested<Button>(nameof(NewDeleteItemButton));

@@ -32,7 +32,15 @@ namespace Sibz.UXMLList
         {
             foreach (var element in m_OutsideElements.Values)
             {
-                (element as IListElementInitialisor)?.Initialise();
+                OnInit_ApplyInterfaces(element);
+            }
+        }
+
+        public virtual void Reset()
+        {
+            foreach (var element in m_OutsideElements.Values)
+            {
+                (element as IListElementResetable)?.Reset();
             }
         }
 
@@ -63,6 +71,12 @@ namespace Sibz.UXMLList
 
             (element as IListElementInstantiator)?.Instantiate();
 
+        }
+
+        private void OnInit_ApplyInterfaces<TElement>(TElement element) where TElement : VisualElement, new()
+        {
+            (element as IListElementInitialisor)?.Initialise();
+
             if (ImplementsOpenGenericInterface(element, typeof(IListElementClickable<>)) && TryGetEventType<TElement>(typeof(IListElementClickable<>), out Type eventType))
             {
                 AddEventHandler(element, nameof(Button.clicked), new Action(() =>
@@ -77,7 +91,6 @@ namespace Sibz.UXMLList
                 }));
                 EventRegistration(typeof(IListElementClickable<>).MakeGenericType(eventType), element, eventType);
             }
-
         }
 
         private bool ImplementsOpenGenericInterface(object obj, Type openGenericInterfaceType)

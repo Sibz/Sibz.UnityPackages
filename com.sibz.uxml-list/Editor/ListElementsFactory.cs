@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEditor;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -41,20 +42,15 @@ namespace Sibz.UXMLList
             }
         }
 
-        public class AddButton : Button, IListElementInitialisor, IListElementClickable<AddButton.AddActionEvent>
+        public class AddButton : Button, IListElementInitialisor, IListElementClickable<AddActionEvent>
         {
             public ListVisualElement ListElement { get; set; }
             public ControlsClass Controls { get; set; }
 
-            public class AddActionEvent : EventBase<AddActionEvent>, IListEventWithListProperty
-            {
-                public SerializedProperty ListProperty { get; set; }
-            }
-
             public void Initialise()
             {
                 text = ListElement.AddButtonText;
-                style.display = ListElement.ShowAddButton ? DisplayStyle.Flex : DisplayStyle.None;
+                style.display = ListElement.HideAddButton ? DisplayStyle.None : DisplayStyle.Flex;
             }
 
             public void OnClicked(AddActionEvent eventData)
@@ -68,31 +64,26 @@ namespace Sibz.UXMLList
             }
         }
 
-        public class DeleteAllButton : Button, IListElementInitialisor, IListElementClickable<DeleteAllButton.DeleteAllButtonClickedEvent>
+        public class DeleteAllButton : Button, IListElementInitialisor, IListElementClickable<DeleteAllButtonClickedEvent>, IListElementResetable
         {
             public ListVisualElement ListElement { get; set; }
             public ControlsClass Controls { get; set; }
 
-            public EventCallback<EventBase> ClickedCallback => (e) =>
-            {
-
-            };
-            public void BindEventRaiser(Action eventRaiser) { clicked += eventRaiser; }
-
-            public class DeleteAllButtonClickedEvent : EventBase<DeleteAllButtonClickedEvent>, IListEventWithListProperty
-            {
-                public SerializedProperty ListProperty { get; set; }
-            }
-
             public void Initialise()
             {
                 text = ListElement.DeleteAllButtonText;
+                style.display = ListElement.HideDeleteAllButton ? DisplayStyle.None : DisplayStyle.Flex;
             }
 
             public void OnClicked(DeleteAllButtonClickedEvent eventData)
             {
                 Controls.HeaderSection.style.display = DisplayStyle.None;
                 Controls.DeleteAllConfirmSection.style.display = DisplayStyle.Flex;
+            }
+
+            public void Reset()
+            {
+                SetEnabled(ListElement.ListProperty.arraySize > 0);
             }
         }
 
@@ -129,15 +120,10 @@ namespace Sibz.UXMLList
             }
         }
 
-        public class DeleteAllYesButton : Button, IListElementInitialisor, IListElementClickable<DeleteAllYesButton.DeleteAllConfirmedAction>
+        public class DeleteAllYesButton : Button, IListElementInitialisor, IListElementClickable<DeleteAllConfirmedAction>
         {
             public ListVisualElement ListElement { get; set; }
             public ControlsClass Controls { get; set; }
-
-            public class DeleteAllConfirmedAction : EventBase<DeleteAllConfirmedAction>, IListEventWithListProperty
-            {
-                public SerializedProperty ListProperty { get; set; }
-            }
 
             public void Initialise()
             {
@@ -153,16 +139,11 @@ namespace Sibz.UXMLList
             }
         }
 
-        public class DeleteAllNoButton : Button, IListElementInitialisor, IListElementClickable<DeleteAllNoButton.DeleteAllCanceledAction>
+        public class DeleteAllNoButton : Button, IListElementInitialisor, IListElementClickable<DeleteAllCanceledAction>
         {
 
             public ListVisualElement ListElement { get; set; }
             public ControlsClass Controls { get; set; }
-
-            public class DeleteAllCanceledAction : EventBase<DeleteAllCanceledAction>, IListEventWithListProperty
-            {
-                public SerializedProperty ListProperty { get; set; }
-            }
 
             public void Initialise()
             {
@@ -173,6 +154,93 @@ namespace Sibz.UXMLList
             {
                 Controls.HeaderSection.style.display = DisplayStyle.Flex;
                 Controls.DeleteAllConfirmSection.style.display = DisplayStyle.None;
+            }
+        }
+
+        public class ItemsSection : VisualElement, IListElementResetable
+        {
+            public ListVisualElement ListElement { get; set; }
+            public ControlsClass Controls { get; set; }
+
+            public void Reset()
+            {
+                var property = ListElement.ListProperty;
+                Clear();
+                if (property.isArray)
+                {
+                    Controls.DeleteAllButton.SetEnabled(property.arraySize > 0);
+                    var endProperty = property.GetEndProperty();
+
+                    property.NextVisible(true);
+                    do
+                    {
+
+                        if (SerializedProperty.EqualContents(property, endProperty))
+                        {
+                            break;
+                        }
+
+                        switch (property.propertyType)
+                        {
+                            case SerializedPropertyType.ArraySize:
+                                var field = new IntegerField { bindingPath = property.propertyPath };
+                                field.SetValueWithoutNotify(property.intValue); // This avoids the OnValueChanged/Rebind feedback loop.
+                                field.style.display = ListElement.ShowSize ? DisplayStyle.Flex : DisplayStyle.None;
+                                field.RegisterValueChangedCallback(UpdateList);
+                                field.label = "Size";
+                                Add(field);
+                                break;
+
+                            default:
+                                var f = Controls.ItemPropertyField;
+                                //f.bindingPath = property.propertyPath;
+                                f.BindProperty(property);
+                                Add(f);
+                                if (ListElement.DisablePropertyLabel)
+                                {
+                                    f.RegisterCallback<AttachToPanelEvent>((e) =>
+                                    {
+
+                                        if (f.Q<Label>() is Label)
+                                        {
+                                            f.Q<Label>().style.display = DisplayStyle.None;
+                                        }
+                                    });
+                                }
+
+                                if (!ListElement.DisablePropertyLabel && ListElement.DisableLabelContextMenu)
+                                {
+                                    f.RegisterCallback<MouseUpEvent>((e) =>
+                                    {
+                                        if (e.target is Label && ((Label)e.target).parent?.parent == f)
+                                        {
+                                            e.StopPropagation();
+                                        }
+                                    }, TrickleDown.TrickleDown);
+                                }
+
+                                break;
+                        }
+
+                    } while (property.NextVisible(false));
+
+                    property.Reset();
+
+                }
+                else
+                {
+                    Add(new Label("Error, Bound item is not a list or array"));
+                }
+            }
+
+            private void UpdateList(ChangeEvent<int> changeEvent)
+            {
+                ListElement.Unbind();
+                ListElement.ListProperty.serializedObject.UpdateIfRequiredOrScript();
+                ListElement.ListProperty.serializedObject.ApplyModifiedProperties();
+                ListElement.Bind(ListElement.ListProperty.serializedObject);
+
+                changeEvent.StopImmediatePropagation();
             }
         }
     }

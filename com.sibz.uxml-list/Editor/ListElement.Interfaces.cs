@@ -8,6 +8,7 @@ namespace Sibz.UXMLList
     {
         ListElementsFactoryBase.ControlsClass Controls { get; set; }
     }
+
     public interface IListElement : IListControlAccesor
     {
         ListVisualElement ListElement { get; set; }
@@ -17,18 +18,27 @@ namespace Sibz.UXMLList
     {
         void Instantiate();
     }
+
+    public interface IListElementResetable : IListElement
+    {
+        void Reset();
+    }
+
     public interface IListElementInitialisor : IListElement
     {
         void Initialise();
     }
+
     public interface IListElementClickable<T> where T: EventBase
     {
         void OnClicked(T eventData);
     }
+
     public interface IListElementChangable<TChangeEvent, T> where TChangeEvent: ChangeEvent<T>
     {
         EventCallback<TChangeEvent> ChangedCallback { get; }
     }
+
 	public interface IListEventWithListProperty
     {
         SerializedProperty ListProperty { get; set; }
