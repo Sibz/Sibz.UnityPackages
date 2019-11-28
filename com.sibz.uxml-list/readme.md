@@ -6,6 +6,8 @@ Simply add the `ListVisualElement` to your hierachy and set the binding path to 
 
 Can be added via UI Builder or via code.
 
+For information in installing custom packages see main repo [readme](https://github.com/Sibz/Sibz.UnityPackages)
+
 #### Sample
 ```
 public class TestListBehaviour : MonoBehaviour
