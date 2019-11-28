@@ -192,33 +192,9 @@ namespace Sibz.UXMLList
                                 break;
 
                             default:
-                                var f = Controls.ItemPropertyField;
-                                //f.bindingPath = property.propertyPath;
-                                f.BindProperty(property);
-                                Add(f);
-                                if (ListElement.DisablePropertyLabel)
-                                {
-                                    f.RegisterCallback<AttachToPanelEvent>((e) =>
-                                    {
-
-                                        if (f.Q<Label>() is Label)
-                                        {
-                                            f.Q<Label>().style.display = DisplayStyle.None;
-                                        }
-                                    });
-                                }
-
-                                if (!ListElement.DisablePropertyLabel && ListElement.DisableLabelContextMenu)
-                                {
-                                    f.RegisterCallback<MouseUpEvent>((e) =>
-                                    {
-                                        if (e.target is Label && ((Label)e.target).parent?.parent == f)
-                                        {
-                                            e.StopPropagation();
-                                        }
-                                    }, TrickleDown.TrickleDown);
-                                }
-
+                                var newItemSection = Controls.ItemSection;
+                                newItemSection.Q<PropertyField>()?.BindProperty(property);
+                                Add(newItemSection);
                                 break;
                         }
 
@@ -241,6 +217,93 @@ namespace Sibz.UXMLList
                 ListElement.Bind(ListElement.ListProperty.serializedObject);
 
                 changeEvent.StopImmediatePropagation();
+            }
+        }
+
+        public class ItemSection : VisualElement, IListElementInstantiator
+        {
+            public ListVisualElement ListElement { get; set; }
+            public ControlsClass Controls { get; set; }
+
+            public void Instantiate()
+            {
+                style.flexDirection = FlexDirection.Row;
+                Add(Controls.ItemPropertyField);
+                Add(Controls.DeleteItemButton);
+                Add(Controls.MoveUpButton);
+                Add(Controls.MoveDownButton);
+            }
+        }
+
+        public class ItemPropertyField : PropertyField, IListElementInitialisor
+        {
+            public ListVisualElement ListElement { get; set; }
+            public ControlsClass Controls { get; set; }
+
+            public void Initialise()
+            {
+                style.flexGrow = 1;
+
+                if (ListElement.DisablePropertyLabel)
+                {
+                    RegisterCallback<AttachToPanelEvent>(OnAttached);
+                }
+
+                if (!ListElement.DisablePropertyLabel && ListElement.DisableLabelContextMenu)
+                {
+                    RegisterCallback<MouseUpEvent>(OnMouseUp, TrickleDown.TrickleDown);
+                }
+            }
+
+            private void OnAttached(AttachToPanelEvent e)
+            {
+                if (this.Q<Label>() is Label)
+                {
+                    this.Q<Label>().style.display = DisplayStyle.None;
+                }
+            }
+            private void OnMouseUp(MouseUpEvent e)
+            {
+                if (e.target is Label && ((Label)e.target).parent?.parent == this)
+                {
+                    e.StopPropagation();
+                }
+            }
+        }
+
+        public class DeleteItemButton : Button, IListElementInitialisor
+        {
+            public ListVisualElement ListElement { get; set; }
+            public ControlsClass Controls { get; set; }
+
+            public void Initialise()
+            {
+                style.display = ListElement.HideDeleteItemButton ? DisplayStyle.None : DisplayStyle.Flex;
+                text = ListElement.DeleteItemButtonText;
+            }
+        }
+
+        public class MoveUpButton : Button, IListElementInitialisor
+        {
+            public ListVisualElement ListElement { get; set; }
+            public ControlsClass Controls { get; set; }
+
+            public void Initialise()
+            {
+                style.display = ListElement.HideReorderItemButtons ? DisplayStyle.None : DisplayStyle.Flex;
+                text = ListElement.ReorderItemUpButtonText;
+            }
+        }
+
+        public class MoveDownButton : Button, IListElementInitialisor
+        {
+            public ListVisualElement ListElement { get; set; }
+            public ControlsClass Controls { get; set; }
+
+            public void Initialise()
+            {
+                style.display = ListElement.HideReorderItemButtons ? DisplayStyle.None : DisplayStyle.Flex;
+                text = ListElement.ReorderItemDownButtonText;
             }
         }
     }

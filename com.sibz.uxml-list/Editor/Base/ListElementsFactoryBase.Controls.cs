@@ -25,9 +25,9 @@ namespace Sibz.UXMLList
 
             public VisualElement ItemSection => CreateUsingNested<VisualElement>(nameof(ItemSection));
             public PropertyField ItemPropertyField => CreateUsingNested<PropertyField>(nameof(ItemPropertyField));
-            public Button NewMoveUpButton => CreateUsingNested<Button>(nameof(NewMoveUpButton));
-            public Button NewMoveDownButton => CreateUsingNested<Button>(nameof(NewMoveDownButton));
-            public Button NewDeleteItemButton => CreateUsingNested<Button>(nameof(NewDeleteItemButton));
+            public Button MoveUpButton => CreateUsingNested<Button>(nameof(MoveUpButton));
+            public Button MoveDownButton => CreateUsingNested<Button>(nameof(MoveDownButton));
+            public Button DeleteItemButton => CreateUsingNested<Button>(nameof(DeleteItemButton));
 
             private readonly System.Reflection.MethodInfo GetOrCreateMethod_INFO;
             private readonly System.Reflection.MethodInfo CreateMethod_INFO;
@@ -58,7 +58,7 @@ namespace Sibz.UXMLList
                 var nestedType = NestedTypes.Where(x => x.Name == name && (x.IsSubclassOf(t) || x.IsSubclassOf(t.BaseType))).FirstOrDefault();
                 if (nestedType != null)
                 {
-                    return CreateMethod_INFO.MakeGenericMethod(nestedType).Invoke(m_Base, new object[0]) as T;
+                    return CreateMethod_INFO.MakeGenericMethod(nestedType).Invoke(m_Base, new object[1] { name }) as T;
                 }
                 return m_Base.CreateElement<T>();
             }

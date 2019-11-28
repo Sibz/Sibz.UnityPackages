@@ -112,7 +112,7 @@ namespace Sibz.UXMLList
                 m_HideAddButton = new UxmlBoolAttributeDescription { name = "hide-add-button"};
                 m_HideDeleteAllButton = new UxmlBoolAttributeDescription { name = "hide-delete-all-button"};
                 m_HideDeleteItemButton = new UxmlBoolAttributeDescription { name = "hide-delete-item-button" };
-                m_HideReorderItemButtons = new UxmlBoolAttributeDescription { name = "hide-reorder-button" };
+                m_HideReorderItemButtons = new UxmlBoolAttributeDescription { name = "hide-reorder-item-buttons" };
 
                 m_AddButtonText = new UxmlStringAttributeDescription { name = "add-button-text", defaultValue = ADD_BUTTON_TEXT };
                 m_DeleteAllButtonText = new UxmlStringAttributeDescription { name = "delete-all-button-text", defaultValue = DELETE_ALL_BUTTON_TEXT };

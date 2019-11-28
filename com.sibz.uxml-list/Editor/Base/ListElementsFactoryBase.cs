@@ -17,6 +17,8 @@ namespace Sibz.UXMLList
         private readonly ListVisualElement m_Owner;
 
         private readonly Dictionary<string, VisualElement> m_OutsideElements = new Dictionary<string, VisualElement>();
+        private readonly List<VisualElement> m_InsideElements = new List<VisualElement>();
+        public bool m_Initialised = false;
 
         public ListElementsFactoryBase(ListVisualElement owner)
         {
@@ -34,6 +36,11 @@ namespace Sibz.UXMLList
             {
                 OnInit_ApplyInterfaces(element);
             }
+            foreach (var element in m_InsideElements)
+            {
+                OnInit_ApplyInterfaces(element);
+            }
+            m_Initialised = true;
         }
 
         public virtual void Reset()
@@ -42,14 +49,27 @@ namespace Sibz.UXMLList
             {
                 (element as IListElementResetable)?.Reset();
             }
+            foreach (var element in m_InsideElements)
+            {
+                (element as IListElementResetable)?.Reset();
+            }
         }
 
-        private TElement CreateElement<TElement>() where TElement : VisualElement, new()
+        private TElement CreateElement<TElement>(string name = null) where TElement : VisualElement, new()
         {
-            TElement item = new TElement();
-            item.AddToClassList($"{CLASS_PREFIX}" + AddSpacesToSentence(nameof(TElement)));
-            OnCreate_ApplyInterfaces(item);
-            return item;
+            TElement element = new TElement();
+            element.AddToClassList($"{CLASS_PREFIX}-{AddSpacesToSentence(name ?? element.GetType().Name).ToLower()}");
+            OnCreate_ApplyInterfaces(element);
+            if (!string.IsNullOrEmpty(name))
+            {
+                m_InsideElements.Add(element);
+            }
+            if (m_Initialised)
+            {
+                OnInit_ApplyInterfaces(element);
+            }
+
+            return element;
         }
 
         protected T GetOrCreateElement<T>(string name) where T : VisualElement, new()
