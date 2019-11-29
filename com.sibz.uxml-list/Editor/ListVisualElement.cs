@@ -37,7 +37,7 @@ namespace Sibz.UXMLList
         public bool HideReorderItemButtons { get; set; }
 
         public string AddButtonText { get; set; } = ADD_BUTTON_TEXT;
-        public string DeleteAllButtonText { get; set; } = DELETE_ALL_YES_BUTTON_TEXT;
+        public string DeleteAllButtonText { get; set; } = DELETE_ALL_CONFIRM_LABEL_TEXT;
         public string DeleteAllConfirmLabelText { get; set; } = DELETE_ALL_CONFIRM_LABEL_TEXT;
         public string DeleteAllYesButtonText { get; set; } = DELETE_ALL_YES_BUTTON_TEXT;
         public string DeleteAllNoButtonText { get; set; } = DELETE_ALL_NO_BUTTON_TEXT;
