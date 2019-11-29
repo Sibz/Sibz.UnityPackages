@@ -10,7 +10,7 @@
     "url": "https://github.com/Sibz/Sibz.UnityPackages.git",
     "directory": "com.sibz.uxml-list"
   },
-  "dependencies" : [
-  	  "com.unity.ugui": "1.0.0"
-  ]
+  "dependencies": { 
+    "com.unity.ugui": "1.0.0"
+  }
 }
