@@ -111,6 +111,10 @@ namespace Sibz.UXMLList
                 }));
                 EventRegistration(typeof(IListElementClickable<>).MakeGenericType(eventType), element, eventType);
             }
+            if (ImplementsOpenGenericInterface(element, typeof(IListElementChangable<,>)) && TryGetEventType(typeof(IListElementChangable<,>), element.GetType(), out eventType))
+            {
+                EventRegistration(typeof(IListElementChangable<,>).MakeGenericType(eventType, eventType.GetGenericArguments()[0]), element, eventType);
+            }
         }
 
         private bool ImplementsOpenGenericInterface(object obj, Type openGenericInterfaceType)

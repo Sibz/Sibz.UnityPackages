@@ -32,6 +32,7 @@ You can create styles rules for every component of the list - they all have ther
  - `sibz-list-header-label` - The label at the top of the list 
  - `sibz-list-delete-all-button` -The clear list / delete all button
  - `sibz-list-add-button` - The add button
+ - `sibz-list-add-object-field` - The add object field button
  - `sibz-list-delete-all-confirm-section` - Encompasses confirm label and yes/no buttons
  - `sibz-list-delete-confirm-label` - Confirmation label
  - `sibz-list-delete-yes-button` - Yes button
@@ -54,10 +55,13 @@ bool DisableLabelContextMenu /* Properties field labels automatically get a cont
                               * as it isn't easy to intercept these events, they can be disabled */
 bool DisablePropertyLabel    /* Disables the label for the property field in the list */
 bool HideAddButton
+bool UseAddObjectField    /* When list item is subclass of Unity.Object, use an object field 
+                            * instead of the add button */
 bool HideDeleteAllButton
 bool HideDeleteItemButton
 bool HideReorderItemButtons
 string AddButtonText 
+string AddObjectFieldText 
 string DeleteAllButtonText
 string DeleteAllConfirmLabelText 
 string DeleteAllYesButtonText
