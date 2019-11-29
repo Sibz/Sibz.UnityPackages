@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -55,7 +54,7 @@ namespace Sibz.UXMLList
             }
         }
 
-        public class AddButton : Button, IListElementInitialisor, IListElementClickable<AddActionEvent>
+        public class AddButton : Button, IListElementInitialisor, IListElementClickable<AddItemEvent>, IListElementResetable
         {
             public ListVisualElement ListElement { get; set; }
             public ControlsClass Controls { get; set; }
@@ -66,13 +65,67 @@ namespace Sibz.UXMLList
                 style.display = ListElement.HideAddButton ? DisplayStyle.None : DisplayStyle.Flex;
             }
 
-            public void OnClicked(AddActionEvent eventData)
+            public void OnClicked(AddItemEvent eventData)
             {
+                // Debug.Log(eventData.propagationPhase);
                 var listProperty = eventData.ListProperty;
                 if (listProperty.isArray)
                 {
                     listProperty.InsertArrayElementAtIndex(listProperty.arraySize);
+                    if (eventData.ItemData is object
+                        && eventData.ItemData.GetType() == ListElement.ListItemType
+                        && ListElement.ListItemType is System.Type
+                        && ListElement.ListItemType.IsSubclassOf(typeof(Object))
+                        )
+                    {
+                        listProperty.GetArrayElementAtIndex(listProperty.arraySize - 1).objectReferenceValue = eventData.ItemData as Object;
+                    }
                     listProperty.serializedObject.ApplyModifiedProperties();
+                }
+            }
+
+            public void Reset()
+            {
+                if (ListElement.UseObjectField && ListElement.ListItemType.IsSubclassOf(typeof(Object)))
+                {
+                    style.display = DisplayStyle.None;
+                }
+            }
+        }
+
+        public class AddObjectField : ObjectField, IListElementInitialisor, IListElementChangable<ChangeEvent<Object>, Object>, IListElementResetable
+        {
+            public ListVisualElement ListElement { get; set; }
+            public ControlsClass Controls { get; set; }
+
+            public void Initialise()
+            {
+                label = "Drop to add";
+                style.display = DisplayStyle.None;
+            }
+
+            public void OnChanged(ChangeEvent<Object> eventData)
+            {
+                // Debug.Log("Changed");
+                if (eventData.newValue is object)
+                {
+                    SendEvent(new AddItemEvent
+                    {
+                        ItemData = eventData.newValue,
+                        target = Controls.AddButton,
+                        ListProperty = ListElement.ListProperty
+                    });
+                }
+
+                value = null;
+            }
+
+            public void Reset()
+            {
+                if (ListElement.UseObjectField && ListElement.ListItemType.IsSubclassOf(typeof(Object)))
+                {
+                    objectType = ListElement.ListItemType;
+                    style.display = DisplayStyle.Flex;
                 }
             }
         }
@@ -304,9 +357,15 @@ namespace Sibz.UXMLList
                 if (parent is ItemSection)
                 {
                     int i = (parent as ItemSection).Index;
+                    var size = ListElement.ListProperty.arraySize;
                     if (ListElement.ListProperty.arraySize > i && i >= 0)
                     {
                         ListElement.ListProperty.DeleteArrayElementAtIndex(i);
+                        if (size == ListElement.ListProperty.arraySize && ListElement.ListItemType.IsSubclassOf(typeof(Object)))
+                        {
+                            ListElement.ListProperty.DeleteArrayElementAtIndex(i);
+                        }
+
                         ListElement.ListProperty.serializedObject.ApplyModifiedProperties();
                     }
                 }

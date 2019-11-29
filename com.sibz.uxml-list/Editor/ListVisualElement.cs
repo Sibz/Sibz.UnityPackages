@@ -18,6 +18,8 @@ namespace Sibz.UXMLList
         public const string DELETE_ALL_CONFIRM_LABEL_TEXT = "Are you sure?";
         public const string DELETE_ALL_YES_BUTTON_TEXT = "Yes";
         public const string DELETE_ALL_NO_BUTTON_TEXT = "No";
+        public const string ADD_OBJECT_FIELD_TEXT = "Drop to add";
+
         public const string DELETE_ITEM_BUTTON_TEXT = "-";
         public const string MOVE_UP_BUTTON_TEXT = "↑";
         public const string MOVE_DOWN_BUTTON_TEXT = "↓";
@@ -29,6 +31,7 @@ namespace Sibz.UXMLList
         public bool DisablePropertyLabel { get; set; }
 
         public bool HideAddButton { get; set; }
+        public bool UseObjectField { get; set; }
         public bool HideDeleteAllButton { get; set; }
         public bool HideDeleteItemButton { get; set; }
         public bool HideReorderItemButtons { get; set; }
@@ -38,12 +41,13 @@ namespace Sibz.UXMLList
         public string DeleteAllConfirmLabelText { get; set; } = DELETE_ALL_CONFIRM_LABEL_TEXT;
         public string DeleteAllYesButtonText { get; set; } = DELETE_ALL_YES_BUTTON_TEXT;
         public string DeleteAllNoButtonText { get; set; } = DELETE_ALL_NO_BUTTON_TEXT;
-
+        public string AddObjectFieldText { get; set; } = ADD_OBJECT_FIELD_TEXT;
 
         public string DeleteItemButtonText { get; set; } = DELETE_ITEM_BUTTON_TEXT;
         public string ReorderItemUpButtonText { get; set; } = MOVE_UP_BUTTON_TEXT;
         public string ReorderItemDownButtonText { get; set; } = MOVE_DOWN_BUTTON_TEXT;
 
+        public Type ListItemType { get; private set; }
 
         public SerializedProperty ListProperty => m_SerializedObject?.FindProperty(m_ListPropertyBindingPath) ?? null;
 
@@ -65,27 +69,28 @@ namespace Sibz.UXMLList
             m_ListElementsFactory = new ListElementsFactory(this);
             AddToClassList(UssClassName);
 
-
             Add(Controls.HeaderSection);
 
             Add(Controls.DeleteAllConfirmSection);
 
             Add(Controls.BoundPropertyNotFoundLabel);
 
+            Add(Controls.AddObjectField);
+
             Add(Controls.ItemsSection);
 
             m_ListContentContainer = m_ListElementsFactory.Controls.ItemsSection;
             RegisterCallback<AttachToPanelEvent>((e) =>
             {
-                Debug.Log(parent.GetType());  //string.Join(" ", parent.GetClasses()));
+                //Debug.Log(parent.GetType());  //string.Join(" ", parent.GetClasses()));
                 Controls.BoundPropertyNotFoundLabel.style.display = (ListProperty is SerializedProperty) ? DisplayStyle.None : DisplayStyle.Flex;
 
                 Controls.HeaderSection.SetEnabled(ListProperty is SerializedProperty);
-                
+
             });
-            
+
         }
-        
+
 
         public new class UxmlFactory : UxmlFactory<ListVisualElement, UxmlTraits> { }
         public new class UxmlTraits : VisualElement.UxmlTraits
@@ -98,6 +103,7 @@ namespace Sibz.UXMLList
             UxmlBoolAttributeDescription m_DisablePropertyLabel;
 
             UxmlBoolAttributeDescription m_HideAddButton;
+            UxmlBoolAttributeDescription m_UseObjectField;
             UxmlBoolAttributeDescription m_HideDeleteAllButton;
             UxmlBoolAttributeDescription m_HideDeleteItemButton;
             UxmlBoolAttributeDescription m_HideReorderItemButtons;
@@ -107,6 +113,8 @@ namespace Sibz.UXMLList
             UxmlStringAttributeDescription m_DeleteAllConfirmLabelText;
             UxmlStringAttributeDescription m_DeleteAllYesButtonText;
             UxmlStringAttributeDescription m_DeleteAllNoButtonText;
+            UxmlStringAttributeDescription m_AddObjectFieldText;
+
             UxmlStringAttributeDescription m_DeleteItemButtonText;
             UxmlStringAttributeDescription m_ReorderItemUpButtonText;
             UxmlStringAttributeDescription m_ReorderItemDownButtonText;
@@ -121,8 +129,9 @@ namespace Sibz.UXMLList
                 m_DisableLabelContextMenu = new UxmlBoolAttributeDescription { name = "disable-label-context-menu" };
                 m_DisablePropertyLabel = new UxmlBoolAttributeDescription { name = "disable-property-label" };
 
-                m_HideAddButton = new UxmlBoolAttributeDescription { name = "hide-add-button"};
-                m_HideDeleteAllButton = new UxmlBoolAttributeDescription { name = "hide-delete-all-button"};
+                m_HideAddButton = new UxmlBoolAttributeDescription { name = "hide-add-button" };
+                m_UseObjectField = new UxmlBoolAttributeDescription { name = "use-object-field", defaultValue = true };
+                m_HideDeleteAllButton = new UxmlBoolAttributeDescription { name = "hide-delete-all-button" };
                 m_HideDeleteItemButton = new UxmlBoolAttributeDescription { name = "hide-delete-item-button" };
                 m_HideReorderItemButtons = new UxmlBoolAttributeDescription { name = "hide-reorder-item-buttons" };
 
@@ -131,6 +140,8 @@ namespace Sibz.UXMLList
                 m_DeleteAllConfirmLabelText = new UxmlStringAttributeDescription { name = "delete-all-confirm-label-text", defaultValue = DELETE_ALL_CONFIRM_LABEL_TEXT };
                 m_DeleteAllYesButtonText = new UxmlStringAttributeDescription { name = "delete-all-yes-button-text", defaultValue = DELETE_ALL_YES_BUTTON_TEXT };
                 m_DeleteAllNoButtonText = new UxmlStringAttributeDescription { name = "delete-all-no-button-text", defaultValue = DELETE_ALL_NO_BUTTON_TEXT };
+                m_AddObjectFieldText = new UxmlStringAttributeDescription { name = "add-object-field-text", defaultValue = ADD_OBJECT_FIELD_TEXT };
+
                 m_DeleteItemButtonText = new UxmlStringAttributeDescription { name = "delete-item-button-text", defaultValue = DELETE_ITEM_BUTTON_TEXT };
                 m_ReorderItemUpButtonText = new UxmlStringAttributeDescription { name = "reorder-item-up-button-text", defaultValue = MOVE_UP_BUTTON_TEXT };
                 m_ReorderItemDownButtonText = new UxmlStringAttributeDescription { name = "reorder-item-down-button-text", defaultValue = MOVE_DOWN_BUTTON_TEXT };
@@ -158,6 +169,7 @@ namespace Sibz.UXMLList
                 field.DisablePropertyLabel = m_DisablePropertyLabel.GetValueFromBag(bag, cc);
 
                 field.HideAddButton = m_HideAddButton.GetValueFromBag(bag, cc);
+                field.UseObjectField = m_UseObjectField.GetValueFromBag(bag, cc);
                 field.HideDeleteAllButton = m_HideDeleteAllButton.GetValueFromBag(bag, cc);
                 field.HideDeleteItemButton = m_HideDeleteItemButton.GetValueFromBag(bag, cc);
                 field.HideReorderItemButtons = m_HideReorderItemButtons.GetValueFromBag(bag, cc);
@@ -167,6 +179,8 @@ namespace Sibz.UXMLList
                 field.DeleteAllConfirmLabelText = m_DeleteAllConfirmLabelText.GetValueFromBag(bag, cc);
                 field.DeleteAllYesButtonText = m_DeleteAllYesButtonText.GetValueFromBag(bag, cc);
                 field.DeleteAllNoButtonText = m_DeleteAllNoButtonText.GetValueFromBag(bag, cc);
+                field.AddObjectFieldText = m_AddObjectFieldText.GetValueFromBag(bag, cc);
+
                 field.DeleteItemButtonText = m_DeleteItemButtonText.GetValueFromBag(bag, cc);
                 field.ReorderItemUpButtonText = m_ReorderItemUpButtonText.GetValueFromBag(bag, cc);
                 field.ReorderItemDownButtonText = m_ReorderItemDownButtonText.GetValueFromBag(bag, cc);
@@ -185,10 +199,24 @@ namespace Sibz.UXMLList
                 &&
                 type.GetProperty("bindProperty").GetValue(evt) is SerializedProperty property)
             {
-
-
                 m_SerializedObject = property.serializedObject;
                 m_ListPropertyBindingPath = ((ListVisualElement)evt.target).bindingPath;
+
+                var propertyPath = ListProperty.propertyPath.Split('.');
+                object baseObject = ListProperty.serializedObject.targetObject;
+                for (int i = 0; i < propertyPath.Length; i++)
+                {
+                    baseObject = baseObject.GetType().GetField(propertyPath[i])?.GetValue(baseObject);
+                    if (baseObject == null)
+                    {
+                        return;
+                    }
+                }
+
+                if (baseObject.GetType().IsGenericType)
+                {
+                    ListItemType = baseObject.GetType().GetGenericArguments()[0];
+                }
 
                 m_ListElementsFactory.Reset();
                 // Don't allow the binding of `this` to continue because `this` is not
