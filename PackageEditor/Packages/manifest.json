@@ -1,6 +1,8 @@
 {
   "dependencies": {
     "com.sibz.uxml-list": "file:../../com.sibz.uxml-list",
+    "com.sibz.editorlist": "file:../../com.sibz.editorlist",
+    "com.sibz.child-subset": "file:../../com.sibz.child-subset",
     "com.unity.ext.nunit": "1.0.0",
     "com.unity.ide.vscode": "1.1.3",
     "com.unity.render-pipelines.universal": "7.1.5",

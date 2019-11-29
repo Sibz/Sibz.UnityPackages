@@ -1,0 +1,16 @@
+{
+    "name": "Sibz.Child-Subset.Editor",
+    "references": [
+        "GUID:7116706a87f8cac449257792456a2df3",
+        "GUID:4ea75fed3843ea8468cc94b3efa68832"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
