@@ -10,10 +10,15 @@ namespace Sibz.UXMLList
     {
         public ListElementsFactory(ListVisualElement owner) : base(owner) { }
 
-        public class HeaderSection : VisualElement, IListElementInstantiator
+        public class HeaderSection : VisualElement, IListElementInstantiator, IListElementInitialisor
         {
             public ListVisualElement ListElement { get; set; }
             public ControlsClass Controls { get; set; }
+
+            public void Initialise()
+            {
+                SetEnabled(ListElement.ListProperty is SerializedProperty);
+            }
 
             public void Instantiate()
             {
@@ -39,6 +44,27 @@ namespace Sibz.UXMLList
             {
                 Controls.HeaderLabel.text = ListElement.Label;
                 Controls.HeaderLabel.style.visibility = string.IsNullOrEmpty(ListElement.Label) ? Visibility.Hidden : Visibility.Visible;
+            }
+
+        }
+
+        public class BoundPropertyNotFoundLabel : Label, IListElementInstantiator, IListElementInitialisor
+        {
+            public ListVisualElement ListElement { get; set; }
+            public ControlsClass Controls { get; set; }
+
+            public void Instantiate()
+            {
+                text = "Bound field not found";
+                style.display = DisplayStyle.None;
+            }
+
+            public void Initialise()
+            {
+                if (!(ListElement.ListProperty is SerializedProperty))
+                {
+                    style.display = DisplayStyle.Flex;
+                }
             }
         }
 
@@ -318,7 +344,7 @@ namespace Sibz.UXMLList
                     int i = (parent as ItemSection).Index;
                     if (ListElement.ListProperty.arraySize > i && i > 0)
                     {
-                        ListElement.ListProperty.MoveArrayElement(i, i-1);
+                        ListElement.ListProperty.MoveArrayElement(i, i - 1);
                         ListElement.ListProperty.serializedObject.ApplyModifiedProperties();
                     }
                 }
@@ -341,9 +367,9 @@ namespace Sibz.UXMLList
                 if (parent is ItemSection)
                 {
                     int i = (parent as ItemSection).Index;
-                    if (ListElement.ListProperty.arraySize-1 > i && i >= 0)
+                    if (ListElement.ListProperty.arraySize - 1 > i && i >= 0)
                     {
-                        ListElement.ListProperty.MoveArrayElement(i, i+1);
+                        ListElement.ListProperty.MoveArrayElement(i, i + 1);
                         ListElement.ListProperty.serializedObject.ApplyModifiedProperties();
                     }
                 }

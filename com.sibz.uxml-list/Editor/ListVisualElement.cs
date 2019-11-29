@@ -45,7 +45,7 @@ namespace Sibz.UXMLList
         public string ReorderItemDownButtonText { get; set; } = MOVE_DOWN_BUTTON_TEXT;
 
 
-        public SerializedProperty ListProperty => m_SerializedObject.FindProperty(m_ListPropertyBindingPath);
+        public SerializedProperty ListProperty => m_SerializedObject?.FindProperty(m_ListPropertyBindingPath) ?? null;
 
         public override VisualElement contentContainer => m_ListContentContainer ?? base.contentContainer;
         #endregion
@@ -65,13 +65,17 @@ namespace Sibz.UXMLList
             m_ListElementsFactory = new ListElementsFactory(this);
             AddToClassList(UssClassName);
 
+
             Add(m_ListElementsFactory.Controls.HeaderSection);
 
             Add(m_ListElementsFactory.Controls.DeleteAllConfirmSection);
 
+            Add(m_ListElementsFactory.Controls.BoundPropertyNotFoundLabel);
+
             Add(m_ListElementsFactory.Controls.ItemsSection);
 
             m_ListContentContainer = m_ListElementsFactory.Controls.ItemsSection;
+            
 
         }
 

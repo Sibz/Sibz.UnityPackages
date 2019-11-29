@@ -23,6 +23,8 @@ namespace Sibz.UXMLList
             public Button DeleteAllNoButton => GetOrCreateUsingNested<Button>(nameof(DeleteAllNoButton));
             public VisualElement ItemsSection => GetOrCreateUsingNested<VisualElement>(nameof(ItemsSection));
 
+            public Label BoundPropertyNotFoundLabel => GetOrCreateUsingNested<Label>(nameof(BoundPropertyNotFoundLabel));
+
             public VisualElement ItemSection => CreateUsingNested<VisualElement>(nameof(ItemSection));
             public PropertyField ItemPropertyField => CreateUsingNested<PropertyField>(nameof(ItemPropertyField));
             public Button MoveUpButton => CreateUsingNested<Button>(nameof(MoveUpButton));
