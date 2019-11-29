@@ -82,6 +82,7 @@ namespace Sibz.UXMLList
             m_ListContentContainer = m_ListElementsFactory.Controls.ItemsSection;
             RegisterCallback<AttachToPanelEvent>((e) =>
             {
+                m_ListElementsFactory.Init();
                 //Debug.Log(parent.GetType());  //string.Join(" ", parent.GetClasses()));
                 Controls.BoundPropertyNotFoundLabel.style.display = (ListProperty is SerializedProperty) ? DisplayStyle.None : DisplayStyle.Flex;
 
