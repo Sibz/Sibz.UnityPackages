@@ -16,12 +16,15 @@ namespace Sibz.UXMLList
             public VisualElement HeaderSection => GetOrCreateUsingNested<VisualElement>(nameof(HeaderSection));
             public Label HeaderLabel => GetOrCreateUsingNested<Label>(nameof(HeaderLabel));
             public Button AddButton => GetOrCreateUsingNested<Button>(nameof(AddButton));
+            public ObjectField AddObjectField => GetOrCreateUsingNested<ObjectField>(nameof(AddObjectField));
             public Button DeleteAllButton => GetOrCreateUsingNested<Button>(nameof(DeleteAllButton));
             public VisualElement DeleteAllConfirmSection => GetOrCreateUsingNested<VisualElement>(nameof(DeleteAllConfirmSection));
             public Label DeleteAllConfirmLabel => GetOrCreateUsingNested<Label>(nameof(DeleteAllConfirmLabel));
             public Button DeleteAllYesButton => GetOrCreateUsingNested<Button>(nameof(DeleteAllYesButton));
             public Button DeleteAllNoButton => GetOrCreateUsingNested<Button>(nameof(DeleteAllNoButton));
             public VisualElement ItemsSection => GetOrCreateUsingNested<VisualElement>(nameof(ItemsSection));
+
+            public Label BoundPropertyNotFoundLabel => GetOrCreateUsingNested<Label>(nameof(BoundPropertyNotFoundLabel));
 
             public VisualElement ItemSection => CreateUsingNested<VisualElement>(nameof(ItemSection));
             public PropertyField ItemPropertyField => CreateUsingNested<PropertyField>(nameof(ItemPropertyField));

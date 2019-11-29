@@ -8,7 +8,13 @@ using UnityEngine.UIElements;
 
 namespace Sibz.UXMLList
 {
-    public class AddActionEvent : EventBase<AddActionEvent>, IListEventWithListProperty
+    public class AddItemEvent : EventBase<AddItemEvent>, IListEventWithListProperty
+    {
+        public SerializedProperty ListProperty { get; set; }
+        public object ItemData;
+    }
+
+    public class AddObjectEvent : EventBase<AddObjectEvent>, IListEventWithListProperty
     {
         public SerializedProperty ListProperty { get; set; }
     }

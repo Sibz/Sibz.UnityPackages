@@ -36,7 +36,7 @@ namespace Sibz.UXMLList
 
     public interface IListElementChangable<TChangeEvent, T> where TChangeEvent: ChangeEvent<T>
     {
-        EventCallback<TChangeEvent> ChangedCallback { get; }
+        void OnChanged(TChangeEvent eventData);
     }
 
 	public interface IListEventWithListProperty
