@@ -66,18 +66,26 @@ namespace Sibz.UXMLList
             AddToClassList(UssClassName);
 
 
-            Add(m_ListElementsFactory.Controls.HeaderSection);
+            Add(Controls.HeaderSection);
 
-            Add(m_ListElementsFactory.Controls.DeleteAllConfirmSection);
+            Add(Controls.DeleteAllConfirmSection);
 
-            Add(m_ListElementsFactory.Controls.BoundPropertyNotFoundLabel);
+            Add(Controls.BoundPropertyNotFoundLabel);
 
-            Add(m_ListElementsFactory.Controls.ItemsSection);
+            Add(Controls.ItemsSection);
 
             m_ListContentContainer = m_ListElementsFactory.Controls.ItemsSection;
-            
+            RegisterCallback<AttachToPanelEvent>((e) =>
+            {
+                Debug.Log(parent.GetType());  //string.Join(" ", parent.GetClasses()));
+                Controls.BoundPropertyNotFoundLabel.style.display = (ListProperty is SerializedProperty) ? DisplayStyle.None : DisplayStyle.Flex;
 
+                Controls.HeaderSection.SetEnabled(ListProperty is SerializedProperty);
+                
+            });
+            
         }
+        
 
         public new class UxmlFactory : UxmlFactory<ListVisualElement, UxmlTraits> { }
         public new class UxmlTraits : VisualElement.UxmlTraits
@@ -188,86 +196,5 @@ namespace Sibz.UXMLList
                 evt.StopPropagation();
             }
         }
-
-        //private void Reset(SerializedProperty prop)
-        //{
-
-        //    m_ListContentContainer.Clear();
-        //    if (prop.isArray)
-        //    {
-        //        m_ListElementsFactory.Controls.DeleteAllButton.SetEnabled(prop.arraySize > 0);
-        //        var endProperty = prop.GetEndProperty();
-
-        //        prop.NextVisible(true);
-        //        do
-        //        {
-
-        //            if (SerializedProperty.EqualContents(prop, endProperty))
-        //            {
-        //                break;
-        //            }
-
-        //            switch (prop.propertyType)
-        //            {
-        //                case SerializedPropertyType.ArraySize:
-        //                    var field = new IntegerField { bindingPath = prop.propertyPath };
-        //                    field.SetValueWithoutNotify(prop.intValue); // This avoids the OnValueChanged/Rebind feedback loop.
-        //                    field.style.display = ShowSize ? DisplayStyle.Flex : DisplayStyle.None;
-        //                    field.RegisterValueChangedCallback(UpdateList);
-        //                    field.label = "Size";
-        //                    m_ListContentContainer.Add(field);
-        //                    break;
-
-        //                default:
-        //                    var f = new PropertyField(prop);
-        //                    m_ListContentContainer.Add(f);
-        //                    if (DisablePropertyLabel)
-        //                    {
-        //                        f.RegisterCallback<AttachToPanelEvent>((e) =>
-        //                            {
-
-        //                                if (f.Q<Label>() is Label)
-        //                                {
-        //                                    f.Q<Label>().style.display = DisplayStyle.None;
-        //                                }
-        //                            });
-        //                    }
-
-        //                    if (!DisablePropertyLabel && DisableLabelContextMenu)
-        //                    {
-        //                        f.RegisterCallback<MouseUpEvent>((e) =>
-        //                            {
-        //                                if (e.target is Label && ((Label)e.target).parent?.parent == f)
-        //                                {
-        //                                    e.StopPropagation();
-        //                                }
-        //                            }, TrickleDown.TrickleDown);
-        //                    }
-
-        //                    break;
-        //            }
-
-        //        } while (prop.NextVisible(false));
-
-        //        prop.Reset();
-
-        //    }
-        //    else
-        //    {
-        //        m_ListContentContainer.Add(new Label("Error, Bound item is not a list or array"));
-        //    }
-        //}
-
-        //private void UpdateList(ChangeEvent<int> changeEvent)
-        //{
-        //    this.Unbind();
-        //    m_SerializedObject.UpdateIfRequiredOrScript();
-        //    m_SerializedObject.ApplyModifiedProperties();
-        //    this.Bind(m_SerializedObject);
-
-        //    // Enable/Disable Delete All Button
-        //    m_ListElementsFactory.Controls.DeleteAllButton.SetEnabled(ListProperty.arraySize > 0);
-        //    changeEvent.StopImmediatePropagation();
-        //}
     }
 }

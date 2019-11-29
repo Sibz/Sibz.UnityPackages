@@ -10,15 +10,10 @@ namespace Sibz.UXMLList
     {
         public ListElementsFactory(ListVisualElement owner) : base(owner) { }
 
-        public class HeaderSection : VisualElement, IListElementInstantiator, IListElementInitialisor
+        public class HeaderSection : VisualElement, IListElementInstantiator
         {
             public ListVisualElement ListElement { get; set; }
             public ControlsClass Controls { get; set; }
-
-            public void Initialise()
-            {
-                SetEnabled(ListElement.ListProperty is SerializedProperty);
-            }
 
             public void Instantiate()
             {
@@ -48,7 +43,7 @@ namespace Sibz.UXMLList
 
         }
 
-        public class BoundPropertyNotFoundLabel : Label, IListElementInstantiator, IListElementInitialisor
+        public class BoundPropertyNotFoundLabel : Label, IListElementInstantiator
         {
             public ListVisualElement ListElement { get; set; }
             public ControlsClass Controls { get; set; }
@@ -57,14 +52,6 @@ namespace Sibz.UXMLList
             {
                 text = "Bound field not found";
                 style.display = DisplayStyle.None;
-            }
-
-            public void Initialise()
-            {
-                if (!(ListElement.ListProperty is SerializedProperty))
-                {
-                    style.display = DisplayStyle.Flex;
-                }
             }
         }
 
