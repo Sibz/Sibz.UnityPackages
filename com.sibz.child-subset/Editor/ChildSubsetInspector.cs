@@ -11,6 +11,7 @@ namespace Sibz.ChildSubset
     [CustomEditor(typeof(ChildSubset))]
     public class ChildSubsetInspector : Editor
     {
+        public virtual string PingButtonText => "!";
         public override VisualElement CreateInspectorGUI()
         {
             VisualElement root = new VisualElement();
@@ -32,7 +33,7 @@ namespace Sibz.ChildSubset
                     EditorGUIUtility.PingObject(item.Q<ObjectField>().value);
                 })
                 {
-                    text = "!"
+                    text = PingButtonText
                 };
                 item.Add(pingButton);
             };
