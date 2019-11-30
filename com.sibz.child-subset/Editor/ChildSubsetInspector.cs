@@ -24,7 +24,19 @@ namespace Sibz.ChildSubset
                 HideDeleteItemButton = true,
                 DisablePropertyLabel = true
             };
-            listVisualElement.Controls.ItemsSection.SetEnabled(false);
+            
+            listVisualElement.OnItemCreated += (item) =>
+            {
+                item.Q<PropertyField>()?.SetEnabled(false);
+                Button pingButton = new Button(()=> {
+                    EditorGUIUtility.PingObject(item.Q<ObjectField>().value);
+                })
+                {
+                    text = "!"
+                };
+                item.Add(pingButton);
+            };
+
             root.Add(listVisualElement);
             root.Bind(serializedObject);
             listVisualElement.BindProperty(serializedObject.FindProperty(nameof(ChildSubset.Children)));
