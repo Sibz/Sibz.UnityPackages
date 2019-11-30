@@ -24,6 +24,9 @@ namespace Sibz.UXMLList
         public const string MOVE_UP_BUTTON_TEXT = "↑";
         public const string MOVE_DOWN_BUTTON_TEXT = "↓";
 
+        public event Action<VisualElement> OnItemCreated;
+        internal void ItemCreated(VisualElement visualElement) => OnItemCreated?.Invoke(visualElement);
+
         #region Public Properties
         public string Label { get; set; }
         public bool ShowSize { get; set; }
@@ -37,7 +40,7 @@ namespace Sibz.UXMLList
         public bool HideReorderItemButtons { get; set; }
 
         public string AddButtonText { get; set; } = ADD_BUTTON_TEXT;
-        public string DeleteAllButtonText { get; set; } = DELETE_ALL_YES_BUTTON_TEXT;
+        public string DeleteAllButtonText { get; set; } = DELETE_ALL_CONFIRM_LABEL_TEXT;
         public string DeleteAllConfirmLabelText { get; set; } = DELETE_ALL_CONFIRM_LABEL_TEXT;
         public string DeleteAllYesButtonText { get; set; } = DELETE_ALL_YES_BUTTON_TEXT;
         public string DeleteAllNoButtonText { get; set; } = DELETE_ALL_NO_BUTTON_TEXT;
@@ -82,6 +85,7 @@ namespace Sibz.UXMLList
             m_ListContentContainer = m_ListElementsFactory.Controls.ItemsSection;
             RegisterCallback<AttachToPanelEvent>((e) =>
             {
+                m_ListElementsFactory.Init();
                 //Debug.Log(parent.GetType());  //string.Join(" ", parent.GetClasses()));
                 Controls.BoundPropertyNotFoundLabel.style.display = (ListProperty is SerializedProperty) ? DisplayStyle.None : DisplayStyle.Flex;
 
@@ -224,5 +228,6 @@ namespace Sibz.UXMLList
                 evt.StopPropagation();
             }
         }
+
     }
 }

@@ -91,12 +91,6 @@ namespace Sibz.UXMLList
 
             (element as IListElementInstantiator)?.Instantiate();
 
-        }
-
-        private void OnInit_ApplyInterfaces<TElement>(TElement element) where TElement : VisualElement, new()
-        {
-            (element as IListElementInitialisor)?.Initialise();
-
             if (ImplementsOpenGenericInterface(element, typeof(IListElementClickable<>)) && TryGetEventType(typeof(IListElementClickable<>), element.GetType(), out Type eventType))
             {
                 AddEventHandler(element, nameof(Button.clicked), new Action(() =>
@@ -115,6 +109,12 @@ namespace Sibz.UXMLList
             {
                 EventRegistration(typeof(IListElementChangable<,>).MakeGenericType(eventType, eventType.GetGenericArguments()[0]), element, eventType);
             }
+
+        }
+
+        private void OnInit_ApplyInterfaces<TElement>(TElement element) where TElement : VisualElement, new()
+        {
+            (element as IListElementInitialisor)?.Initialise();
         }
 
         private bool ImplementsOpenGenericInterface(object obj, Type openGenericInterfaceType)
