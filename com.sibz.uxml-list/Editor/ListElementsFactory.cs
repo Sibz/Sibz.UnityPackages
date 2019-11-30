@@ -302,6 +302,7 @@ namespace Sibz.UXMLList
                 Add(Controls.DeleteItemButton);
                 Add(Controls.MoveUpButton);
                 Add(Controls.MoveDownButton);
+                ListElement.ItemCreated(this);
             }
         }
 

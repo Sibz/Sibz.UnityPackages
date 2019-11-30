@@ -24,6 +24,9 @@ namespace Sibz.UXMLList
         public const string MOVE_UP_BUTTON_TEXT = "↑";
         public const string MOVE_DOWN_BUTTON_TEXT = "↓";
 
+        public event Action<VisualElement> OnItemCreated;
+        internal void ItemCreated(VisualElement visualElement) => OnItemCreated?.Invoke(visualElement);
+
         #region Public Properties
         public string Label { get; set; }
         public bool ShowSize { get; set; }
@@ -225,5 +228,6 @@ namespace Sibz.UXMLList
                 evt.StopPropagation();
             }
         }
+
     }
 }
