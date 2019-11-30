@@ -1,0 +1,5 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <Sibz.UXMLList.ListVisualElement hide-delete-all-button="true" hide-delete-item-button="true" hide-reorder-item-buttons="true" hide-add-button="true" use-object-field="false" disable-label-context-menu="true" label="Children" binding-path="Children">
+        <Style src="ChildSubsetInspector.uss" />
+    </Sibz.UXMLList.ListVisualElement>
+</ui:UXML>
