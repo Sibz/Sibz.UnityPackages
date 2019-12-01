@@ -1,0 +1,22 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:VisualElement style="flex-direction: row;">
+        <Style src="ChildSubsetInspector.uss" />
+        <ui:Label text="Filter by component" style="-unity-text-align: middle-left; width: 140px;" />
+        <ui:VisualElement style="flex-direction: row; flex-grow: 1;">
+            <ui:TextField picking-mode="Ignore" value="filler text" text="filler text" readonly="true" style="flex-grow: 1; margin-right: -1px;" />
+            <ui:Button text="˅" style="margin-left: -1px;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:VisualElement style="flex-direction: row;">
+        <Style src="ChildSubsetInspector.uss" />
+        <ui:Label text="Exclude by component" style="-unity-text-align: middle-left; width: 140px;" />
+        <ui:VisualElement style="flex-direction: row; flex-grow: 1;">
+            <ui:TextField picking-mode="Ignore" value="filler text" text="filler text" readonly="true" style="flex-grow: 1; margin-right: -1px;" />
+            <ui:Button text="˅" style="margin-left: -1px;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:Foldout text="Children">
+        <Style src="ChildSubsetInspector.uss" />
+        <Sibz.UXMLList.ListVisualElement hide-delete-all-button="true" hide-delete-item-button="true" hide-reorder-item-buttons="true" hide-add-button="true" use-object-field="false" disable-label-context-menu="true" binding-path="children" disable-property-label="true" />
+    </ui:Foldout>
+</ui:UXML>

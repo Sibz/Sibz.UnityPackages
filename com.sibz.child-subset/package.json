@@ -1,0 +1,13 @@
+{
+  "name": "com.sibz.child-subset",
+  "displayName": "Sibz: Child Subset",
+  "version": "0.1.0",
+  "description": "Simple mono behaviour to create a list of children from the gameobject hierarchy in the scene.",
+  "author": "",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Sibz/Sibz.UnityPackages.git",
+    "directory": "com.sibz.child-subset"
+  }
+}
