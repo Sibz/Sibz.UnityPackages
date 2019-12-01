@@ -18,10 +18,24 @@ namespace Sibz.ChildSubset
 
         private void Update()
         {
-            if (childSubsetUpdater.Update())
+            if (HasDirtyContents(gameObject) && childSubsetUpdater.Update())
             {
                 EditorUtility.SetDirty(this);
             }
+        }
+
+        private static bool HasDirtyContents(GameObject target)
+        {
+            for (int i = 0; i < target.transform.childCount; i++)
+            {
+                if (EditorUtility.IsDirty(target.transform.GetChild(i).gameObject)
+                    || EditorUtility.IsDirty(target.transform.GetChild(i))
+                    || HasDirtyContents(target.transform.GetChild(i).gameObject))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         private void OnEnable()
