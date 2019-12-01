@@ -30,7 +30,7 @@ namespace Sibz.ChildSubset
 
                 if (ValidWithFilterRules(currentChild))
                 {
-                    listHasBeenUpdated |= UpdateChildrenIfRequired(currentChild, updateIndex++);
+                    listHasBeenUpdated |= AddOrUpdateChildWithIndex(currentChild, updateIndex++);
                 }
             }
 
@@ -51,7 +51,7 @@ namespace Sibz.ChildSubset
                  !toValidate.GetComponent(excludeComponentTypeFilter));
         }
 
-        private bool UpdateChildrenIfRequired(GameObject child, int index)
+        private bool AddOrUpdateChildWithIndex(GameObject child, int index)
         {
             if (index >= Children.Count)
             {
