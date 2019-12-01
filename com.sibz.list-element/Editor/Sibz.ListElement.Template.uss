@@ -1,0 +1,11 @@
+.sibz-list-header {
+    flex-direction: row;
+    -unity-text-align: middle-left;
+}
+
+.sibz-list-delete-confirm {
+}
+
+.sibz-list-header-label {
+    flex-grow: 1;
+}
