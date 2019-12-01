@@ -3,9 +3,12 @@
     -unity-text-align: middle-left;
 }
 
-.sibz-list-delete-confirm {
-}
-
 .sibz-list-header-label {
     flex-grow: 1;
+}
+
+.sibz-list-delete-all-confirm {
+    flex-direction: row;
+    justify-content: flex-end;
+    -unity-text-align: middle-left;
 }
