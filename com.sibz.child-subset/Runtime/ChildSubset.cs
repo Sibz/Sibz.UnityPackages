@@ -1,36 +1,38 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Sibz.ChildSubset
 {
     [AddComponentMenu("Sibz/Child Subset List")]
     [ExecuteAlways]
+    [SuppressMessage("ReSharper", "Unity.PerformanceCriticalCodeInvocation")]
     public class ChildSubset : MonoBehaviour
     {
-        public List<GameObject> Children = new List<GameObject>();
+        public List<GameObject> children = new List<GameObject>();
 #if UNITY_EDITOR
-        public List<Component> FilterComponents => m_ChildSubsetUpdater.GetValidFilterOptions();
+        public List<Component> FilterComponents => childSubsetUpdater.GetValidFilterOptions();
 
-        private ChildSubsetUpdater m_ChildSubsetUpdater;
-#endif
+        private ChildSubsetUpdater childSubsetUpdater;
 
         private void Update()
         {
-#if UNITY_EDITOR
-            m_ChildSubsetUpdater.UpdateList();
-#endif
+            if (childSubsetUpdater.Update())
+            {
+                EditorUtility.SetDirty(this);
+            }
         }
 
         private void OnEnable()
         {
-#if UNITY_EDITOR
-            if (m_ChildSubsetUpdater is null)
+            if (childSubsetUpdater is null)
             {
-                m_ChildSubsetUpdater = new ChildSubsetUpdater(this);
+                childSubsetUpdater = new ChildSubsetUpdater(this);
             }
-#endif
         }
-
+#endif
     }
 }

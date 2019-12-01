@@ -17,6 +17,6 @@
     </ui:VisualElement>
     <ui:Foldout text="Children">
         <Style src="ChildSubsetInspector.uss" />
-        <Sibz.UXMLList.ListVisualElement hide-delete-all-button="true" hide-delete-item-button="true" hide-reorder-item-buttons="true" hide-add-button="true" use-object-field="false" disable-label-context-menu="true" binding-path="Children" disable-property-label="true" />
+        <Sibz.UXMLList.ListVisualElement hide-delete-all-button="true" hide-delete-item-button="true" hide-reorder-item-buttons="true" hide-add-button="true" use-object-field="false" disable-label-context-menu="true" binding-path="children" disable-property-label="true" />
     </ui:Foldout>
 </ui:UXML>
