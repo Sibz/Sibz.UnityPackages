@@ -13,6 +13,9 @@
       <e p="ChildSubset.cs" t="Include" />
       <e p="ChildSubsetUpdater.cs" t="Include" />
     </e>
+    <e p="C:\Users\steve\Documents\UnityProjects\Sibz.UnityPackages\com.sibz.child-subset\Tests" t="Include">
+      <e p="ChildSubset.cs" t="Include" />
+    </e>
     <e p="C:\Users\steve\Documents\UnityProjects\Sibz.UnityPackages\com.sibz.editorlist\Runtime" t="Include">
       <e p="EditorList.cs" t="Include" />
     </e>
@@ -43,6 +46,7 @@
       <e p="Packages" t="ExcludeRecursive" />
       <e p="Sibz.Child-Subset.Editor.csproj" t="IncludeRecursive" />
       <e p="Sibz.Child-Subset.Runtime.csproj" t="IncludeRecursive" />
+      <e p="Sibz.ChildSubset.Tests.csproj" t="IncludeRecursive" />
       <e p="Sibz.EditorList.Runtime.csproj" t="IncludeRecursive" />
       <e p="Sibz.UXML-List.Editor.csproj" t="IncludeRecursive" />
       <e p="Temp\bin" t="ExcludeRecursive" />
