@@ -83,7 +83,7 @@ namespace Sibz.ChildSubset
             ThrowIfNotComponentType(componentType);
             includeComponentTypeFilter = componentType;
         }
-        
+
         public void SetExcludeFilter(System.Type componentType)
         {
             ThrowIfNotComponentType(componentType);
@@ -92,11 +92,13 @@ namespace Sibz.ChildSubset
 
         private static void ThrowIfNotComponentType(System.Type componentType)
         {
-            if (!componentType.IsSubclassOf(typeof(Component)))
+            if (componentType.IsSubclassOf(typeof(Component)))
             {
-                throw new System.ArgumentException(
-                    "Component type parameter must be a subclass of UnityEngine.Component");
+                return;
             }
+
+            throw new System.ArgumentException(
+                "Component type parameter must be a subclass of UnityEngine.Component");
         }
 
         public List<Component> GetValidFilterOptions()
