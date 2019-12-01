@@ -8,21 +8,26 @@ namespace Tests
 {
     public class ChildSubset
     {
-        // A Test behaves as an ordinary method
-        [Test]
-        public void ChildSubsetSimplePasses()
-        {
-            // Use the Assert class to test conditions
-        }
-
         // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
         // `yield return null;` to skip a frame.
         [UnityTest]
-        public IEnumerator ChildSubsetWithEnumeratorPasses()
+        public IEnumerator EmptyGameObjectYieldsEmptyList()
+        {
+            // Use the Assert class to test conditions.
+            // Use yield to skip a frame.
+            yield return null;
+            Assert.IsTrue(false);
+        }
+        
+        // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
+        // `yield return null;` to skip a frame.
+        [UnityTest]
+        public IEnumerator NumberOfChildrenEqualsNumberInList()
         {
             // Use the Assert class to test conditions.
             // Use yield to skip a frame.
             yield return null;
         }
+        
     }
 }

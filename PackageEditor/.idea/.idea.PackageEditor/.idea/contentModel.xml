@@ -13,7 +13,7 @@
       <e p="ChildSubset.cs" t="Include" />
       <e p="ChildSubsetUpdater.cs" t="Include" />
     </e>
-    <e p="C:\Users\steve\Documents\UnityProjects\Sibz.UnityPackages\com.sibz.child-subset\Tests" t="Include">
+    <e p="C:\Users\steve\Documents\UnityProjects\Sibz.UnityPackages\com.sibz.child-subset\Tests\Editor" t="Include">
       <e p="ChildSubset.cs" t="Include" />
     </e>
     <e p="C:\Users\steve\Documents\UnityProjects\Sibz.UnityPackages\com.sibz.editorlist\Runtime" t="Include">
