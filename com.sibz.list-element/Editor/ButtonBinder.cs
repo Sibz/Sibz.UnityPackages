@@ -17,7 +17,7 @@ namespace Sibz.ListElement
 
         public void BindToFunction(VisualElement root)
         {
-            if (button is Button)
+            if (button != null)
             {
                 button.clicked -= function;
             }
