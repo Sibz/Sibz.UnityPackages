@@ -1,0 +1,13 @@
+{
+  "name": "com.sibz.single-asset-loader",
+  "displayName": "Sibz: Single Asset Loader",
+  "version": "1.0.0",
+  "description": "Uses AssetDatabase to load an asset by name and type.",
+  "author": "",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Sibz/Sibz.UnityPackages.git",
+    "directory": "com.sibz.single-asset-loader"
+  }
+}
