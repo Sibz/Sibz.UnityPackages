@@ -1,0 +1,15 @@
+{
+    "name": "ListElement",
+    "references": [
+        "GUID:5246a7ecd35304b429456c29fc551ecb"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

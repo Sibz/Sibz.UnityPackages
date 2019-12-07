@@ -1,0 +1,80 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using NUnit.Framework;
+using UnityEditor;
+using UnityEditor.UIElements;
+using UnityEngine;
+using UnityEngine.TestTools;
+using UnityEngine.UIElements;
+
+namespace Sibz.ListElement.Tests
+{
+    
+    /// <summary>
+    /// ListElement renders a list using defaults or provided options dealing with the
+    /// interactions that modify the list
+    /// </summary>
+    [SuppressMessage("ReSharper", "HeapView.BoxingAllocation")]
+    public class ListElementTests
+    {
+        private const string ItemRowClassName = "sibz-list-item-row";
+        private GameObject testGameObject;
+        private SerializedObject testSerializedGameObject;
+        private VisualElement template;
+       // private int templateItemCount; 
+
+        [SetUp]
+        public void TestSetup()
+        {
+            template = new VisualElement();
+            testGameObject = Object.Instantiate(new GameObject());
+            testGameObject.AddComponent<MyTestObject>();
+            testSerializedGameObject = new SerializedObject(testGameObject.GetComponent<MyTestObject>());
+            VisualElement templateItem1 = new VisualElement();
+            Label templateItem2 = new Label();
+            Button templateItem3 = new Button();
+            Button templateItem4 = new Button();
+            template.Add(templateItem1);
+            template.Add(templateItem2);
+            template.Add(templateItem3);
+            template.Add(templateItem4);
+            //templateItemCount = 4;
+        }
+
+        [Test]
+        public void ShouldBeInitialisedWhenConstructedWithSerializedProperty()
+        {
+            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
+            ListElement listElement = new ListElement(prop);
+            Assert.IsTrue(listElement.IsInitialised);
+        }
+        
+        [Test]
+        public void ShouldNotBeInitialisedWhenConstructedWithOutSerializedProperty()
+        {
+            ListElement listElement = new ListElement();
+            Assert.IsFalse(listElement.IsInitialised);
+        }
+        
+        [Test]
+        public void ResetShouldBeCalledWhenSerializedPropertyIsRebound()
+        {
+            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
+            ListElement listElement = new ListElement(prop);
+            bool hasReset = false;
+            listElement.OnReset += () => hasReset = true;
+            listElement.Unbind();
+            listElement.BindProperty(prop);
+            Assert.IsTrue(hasReset);
+        }
+        
+    }
+
+    [System.Serializable]
+    public class MyTestObject : MonoBehaviour
+    {
+        public List<string> myList = new List<string>() {"item1", "item2", "item3"};
+    }
+}

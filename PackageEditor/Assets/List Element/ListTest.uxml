@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:VisualElement>
+        <Style src="ListTest.uss" />
+        <Sibz.UXMLList.ListVisualElement binding-path="MyList" label="My List" use-object-field="true" />
+        <Sibz.UXMLList.ListVisualElement binding-path="MyList2.MyObjectList" use-object-field="false" />
+    </ui:VisualElement>
+</ui:UXML>

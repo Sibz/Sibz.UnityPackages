@@ -4,6 +4,7 @@
     "com.sibz.editorlist": "file:../../com.sibz.editorlist",
     "com.sibz.uxml-list": "file:../../com.sibz.uxml-list",
     "com.sibz.list-element": "file:../../com.sibz.list-element",
+    "com.sibz.single-asset-loader": "file:../../com.sibz.single-asset-loader",
     "com.unity.ext.nunit": "1.0.0",
     "com.unity.ide.rider": "1.2.0-preview",
     "com.unity.render-pipelines.universal": "7.1.6",

@@ -9,5 +9,8 @@
     "type": "git",
     "url": "https://github.com/Sibz/Sibz.UnityPackages.git",
     "directory": "com.sibz.uxml-list"
+  },
+  "dependencies": {
+    "com.sibz.single-asset-loader": "1.0.0"
   }
 }
