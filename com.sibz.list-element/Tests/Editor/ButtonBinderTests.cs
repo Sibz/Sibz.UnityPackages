@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
@@ -9,8 +11,9 @@ namespace Sibz.ListElement.Tests
     public class ButtonBinderTests
     {
         private const string ClassName = "test-class";
+        private const string ClassName2 = "test-class2";
         private VisualElement testElement1, testElement2;
-        private Button button1, button2;
+        private Button button1, button2, button1a;
         private ButtonBinder buttonBinder;
 
         private static void DummyFunctionToCall()
@@ -23,7 +26,10 @@ namespace Sibz.ListElement.Tests
             testElement1 = new VisualElement();
             button1 = new Button();
             button1.AddToClassList(ClassName);
+            button1a = new Button();
+            button1a.AddToClassList(ClassName2);
             testElement1.Add(button1);
+            testElement1.Add(button1a);
 
             testElement2 = new VisualElement();
             button2 = new Button();
@@ -66,6 +72,40 @@ namespace Sibz.ListElement.Tests
             try
             {
                 buttonBinder.BindToFunction(new VisualElement());
+            }
+            catch
+            {
+                errorThrown = true;
+            }
+
+            Assert.IsTrue(errorThrown);
+        }
+
+        [Test]
+        public void EnumerableBindShouldBindMultipleButtons()
+        {
+            var binders = new List<ButtonBinder>()
+            {
+                buttonBinder,
+                new ButtonBinder(ClassName2, DummyFunctionToCall)
+            };
+            binders.BindButtons(testElement1);
+            Assert.IsTrue(HasFunctionBoundToClicked(button1, nameof(DummyFunctionToCall)));
+            Assert.IsTrue(HasFunctionBoundToClicked(button1a, nameof(DummyFunctionToCall)));
+        }
+        
+        [Test]
+        public void EnumerableBindShouldThrowIfAnyButtonDoesntExist()
+        {
+            var binders = new List<ButtonBinder>()
+            {
+                buttonBinder,
+                new ButtonBinder(ClassName2, DummyFunctionToCall)
+            };
+            bool errorThrown = false;
+            try
+            {
+                binders.BindButtons(testElement2);
             }
             catch
             {
