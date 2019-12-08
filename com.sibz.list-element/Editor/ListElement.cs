@@ -25,9 +25,17 @@ namespace Sibz.ListElement
         private const string DefaultStyleSheetName = "Sibz.ListElement.Template";
         private VisualTreeAsset itemTemplate;
         private StyleSheet styleSheet;
-
-
         private VisualTreeAsset template;
+        
+        public bool HideLabel { get; set; }
+        public string Label { get; set; } = "";
+        public string TemplateName { get; set; } = DefaultTemplateName;
+        public string ItemTemplateName { get; set; } = DefaultItemTemplateName;
+        public string StyleSheetName { get; set; } = DefaultStyleSheetName;
+
+        public bool IsInitialised { get; private set; }
+        public event Action OnReset;
+
 
         public ListElement() : this(null, null)
         {
@@ -48,15 +56,7 @@ namespace Sibz.ListElement
             Initialise();
         }
 
-        public bool HideLabel { get; set; }
-        public string Label { get; set; } = "";
-        public string TemplateName { get; set; } = DefaultTemplateName;
-        public string ItemTemplateName { get; set; } = DefaultItemTemplateName;
-        public string StyleSheetName { get; set; } = DefaultStyleSheetName;
-
-        public bool IsInitialised { get; private set; }
-        public event Action OnReset;
-
+      
         private void Initialise()
         {
             // LoadAssets();
@@ -84,16 +84,19 @@ namespace Sibz.ListElement
 
         public new class UxmlTraits : BindableElement.UxmlTraits
         {
-            private UxmlBoolAttributeDescription hideLabel;
+/*            private UxmlBoolAttributeDescription hideLabel;
             private UxmlStringAttributeDescription itemTemplateName;
             private UxmlStringAttributeDescription label;
             private UxmlStringAttributeDescription styleSheetName;
-            private UxmlStringAttributeDescription templateName;
+            private UxmlStringAttributeDescription templateName;*/
 
             public override void Init(VisualElement ve, IUxmlAttributes bag, CreationContext cc)
             {
                 base.Init(ve, bag, cc);
-                (ve as ListElement)?.Initialise();
+                if (ve is ListElement le)
+                {
+                    le.Initialise();
+                }
             }
         }
     }

@@ -1,12 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
-using UnityEngine.TestTools;
 using UnityEngine.UIElements;
 
 namespace Sibz.ListElement.Tests
@@ -19,30 +16,40 @@ namespace Sibz.ListElement.Tests
     [SuppressMessage("ReSharper", "HeapView.BoxingAllocation")]
     public class ListElementTests
     {
-        private const string ItemRowClassName = "sibz-list-item-row";
         private GameObject testGameObject;
         private SerializedObject testSerializedGameObject;
         private VisualElement template;
        // private int templateItemCount; 
+/*
 
+       private const string templateXML = "<Sibz.ListElement.ListElement>" +
+                                          "<Style src=\"/Assets/ListTest.uss\" />" +
+                                          "</Sibz.ListElement.ListElement>";*/
         [SetUp]
         public void TestSetup()
         {
             template = new VisualElement();
+            
             testGameObject = Object.Instantiate(new GameObject());
             testGameObject.AddComponent<MyTestObject>();
+            
             testSerializedGameObject = new SerializedObject(testGameObject.GetComponent<MyTestObject>());
-            VisualElement templateItem1 = new VisualElement();
-            Label templateItem2 = new Label();
-            Button templateItem3 = new Button();
-            Button templateItem4 = new Button();
-            template.Add(templateItem1);
-            template.Add(templateItem2);
-            template.Add(templateItem3);
-            template.Add(templateItem4);
-            //templateItemCount = 4;
+            
+            VisualTreeAsset vta = SingleAssetLoader.SingleAssetLoader.Load<VisualTreeAsset>("Sibz.ListElement.Template");
+            
+            vta.CloneTree(template);
         }
 
+        [Test]
+        public void InitialisedWhenLoadedFromUxml()
+        {
+            VisualTreeAsset vta = SingleAssetLoader.SingleAssetLoader.Load<VisualTreeAsset>("ListElementTemplateTest");
+            VisualElement testElement = new VisualElement();
+            vta.CloneTree(testElement);
+            
+            Assert.IsTrue(testElement.Q<ListElement>().IsInitialised);
+        }
+        
         [Test]
         public void ShouldBeInitialisedWhenConstructedWithSerializedProperty()
         {
@@ -68,8 +75,7 @@ namespace Sibz.ListElement.Tests
             listElement.Unbind();
             listElement.BindProperty(prop);
             Assert.IsTrue(hasReset);
-        }
-        
+        }        
     }
 
     [System.Serializable]
