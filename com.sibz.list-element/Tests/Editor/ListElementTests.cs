@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEditor.UIElements;
@@ -8,7 +9,6 @@ using UnityEngine.UIElements;
 
 namespace Sibz.ListElement.Tests
 {
-    
     /// <summary>
     /// ListElement renders a list using defaults or provided options dealing with the
     /// interactions that modify the list
@@ -18,8 +18,10 @@ namespace Sibz.ListElement.Tests
     {
         private GameObject testGameObject;
         private SerializedObject testSerializedGameObject;
+
         private VisualElement template;
-       // private int templateItemCount; 
+
+        // private int templateItemCount; 
 /*
 
        private const string templateXML = "<Sibz.ListElement.ListElement>" +
@@ -29,14 +31,15 @@ namespace Sibz.ListElement.Tests
         public void TestSetup()
         {
             template = new VisualElement();
-            
+
             testGameObject = Object.Instantiate(new GameObject());
             testGameObject.AddComponent<MyTestObject>();
-            
+
             testSerializedGameObject = new SerializedObject(testGameObject.GetComponent<MyTestObject>());
-            
-            VisualTreeAsset vta = SingleAssetLoader.SingleAssetLoader.Load<VisualTreeAsset>("Sibz.ListElement.Template");
-            
+
+            VisualTreeAsset vta =
+                SingleAssetLoader.SingleAssetLoader.Load<VisualTreeAsset>("Sibz.ListElement.Template");
+
             vta.CloneTree(template);
         }
 
@@ -46,10 +49,10 @@ namespace Sibz.ListElement.Tests
             VisualTreeAsset vta = SingleAssetLoader.SingleAssetLoader.Load<VisualTreeAsset>("ListElementTemplateTest");
             VisualElement testElement = new VisualElement();
             vta.CloneTree(testElement);
-            
+
             Assert.IsTrue(testElement.Q<ListElement>().IsInitialised);
         }
-        
+
         [Test]
         public void ShouldBeInitialisedWhenConstructedWithSerializedProperty()
         {
@@ -57,14 +60,14 @@ namespace Sibz.ListElement.Tests
             ListElement listElement = new ListElement(prop);
             Assert.IsTrue(listElement.IsInitialised);
         }
-        
+
         [Test]
         public void ShouldNotBeInitialisedWhenConstructedWithOutSerializedProperty()
         {
             ListElement listElement = new ListElement();
             Assert.IsFalse(listElement.IsInitialised);
         }
-        
+
         [Test]
         public void ResetShouldBeCalledWhenSerializedPropertyIsRebound()
         {
@@ -75,7 +78,27 @@ namespace Sibz.ListElement.Tests
             listElement.Unbind();
             listElement.BindProperty(prop);
             Assert.IsTrue(hasReset);
-        }        
+        }
+
+        [Test]
+        public void ShouldHaveOneArraySizeField()
+        {
+            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
+            ListElement listElement = new ListElement(prop);
+            Assert.AreEqual(1,listElement.Query<IntegerField>().Where(x => x.bindingPath.Contains("Array.size")).ToList().Count());
+        }
+
+        [Test]
+        public void ArraySizeShouldBeHidden()
+        {
+            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
+            ListElement listElement = new ListElement(prop);
+            IntegerField arraySize = listElement
+                .Query<IntegerField>()
+                .Where(x => x.bindingPath.Contains("Array.size"))
+                .First();
+            Assert.IsTrue(arraySize.style.display == DisplayStyle.None);
+        }
     }
 
     [System.Serializable]
