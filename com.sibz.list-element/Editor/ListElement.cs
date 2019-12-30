@@ -2,6 +2,8 @@
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
+using Sibz.SingleAssetLoader;
+using UnityEngine;
 
 namespace Sibz.ListElement
 {
@@ -68,16 +70,37 @@ namespace Sibz.ListElement
             {
                 bindingPath = property.FindPropertyRelative("Array.size").propertyPath
             };
+            
             integerField.style.display = DisplayStyle.None;
+            
             integerField.RegisterCallback<ChangeEvent<int>>(x => Reset(property));
+            
             Add(integerField);
         }
 
         private void Initialise()
         {
             IsInitialised = true;
+            
+            Clear();
+
+            CloneTemplate();
         }
 
+        private void CloneTemplate()
+        {
+            try
+            {
+                SingleAssetLoader.SingleAssetLoader.Load<VisualTreeAsset>(TemplateName).CloneTree(this);
+            }
+            catch (Exception e)
+            {
+                Debug.LogErrorFormat(
+                    "Unable to load template ('{0}') to clone into ListElement: {1}", 
+                    TemplateName,
+                    e.Message);
+            }
+        }
         protected override void ExecuteDefaultActionAtTarget(EventBase evt)
         {
             base.ExecuteDefaultActionAtTarget(evt);
