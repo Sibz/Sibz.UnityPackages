@@ -10,36 +10,38 @@ namespace Sibz.ListElement
 {
     public class ListElement : BindableElement
     {
-        private const string DefaultTemplateName = "Sibz.ListElement.Template";
-        private const string DefaultItemTemplateName = "Sibz.ListElement.ItemTemplate";
-        private const string DefaultStyleSheetName = "Sibz.ListElement.Template";
+        public class Config
+        {
+            public string TemplateName { get; set; } = "Sibz.ListElement.Template";
+            public string ItemTemplateName { get; set; }= "Sibz.ListElement.ItemTemplate";
+            public string StyleSheetName { get; set; }= "Sibz.ListElement.Template";
+            public string Label { get; set; }
+
+      
+        }
+        
         private VisualTreeAsset itemTemplate;
         private StyleSheet styleSheet;
         private VisualTreeAsset template;
-
-        public string Label { get; set; } = "";
-        public string TemplateName { get; set; } = DefaultTemplateName;
-        public string ItemTemplateName { get; set; } = DefaultItemTemplateName;
-        public string StyleSheetName { get; set; } = DefaultStyleSheetName;
-
         private SerializedProperty serializedProperty;
+
+        public string Label { get; set; }
+        public string TemplateName { get; set; }
+        public string ItemTemplateName { get; set; }
+        public string StyleSheetName { get; set; }
         
         public bool IsInitialised { get; private set; }
         public event Action OnReset;
 
-        public ListElement() : this(null, null)
+        public ListElement() : this(null, new Config()){}
+        public ListElement(SerializedProperty property) : this(property, new Config()){}
+        public ListElement(SerializedProperty property, string label) : this(property, new Config() { Label =  label }){}
+        public ListElement(SerializedProperty property, Config conf)
         {
-        }
-
-        public ListElement(SerializedProperty property) : this(property, string.Empty)
-        {
-        }
-        public ListElement(SerializedProperty property, string label)
-        {
-            if (!string.IsNullOrEmpty(label))
-            {
-                Label = label;
-            }
+            Label = conf.Label;
+            TemplateName = conf.TemplateName;
+            ItemTemplateName = conf.TemplateName;
+            StyleSheetName = conf.StyleSheetName;
 
             if (property is null)
             {
@@ -75,12 +77,12 @@ namespace Sibz.ListElement
 
             CloneTemplate();
 
+            SetLabelText();
+            
             if (serializedProperty is null)
             {
                 return;
             }
-
-            SetLabelText();
             
             AddArraySizeField();
         }
@@ -88,17 +90,19 @@ namespace Sibz.ListElement
         private void SetLabelText()
         {
             Label label = this.Query<Label>(null, "sibz-list-header-label");
-            if (string.IsNullOrEmpty(Label))
+            if (string.IsNullOrEmpty(Label) && !(serializedProperty is null))
             {
                 label.text = ObjectNames.NicifyVariableName(serializedProperty.name);
+            }
+            else if (string.IsNullOrEmpty(Label) && (serializedProperty is null))
+            {
+                label.text = "<List Name>";
             }
             else
             {
                 label.text = Label;
             }
         }
-
-      
 
         private void CloneTemplate()
         {
@@ -113,10 +117,8 @@ namespace Sibz.ListElement
                     TemplateName,
                     e.Message);
             }
-            
-            
-            
         }
+        
         protected override void ExecuteDefaultActionAtTarget(EventBase evt)
         {
             base.ExecuteDefaultActionAtTarget(evt);
@@ -135,7 +137,7 @@ namespace Sibz.ListElement
             
           Initialise();
           
-            OnReset?.Invoke();
+          OnReset?.Invoke();
         }
 
         public new class UxmlFactory : UxmlFactory<ListElement, UxmlTraits>
@@ -144,19 +146,52 @@ namespace Sibz.ListElement
 
         public new class UxmlTraits : BindableElement.UxmlTraits
         {
-/*           
-            private UxmlStringAttributeDescription itemTemplateName;
+            
             private UxmlStringAttributeDescription label;
+            private UxmlStringAttributeDescription itemTemplateName;
             private UxmlStringAttributeDescription styleSheetName;
-            private UxmlStringAttributeDescription templateName;*/
+            private UxmlStringAttributeDescription templateName;
+
+            public UxmlTraits()
+            {
+                label = new UxmlStringAttributeDescription { name = "label" };
+                itemTemplateName = new UxmlStringAttributeDescription { name = "item-template-name" };
+                styleSheetName = new UxmlStringAttributeDescription { name = "stylesheet-name" };
+                templateName = new UxmlStringAttributeDescription { name = "template-name" };
+            }
 
             public override void Init(VisualElement ve, IUxmlAttributes bag, CreationContext cc)
             {
                 base.Init(ve, bag, cc);
-                if (ve is ListElement le)
+
+                if (!(ve is ListElement le))
                 {
-                    le.Initialise();
+                    return;
                 }
+
+                string lbl = label.GetValueFromBag(bag, cc);
+                string itn = itemTemplateName.GetValueFromBag(bag, cc);
+                string ssn = styleSheetName.GetValueFromBag(bag, cc);
+                string tn = templateName.GetValueFromBag(bag, cc);
+                
+                le.Label = lbl;
+ 
+                if (!string.IsNullOrEmpty(itn))
+                {
+                    le.ItemTemplateName = itn;
+                }
+                
+                if (!string.IsNullOrEmpty(ssn))
+                {
+                    le.StyleSheetName = ssn;
+                }
+                
+                if (!string.IsNullOrEmpty(tn))
+                {
+                    le.TemplateName = tn;
+                }
+                
+                le.Initialise();
             }
         }
     }

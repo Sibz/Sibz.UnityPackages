@@ -133,6 +133,30 @@ namespace Sibz.ListElement.Tests
             Label label = listElement.Q<Label>(null, "sibz-list-header-label");
             Assert.AreEqual( "Label", label.text);
         }
+
+        [Test]
+        public void ShouldNameLabelAsProvidedInConfig()
+        {
+            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
+            ListElement listElement = new ListElement(prop, new ListElement.Config() { Label = "Label"});
+            Label label = listElement.Q<Label>(null, "sibz-list-header-label");
+            Assert.AreEqual( "Label", label.text);
+        }
+
+        [Test]
+        public void ShouldLoadConfigFromUxml()
+        {
+            VisualTreeAsset vta = SingleAssetLoader.SingleAssetLoader.Load<VisualTreeAsset>("sibz.list.tests.configtest");
+            VisualElement root = new VisualElement();
+            vta.CloneTree(root);
+            ListElement le = root.Q<ListElement>();
+            
+            Assert.AreEqual("TestLabel", le.Label);
+            // Extra test case to ensure config is applied
+            Label label = le.Q<Label>(null, "sibz-list-header-label");
+            Assert.IsNotNull(label);
+            Assert.AreEqual( "TestLabel", label.text);
+        }
     }
 
     [System.Serializable]
