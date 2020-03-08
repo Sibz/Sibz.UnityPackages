@@ -7,20 +7,6 @@ using UnityEngine;
 
 namespace Sibz.ListElement
 {
-    /// <summary>
-    /// TODO
-    /// Must initialise when constructed with SP
-    /// Must initialise after values loaded from Uxml
-    /// Must reset the list when SP changes
-    /// On Initialise must load Templates and style
-    /// On Initialise must insert main template and apply style
-    /// On Initialise must bind events to main buttons (Add/Clear List/Yes/Cancel)
-    /// On Reset, insert SP bound row, with bound buttons (Delete/MoveUp/MoveDown)
-    ///  Provide events for:
-    ///   Reset
-    ///   Initialise
-    ///   Row Created
-    /// </summary>
     public class ListElement : BindableElement
     {
         private const string DefaultTemplateName = "Sibz.ListElement.Template";
