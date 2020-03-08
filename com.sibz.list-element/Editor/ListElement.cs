@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
@@ -16,12 +17,13 @@ namespace Sibz.ListElement
         private StyleSheet styleSheet;
         private VisualTreeAsset template;
 
-        public bool HideLabel { get; set; }
         public string Label { get; set; } = "";
         public string TemplateName { get; set; } = DefaultTemplateName;
         public string ItemTemplateName { get; set; } = DefaultItemTemplateName;
         public string StyleSheetName { get; set; } = DefaultStyleSheetName;
 
+        private SerializedProperty serializedProperty;
+        
         public bool IsInitialised { get; private set; }
         public event Action OnReset;
 
@@ -32,7 +34,6 @@ namespace Sibz.ListElement
         public ListElement(SerializedProperty property) : this(property, string.Empty)
         {
         }
-
         public ListElement(SerializedProperty property, string label)
         {
             if (!string.IsNullOrEmpty(label))
@@ -45,21 +46,23 @@ namespace Sibz.ListElement
                 return;
             }
 
+            serializedProperty = property;
+            
             Initialise();
 
             this.BindProperty(property);
         }
 
-        private void AddArraySizeField(SerializedProperty property)
+        private void AddArraySizeField()
         {
             IntegerField integerField = new IntegerField
             {
-                bindingPath = property.FindPropertyRelative("Array.size").propertyPath
+                bindingPath = serializedProperty.FindPropertyRelative("Array.size").propertyPath
             };
             
             integerField.style.display = DisplayStyle.None;
             
-            integerField.RegisterCallback<ChangeEvent<int>>(x => Reset(property));
+            integerField.RegisterCallback<ChangeEvent<int>>(x => Reset());
             
             Add(integerField);
         }
@@ -71,7 +74,31 @@ namespace Sibz.ListElement
             Clear();
 
             CloneTemplate();
+
+            if (serializedProperty is null)
+            {
+                return;
+            }
+
+            SetLabelText();
+            
+            AddArraySizeField();
         }
+
+        private void SetLabelText()
+        {
+            Label label = this.Query<Label>(null, "sibz-list-header-label");
+            if (string.IsNullOrEmpty(Label))
+            {
+                label.text = ObjectNames.NicifyVariableName(serializedProperty.name);
+            }
+            else
+            {
+                label.text = Label;
+            }
+        }
+
+      
 
         private void CloneTemplate()
         {
@@ -86,6 +113,9 @@ namespace Sibz.ListElement
                     TemplateName,
                     e.Message);
             }
+            
+            
+            
         }
         protected override void ExecuteDefaultActionAtTarget(EventBase evt)
         {
@@ -95,14 +125,16 @@ namespace Sibz.ListElement
                 &&
                 type.GetProperty("bindProperty")?.GetValue(evt) is SerializedProperty property)
             {
-                Reset(property);
+                serializedProperty = property;
+                Reset();
             }
         }
 
-        private void Reset(SerializedProperty property)
+        private void Reset()
         {
-            Clear();
-            AddArraySizeField(property);
+            
+          Initialise();
+          
             OnReset?.Invoke();
         }
 
@@ -112,7 +144,7 @@ namespace Sibz.ListElement
 
         public new class UxmlTraits : BindableElement.UxmlTraits
         {
-/*            private UxmlBoolAttributeDescription hideLabel;
+/*           
             private UxmlStringAttributeDescription itemTemplateName;
             private UxmlStringAttributeDescription label;
             private UxmlStringAttributeDescription styleSheetName;

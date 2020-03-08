@@ -79,7 +79,8 @@ namespace Sibz.ListElement.Tests
         {
             SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
             ListElement listElement = new ListElement(prop);
-            Assert.AreEqual(1,listElement.Query<IntegerField>().Where(x => x.bindingPath.Contains("Array.size")).ToList().Count());
+            Assert.AreEqual(1,
+                listElement.Query<IntegerField>().Where(x => x.bindingPath.Contains("Array.size")).ToList().Count());
         }
 
         [Test]
@@ -92,6 +93,45 @@ namespace Sibz.ListElement.Tests
                 .Where(x => x.bindingPath.Contains("Array.size"))
                 .First();
             Assert.IsTrue(arraySize.style.display == DisplayStyle.None);
+        }
+
+        [Test]
+        public void ShouldContainDefaultTemplateItems()
+        {
+            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
+            ListElement listElement = new ListElement(prop, string.Empty);
+            
+            listElement.BindProperty(testSerializedGameObject.FindProperty(nameof(MyTestObject.myList)));
+            Assert.IsTrue(CheckForDefaultTemplateItems(listElement));
+        }
+
+        private bool CheckForDefaultTemplateItems(ListElement listElement)
+        {
+            return 
+                listElement.Q(null, "sibz-list-header") != null
+                &&
+                listElement.Q(null, "sibz-list-delete-all-confirm") != null
+                &&
+                listElement.Q(null, "sibz-list-items-section") != null
+                ;
+        }
+
+        [Test]
+        public void ShouldNameLabelSameAsListWhenNoLabelProvided()
+        {
+            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
+            ListElement listElement = new ListElement(prop, string.Empty);
+            Label label = listElement.Q<Label>(null, "sibz-list-header-label");
+            Assert.AreEqual( ObjectNames.NicifyVariableName(nameof(MyTestObject.myList)), label.text);
+        }
+        
+        [Test]
+        public void ShouldNameLabelAsProvided()
+        {
+            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
+            ListElement listElement = new ListElement(prop, "Label");
+            Label label = listElement.Q<Label>(null, "sibz-list-header-label");
+            Assert.AreEqual( "Label", label.text);
         }
     }
 
