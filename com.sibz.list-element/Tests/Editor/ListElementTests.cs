@@ -21,12 +21,6 @@ namespace Sibz.ListElement.Tests
 
         private VisualElement template;
 
-        // private int templateItemCount; 
-/*
-
-       private const string templateXML = "<Sibz.ListElement.ListElement>" +
-                                          "<Style src=\"/Assets/ListTest.uss\" />" +
-                                          "</Sibz.ListElement.ListElement>";*/
         [SetUp]
         public void TestSetup()
         {
