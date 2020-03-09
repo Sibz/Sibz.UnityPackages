@@ -209,7 +209,7 @@ namespace Sibz.ListElement
         protected override void ExecuteDefaultAction(EventBase evt)
         {
             base.ExecuteDefaultAction(evt);
-            System.Type type = evt.GetType();
+            Type type = evt.GetType();
             if (type.Name == "SerializedPropertyBindEvent"
                 &&
                 type.GetProperty("bindProperty")?.GetValue(evt) is SerializedProperty property)
