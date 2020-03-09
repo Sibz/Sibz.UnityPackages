@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Linq;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
-using Sibz.SingleAssetLoader;
 using UnityEngine;
 
 namespace Sibz.ListElement
@@ -16,8 +14,6 @@ namespace Sibz.ListElement
             public string ItemTemplateName { get; set; }= "Sibz.ListElement.ItemTemplate";
             public string StyleSheetName { get; set; }= "Sibz.ListElement.Template";
             public string Label { get; set; }
-
-      
         }
         
         private VisualTreeAsset itemTemplate;
@@ -29,8 +25,8 @@ namespace Sibz.ListElement
         public string TemplateName { get; set; }
         public string ItemTemplateName { get; set; }
         public string StyleSheetName { get; set; }
-        
         public bool IsInitialised { get; private set; }
+        public Type ListItemType { get; private set; }
         public event Action OnReset;
 
         public ListElement() : this(null, new Config()){}
@@ -40,8 +36,12 @@ namespace Sibz.ListElement
         {
             Label = conf.Label;
             TemplateName = conf.TemplateName;
-            ItemTemplateName = conf.TemplateName;
+            ItemTemplateName = conf.ItemTemplateName;
             StyleSheetName = conf.StyleSheetName;
+            if (StyleSheetName != TemplateName)
+            {
+                styleSheets.Add(SingleAssetLoader.SingleAssetLoader.Load<StyleSheet>(StyleSheetName));
+            }
 
             if (property is null)
             {
@@ -83,8 +83,35 @@ namespace Sibz.ListElement
             {
                 return;
             }
-            
+
+            if (TryGetItemType(serializedProperty, out Type listItemType))
+            {
+                ListItemType = listItemType;
+            }
+
             AddArraySizeField();
+            
+            LoadItemTemplate();
+            
+            PopulateList();
+        }
+
+        private void PopulateList()
+        {
+            if (!serializedProperty.isArray || serializedProperty.arraySize == 0)
+            {
+                return;
+            }
+
+            int length = serializedProperty.arraySize;
+            VisualElement listContainer = this.Q<VisualElement>(null, "sibz-list-items-section");
+            for (int i = 0; i < length; i++)
+            {
+                VisualElement listItemElement = new VisualElement();
+                itemTemplate.CloneTree(listItemElement);
+                listItemElement.Q<PropertyField>().BindProperty(serializedProperty.GetArrayElementAtIndex(i));
+                listContainer.Add(listItemElement);
+            }
         }
 
         private void SetLabelText()
@@ -118,6 +145,21 @@ namespace Sibz.ListElement
                     e.Message);
             }
         }
+
+        private void LoadItemTemplate()
+        {
+            try
+            {
+                itemTemplate = SingleAssetLoader.SingleAssetLoader.Load<VisualTreeAsset>(ItemTemplateName);
+            }
+            catch (Exception e)
+            {
+                Debug.LogErrorFormat(
+                    "Unable to load item template ('{0}'): {1}", 
+                    TemplateName,
+                    e.Message);
+            }
+        }
         
         protected override void ExecuteDefaultActionAtTarget(EventBase evt)
         {
@@ -138,6 +180,42 @@ namespace Sibz.ListElement
           Initialise();
           
           OnReset?.Invoke();
+        }
+
+        private bool TryGetItemType(SerializedProperty property, out Type type)
+        {
+            
+            type = null;
+            
+            var propertyPath = property.propertyPath.Split('.');
+            object baseObject = property.serializedObject.targetObject;
+            foreach (string fieldName in propertyPath)
+            {
+                baseObject = baseObject.GetType().GetField(fieldName)?.GetValue(baseObject);
+                if (baseObject != null)
+                {
+                    continue;
+                }
+
+                Debug.LogWarning($"Unable to get item type. Field {fieldName} does not exist on object");
+                return false;
+            }
+
+            type = baseObject.GetType().IsGenericType ? baseObject.GetType().GetGenericArguments()[0] : baseObject.GetType();
+
+            return true;
+        }
+        
+        protected override void ExecuteDefaultAction(EventBase evt)
+        {
+            base.ExecuteDefaultAction(evt);
+            System.Type type = evt.GetType();
+            if (type.Name == "SerializedPropertyBindEvent"
+                &&
+                type.GetProperty("bindProperty")?.GetValue(evt) is SerializedProperty property)
+            {
+                serializedProperty = property;
+            }
         }
 
         public new class UxmlFactory : UxmlFactory<ListElement, UxmlTraits>

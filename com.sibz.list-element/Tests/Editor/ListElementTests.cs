@@ -152,10 +152,88 @@ namespace Sibz.ListElement.Tests
             ListElement le = root.Q<ListElement>();
             
             Assert.AreEqual("TestLabel", le.Label);
-            // Extra test case to ensure config is applied
+            Assert.AreEqual("TestTemplate",le.TemplateName);
+            Assert.AreEqual("TestTemplate",le.StyleSheetName);
+            Assert.AreEqual("TestItemTemplate",le.ItemTemplateName);
+        }
+
+        [Test]
+        public void ShouldNameLabelAsProvidedByUxmlAttribute()
+        {
+            VisualTreeAsset vta = SingleAssetLoader.SingleAssetLoader.Load<VisualTreeAsset>("sibz.list.tests.configtest");
+            VisualElement root = new VisualElement();
+            vta.CloneTree(root);
+            ListElement le = root.Q<ListElement>();
+
             Label label = le.Q<Label>(null, "sibz-list-header-label");
             Assert.IsNotNull(label);
             Assert.AreEqual( "TestLabel", label.text);
+        }
+
+        [Test]
+        public void ShouldApplyCustomStylesheet()
+        {
+            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
+            ListElement listElement = new ListElement(prop, new ListElement.Config() { StyleSheetName = "TestTemplate"});
+            Assert.IsTrue(
+                listElement.styleSheets.Contains(
+                    SingleAssetLoader.SingleAssetLoader.Load<StyleSheet>("TestTemplate")));
+
+        }
+        
+        [Test]
+        public void ShouldApplyCustomTemplate()
+        {
+            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
+            ListElement listElement = new ListElement(prop, new ListElement.Config() { TemplateName = "TestTemplate"});
+            Assert.IsNotNull(
+                listElement.Q<VisualElement>("TestTemplateCheck"));
+        }
+        
+        [Test]
+        public void ShouldApplyCustomItemTemplate()
+        {
+            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
+            ListElement listElement = new ListElement(prop, new ListElement.Config() { ItemTemplateName = "TestItemTemplate"});
+            Assert.IsNotNull(
+                listElement.Q<VisualElement>("TestItemTemplateCheck"));
+        }
+
+        [Test]
+        public void ShouldCorrectlyDetermineTypeOfListAsString()
+        {
+             SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
+             ListElement listElement = new ListElement(prop);
+             Assert.AreEqual(typeof(string), listElement.ListItemType);
+        }
+        
+        [Test]
+        public void ShouldCorrectlyDetermineTypeOfListAsCustomObject()
+        {
+            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myCustomList));
+            ListElement listElement = new ListElement(prop);
+            Assert.AreEqual(typeof(CustomObject), listElement.ListItemType);
+        }
+        
+        [Test]
+        public void ShouldPopulateList()
+        {
+            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
+            ListElement listElement = new ListElement(prop);
+
+            Assert.AreEqual(prop.arraySize, listElement.Q<VisualElement>(null, "sibz-list-items-section").childCount);
+        }
+        
+        [Test]
+        public void ShouldHaveCorrectListContents()
+        {
+            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
+            ListElement listElement = new ListElement(prop);
+            var propFields = listElement.Query<PropertyField>();
+            Assert.AreEqual(prop.arraySize, propFields.ToList().Count());
+            Assert.AreEqual("item1", propFields.AtIndex(0).Q<TextField>().text);
+            Assert.AreEqual("item2", propFields.AtIndex(1).Q<TextField>().text);
+            Assert.AreEqual("item3", propFields.AtIndex(2).Q<TextField>().text);
         }
     }
 
@@ -163,5 +241,11 @@ namespace Sibz.ListElement.Tests
     public class MyTestObject : MonoBehaviour
     {
         public List<string> myList = new List<string>() {"item1", "item2", "item3"};
+        public List<CustomObject> myCustomList = new List<CustomObject>() { new CustomObject() { Value = "test" }};
+    }
+
+    public class CustomObject : Object
+    {
+        public string Value;
     }
 }

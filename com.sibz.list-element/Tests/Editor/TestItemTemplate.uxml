@@ -1,0 +1,12 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:VisualElement>
+        <Style src="TestItemTemplate.uss" />
+        <uie:PropertyField />
+        <ui:Button text="-" />
+        <ui:Button text="^" />
+        <ui:Button text="." />
+    </ui:VisualElement>
+    <ui:VisualElement name="TestItemTemplateCheck">
+        <Style src="TestItemTemplate.uss" />
+    </ui:VisualElement>
+</ui:UXML>
