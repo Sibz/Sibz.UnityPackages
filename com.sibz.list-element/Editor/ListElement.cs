@@ -1,4 +1,5 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
@@ -17,6 +18,11 @@ namespace Sibz.ListElement
             public const string DeleteConfirmSectionClassName = "sibz-list-delete-all-confirm";
             public const string ItemSectionClassName = "sibz-list-items-section";
             public const string HeaderLabelClassName = "sibz-list-header-label";
+            public const string DeleteAllButtonClassName = "sibz-list-delete-all-button";
+            public const string AddButtonClassName = "sibz-list-add-button";
+            public const string DeleteConfirmButtonClassName = "sibz-list-delete-confirm-yes";
+            public const string DeleteCancelButtonClassName = "sibz-list-delete-confirm-no";
+            
             
             public string TemplateName { get; set; } = DefaultTemplateName;
             public string ItemTemplateName { get; set; }= DefaultItemTemplateName;
@@ -28,7 +34,13 @@ namespace Sibz.ListElement
         private StyleSheet styleSheet;
         private VisualTreeAsset template;
         private SerializedProperty serializedProperty;
-        
+
+        private List<ButtonBinder> outsideButtonBinders;
+
+        public class AddNewEvent : EventBase<AddNewEvent>{}
+        public class DeleteAllEvent : EventBase<DeleteAllEvent>{}
+        public class DeleteAllConfirmEvent : EventBase<DeleteAllConfirmEvent>{}
+        public class DeleteAllCancelEvent : EventBase<DeleteAllCancelEvent>{}
 
         public string Label { get; set; }
         public string TemplateName { get; set; }
@@ -43,6 +55,8 @@ namespace Sibz.ListElement
         public ListElement(SerializedProperty property, string label) : this(property, new Config() { Label =  label }){}
         public ListElement(SerializedProperty property, Config conf)
         {
+            CreateButtonBinders();
+
             Label = conf.Label;
             TemplateName = conf.TemplateName;
             ItemTemplateName = conf.ItemTemplateName;
@@ -62,6 +76,21 @@ namespace Sibz.ListElement
             Initialise();
 
             this.BindProperty(property);
+        }
+
+        private void CreateButtonBinders()
+        {
+            void RaiseEventForButton<T>() where T: EventBase, new()
+            {
+                SendEvent(new T() { target = this });
+            }
+            outsideButtonBinders = new List<ButtonBinder>()
+            {
+                new ButtonBinder(Config.AddButtonClassName, RaiseEventForButton<AddNewEvent>) ,
+                new ButtonBinder(Config.DeleteAllButtonClassName,  RaiseEventForButton<DeleteAllEvent>) ,
+                new ButtonBinder(Config.DeleteConfirmButtonClassName, RaiseEventForButton<DeleteAllConfirmEvent> ),
+                new ButtonBinder(Config.DeleteCancelButtonClassName, RaiseEventForButton<DeleteAllCancelEvent>),
+            };
         }
 
         private void AddArraySizeField()
@@ -86,6 +115,8 @@ namespace Sibz.ListElement
 
             CloneTemplate();
 
+            BindOutsideButtonsAndRegisterCallbacks();
+
             SetLabelText();
             
             if (serializedProperty is null)
@@ -103,6 +134,15 @@ namespace Sibz.ListElement
             LoadItemTemplate();
             
             PopulateList();
+        }
+
+        private void BindOutsideButtonsAndRegisterCallbacks()
+        {
+            outsideButtonBinders.BindButtons(this);
+            RegisterCallback<AddNewEvent>(AddNewItem);
+            RegisterCallback<DeleteAllEvent>(DeleteAllClicked);
+            RegisterCallback<DeleteAllConfirmEvent>(DeleteAllConfirmed);
+            RegisterCallback<DeleteAllCancelEvent>(DeleteAllCancelled);
         }
 
         private void PopulateList()
@@ -227,6 +267,32 @@ namespace Sibz.ListElement
             }
         }
 
+        private void AddNewItem(AddNewEvent evt)
+        {
+            AddNewItemToList();
+        }
+
+        public void AddNewItemToList()
+        {
+            serializedProperty.InsertArrayElementAtIndex(serializedProperty.arraySize);
+            serializedProperty.serializedObject.ApplyModifiedProperties();
+            Reset();
+        }
+
+        private void DeleteAllClicked(DeleteAllEvent evt)
+        {
+            
+        }
+
+        private void DeleteAllConfirmed(DeleteAllConfirmEvent evt)
+        {
+            
+        }
+
+        private void DeleteAllCancelled(DeleteAllCancelEvent evt)
+        {
+            
+        }
         public new class UxmlFactory : UxmlFactory<ListElement, UxmlTraits>
         {
         }

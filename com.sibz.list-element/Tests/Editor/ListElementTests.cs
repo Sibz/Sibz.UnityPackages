@@ -235,6 +235,18 @@ namespace Sibz.ListElement.Tests
             Assert.AreEqual("item2", propFields.AtIndex(1).Q<TextField>().text);
             Assert.AreEqual("item3", propFields.AtIndex(2).Q<TextField>().text);
         }
+
+        [Test]
+        public void ShouldAddItemToList()
+        {
+            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
+            ListElement listElement = new ListElement(prop);
+            int initialArraySize = prop.arraySize;
+            listElement.AddNewItemToList();
+            var propFields = listElement.Query<PropertyField>();
+            Assert.AreEqual(initialArraySize+1, prop.arraySize);
+            Assert.AreEqual(initialArraySize+1, propFields.ToList().Count);
+        }
     }
 
     [System.Serializable]
