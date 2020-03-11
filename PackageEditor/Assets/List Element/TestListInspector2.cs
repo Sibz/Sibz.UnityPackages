@@ -36,7 +36,7 @@ namespace Sibz.UXMLList
             }
 
             m_Root.Clear();
-                m_Root.Add(new ListElement.ListElement(serializedObject.FindProperty(nameof(TestListBehaviour2.MyList))));
+                m_Root.Add(new ListElement.ListElement(serializedObject.FindProperty(nameof(TestListBehaviour2.MyList)), new ListElement.ListElement.Config() { HidePropertyLabel = true }));
         }
     }
 }

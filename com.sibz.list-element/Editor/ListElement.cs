@@ -31,6 +31,8 @@ namespace Sibz.ListElement
             public string ItemTemplateName { get; set; } = DefaultItemTemplateName;
             public string StyleSheetName { get; set; } = DefaultStyleSheetName;
             public string Label { get; set; }
+            
+            public bool HidePropertyLabel { get; set; }
         }
 
         private VisualTreeAsset itemTemplate;
@@ -60,6 +62,7 @@ namespace Sibz.ListElement
         public string TemplateName { get; set; }
         public string ItemTemplateName { get; set; }
         public string StyleSheetName { get; set; }
+        public bool HidePropertyLabel { get; set; }
         public bool IsInitialised { get; private set; }
         public Type ListItemType { get; private set; }
         public event Action OnReset;
@@ -84,6 +87,9 @@ namespace Sibz.ListElement
             TemplateName = conf.TemplateName;
             ItemTemplateName = conf.ItemTemplateName;
             StyleSheetName = conf.StyleSheetName;
+            HidePropertyLabel = conf.HidePropertyLabel;
+            
+            
             if (StyleSheetName != TemplateName)
             {
                 styleSheets.Add(SingleAssetLoader.SingleAssetLoader.Load<StyleSheet>(StyleSheetName));
@@ -162,8 +168,6 @@ namespace Sibz.ListElement
 
         private void Initialise()
         {
-            IsInitialised = true;
-
             Clear();
 
             LoadTemplate();
@@ -173,15 +177,21 @@ namespace Sibz.ListElement
             RegisterCallbacks();
 
             SetLabelText();
+
+            AddHidePropertyStyleSheetIfRequired();
             
-            if (!(serializedProperty is null))
-            {
-                InitialiseWithSerializedProperty();
-            }
+            InitialiseWithSerializedProperty();
+            
+            IsInitialised = true;
         }
 
         private void InitialiseWithSerializedProperty()
         {
+            if (serializedProperty is null)
+            {
+                return;
+            }
+
             if (TryGetItemType(serializedProperty, out Type listItemType))
             {
                 ListItemType = listItemType;
@@ -208,6 +218,14 @@ namespace Sibz.ListElement
             RegisterCallback<ItemDeleteEvent>(DeleteItemEvent);
         }
 
+        private void AddHidePropertyStyleSheetIfRequired()
+        {
+            if (HidePropertyLabel)
+            {
+                styleSheets.Add(SingleAssetLoader.SingleAssetLoader.Load<StyleSheet>("Sibz.ListElement.Hide-Property-Label"));
+            }
+        }
+
         private void PopulateList()
         {
             if (!serializedProperty.isArray)
@@ -222,6 +240,7 @@ namespace Sibz.ListElement
             {
                 VisualElement listItemElement = new VisualElement();
                 itemTemplate.CloneTree(listItemElement);
+               
                 listItemElement.Q<PropertyField>().BindProperty(serializedProperty.GetArrayElementAtIndex(i));
                 listContainer.Add(listItemElement);
                 BindInsideButtons(i, listItemElement);
@@ -446,6 +465,7 @@ namespace Sibz.ListElement
             private readonly UxmlStringAttributeDescription itemTemplateName;
             private readonly UxmlStringAttributeDescription styleSheetName;
             private readonly UxmlStringAttributeDescription templateName;
+            private readonly UxmlBoolAttributeDescription hidePropertyLabel;
 
             public UxmlTraits()
             {
@@ -453,6 +473,7 @@ namespace Sibz.ListElement
                 itemTemplateName = new UxmlStringAttributeDescription {name = "item-template-name"};
                 styleSheetName = new UxmlStringAttributeDescription {name = "stylesheet-name"};
                 templateName = new UxmlStringAttributeDescription {name = "template-name"};
+                hidePropertyLabel = new UxmlBoolAttributeDescription() {name = "hide-property-label"};
             }
 
             public override void Init(VisualElement ve, IUxmlAttributes bag, CreationContext cc)
@@ -464,12 +485,12 @@ namespace Sibz.ListElement
                     return;
                 }
 
-                string lbl = label.GetValueFromBag(bag, cc);
+                le.Label = label.GetValueFromBag(bag, cc);
+                le.HidePropertyLabel = hidePropertyLabel.GetValueFromBag(bag, cc);
+
                 string itn = itemTemplateName.GetValueFromBag(bag, cc);
                 string ssn = styleSheetName.GetValueFromBag(bag, cc);
                 string tn = templateName.GetValueFromBag(bag, cc);
-
-                le.Label = lbl;
 
                 if (!string.IsNullOrEmpty(itn))
                 {

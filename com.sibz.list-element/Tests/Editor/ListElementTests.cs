@@ -386,6 +386,25 @@ namespace Sibz.ListElement.Tests
             }
             Assert.IsTrue(errorThrown && errorThrown2);
         }
+
+        [Test]
+        public void ShouldAddHidePropertyLabelStyleSheetIfRequired()
+        {
+            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
+            ListElement listElement = new ListElement(prop, new ListElement.Config() { HidePropertyLabel = true});
+
+            Assert.IsTrue(listElement.styleSheets.Contains(
+                SingleAssetLoader.SingleAssetLoader.Load<StyleSheet>("Sibz.ListElement.Hide-Property-Label")));
+        }
+        [Test]
+        public void ShouldNotAddHidePropertyLabelStyleSheetIfNotRequired()
+        {
+            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
+            ListElement listElement = new ListElement(prop, new ListElement.Config() { HidePropertyLabel = false});
+
+            Assert.IsFalse(listElement.styleSheets.Contains(
+                SingleAssetLoader.SingleAssetLoader.Load<StyleSheet>("Sibz.ListElement.Hide-Property-Label")));
+        }
     }
 
     [System.Serializable]
