@@ -12,7 +12,7 @@ namespace Sibz.ListElement
         public class Config
         {
             public const string DefaultTemplateName = "Sibz.ListElement.Template";
-            public const string DefaultItemTemplateName= "Sibz.ListElement.ItemTemplate";
+            public const string DefaultItemTemplateName = "Sibz.ListElement.ItemTemplate";
             public const string DefaultStyleSheetName = "Sibz.ListElement.Template";
             public const string HeaderSectionClassName = "sibz-list-header";
             public const string DeleteConfirmSectionClassName = "sibz-list-delete-all-confirm";
@@ -22,14 +22,14 @@ namespace Sibz.ListElement
             public const string AddButtonClassName = "sibz-list-add-button";
             public const string DeleteConfirmButtonClassName = "sibz-list-delete-confirm-yes";
             public const string DeleteCancelButtonClassName = "sibz-list-delete-confirm-no";
-            
-            
+
+
             public string TemplateName { get; set; } = DefaultTemplateName;
-            public string ItemTemplateName { get; set; }= DefaultItemTemplateName;
-            public string StyleSheetName { get; set; }= DefaultStyleSheetName;
+            public string ItemTemplateName { get; set; } = DefaultItemTemplateName;
+            public string StyleSheetName { get; set; } = DefaultStyleSheetName;
             public string Label { get; set; }
         }
-        
+
         private VisualTreeAsset itemTemplate;
         private StyleSheet styleSheet;
         private VisualTreeAsset template;
@@ -37,10 +37,21 @@ namespace Sibz.ListElement
 
         private List<ButtonBinder> outsideButtonBinders;
 
-        public class AddNewEvent : EventBase<AddNewEvent>{}
-        public class DeleteAllEvent : EventBase<DeleteAllEvent>{}
-        public class DeleteAllConfirmEvent : EventBase<DeleteAllConfirmEvent>{}
-        public class DeleteAllCancelEvent : EventBase<DeleteAllCancelEvent>{}
+        public class AddNewEvent : EventBase<AddNewEvent>
+        {
+        }
+
+        public class DeleteAllEvent : EventBase<DeleteAllEvent>
+        {
+        }
+
+        public class DeleteAllConfirmEvent : EventBase<DeleteAllConfirmEvent>
+        {
+        }
+
+        public class DeleteAllCancelEvent : EventBase<DeleteAllCancelEvent>
+        {
+        }
 
         public string Label { get; set; }
         public string TemplateName { get; set; }
@@ -50,9 +61,18 @@ namespace Sibz.ListElement
         public Type ListItemType { get; private set; }
         public event Action OnReset;
 
-        public ListElement() : this(null, new Config()){}
-        public ListElement(SerializedProperty property) : this(property, new Config()){}
-        public ListElement(SerializedProperty property, string label) : this(property, new Config() { Label =  label }){}
+        public ListElement() : this(null, new Config())
+        {
+        }
+
+        public ListElement(SerializedProperty property) : this(property, new Config())
+        {
+        }
+
+        public ListElement(SerializedProperty property, string label) : this(property, new Config() {Label = label})
+        {
+        }
+
         public ListElement(SerializedProperty property, Config conf)
         {
             CreateButtonBinders();
@@ -72,7 +92,7 @@ namespace Sibz.ListElement
             }
 
             serializedProperty = property;
-            
+
             Initialise();
 
             this.BindProperty(property);
@@ -80,15 +100,16 @@ namespace Sibz.ListElement
 
         private void CreateButtonBinders()
         {
-            void RaiseEventForButton<T>() where T: EventBase, new()
+            void RaiseEventForButton<T>() where T : EventBase, new()
             {
-                SendEvent(new T() { target = this });
+                SendEvent(new T() {target = this});
             }
+
             outsideButtonBinders = new List<ButtonBinder>()
             {
-                new ButtonBinder(Config.AddButtonClassName, RaiseEventForButton<AddNewEvent>) ,
-                new ButtonBinder(Config.DeleteAllButtonClassName,  RaiseEventForButton<DeleteAllEvent>) ,
-                new ButtonBinder(Config.DeleteConfirmButtonClassName, RaiseEventForButton<DeleteAllConfirmEvent> ),
+                new ButtonBinder(Config.AddButtonClassName, RaiseEventForButton<AddNewEvent>),
+                new ButtonBinder(Config.DeleteAllButtonClassName, RaiseEventForButton<DeleteAllEvent>),
+                new ButtonBinder(Config.DeleteConfirmButtonClassName, RaiseEventForButton<DeleteAllConfirmEvent>),
                 new ButtonBinder(Config.DeleteCancelButtonClassName, RaiseEventForButton<DeleteAllCancelEvent>),
             };
         }
@@ -99,18 +120,18 @@ namespace Sibz.ListElement
             {
                 bindingPath = serializedProperty.FindPropertyRelative("Array.size").propertyPath
             };
-            
+
             integerField.style.display = DisplayStyle.None;
-            
+
             integerField.RegisterCallback<ChangeEvent<int>>(x => Reset());
-            
+
             Add(integerField);
         }
 
         private void Initialise()
         {
             IsInitialised = true;
-            
+
             Clear();
 
             CloneTemplate();
@@ -118,7 +139,7 @@ namespace Sibz.ListElement
             BindOutsideButtonsAndRegisterCallbacks();
 
             SetLabelText();
-            
+
             if (serializedProperty is null)
             {
                 return;
@@ -130,9 +151,8 @@ namespace Sibz.ListElement
             }
 
             AddArraySizeField();
-            
+
             LoadItemTemplate();
-            
         }
 
         private void BindOutsideButtonsAndRegisterCallbacks()
@@ -146,7 +166,7 @@ namespace Sibz.ListElement
 
         private void PopulateList()
         {
-            if (!serializedProperty.isArray || serializedProperty.arraySize == 0)
+            if (!serializedProperty.isArray)
             {
                 return;
             }
@@ -170,7 +190,7 @@ namespace Sibz.ListElement
             {
                 label.text = ObjectNames.NicifyVariableName(serializedProperty.name);
             }
-            else if (string.IsNullOrEmpty(Label) && (serializedProperty is null))
+            else if (string.IsNullOrEmpty(Label) && serializedProperty is null)
             {
                 label.text = "<List Name>";
             }
@@ -189,7 +209,7 @@ namespace Sibz.ListElement
             catch (Exception e)
             {
                 Debug.LogErrorFormat(
-                    "Unable to load template ('{0}') to clone into ListElement: {1}", 
+                    "Unable to load template ('{0}') to clone into ListElement: {1}",
                     TemplateName,
                     e.Message);
             }
@@ -204,17 +224,17 @@ namespace Sibz.ListElement
             catch (Exception e)
             {
                 Debug.LogErrorFormat(
-                    "Unable to load item template ('{0}'): {1}", 
+                    "Unable to load item template ('{0}'): {1}",
                     TemplateName,
                     e.Message);
             }
         }
-        
+
         protected override void ExecuteDefaultActionAtTarget(EventBase evt)
         {
             base.ExecuteDefaultActionAtTarget(evt);
             Type type = evt.GetType();
-            
+
             if (type.Name != "SerializedPropertyBindEvent" ||
                 !(type.GetProperty("bindProperty")?.GetValue(evt) is SerializedProperty property))
             {
@@ -233,15 +253,14 @@ namespace Sibz.ListElement
         private void Reset()
         {
             PopulateList();
-          
+
             OnReset?.Invoke();
         }
 
         private static bool TryGetItemType(SerializedProperty property, out Type type)
         {
-            
             type = null;
-            
+
             var propertyPath = property.propertyPath.Split('.');
             object baseObject = property.serializedObject.targetObject;
             foreach (string fieldName in propertyPath)
@@ -256,11 +275,13 @@ namespace Sibz.ListElement
                 return false;
             }
 
-            type = baseObject.GetType().IsGenericType ? baseObject.GetType().GetGenericArguments()[0] : baseObject.GetType();
+            type = baseObject.GetType().IsGenericType
+                ? baseObject.GetType().GetGenericArguments()[0]
+                : baseObject.GetType();
 
             return true;
         }
-        
+
         protected override void ExecuteDefaultAction(EventBase evt)
         {
             base.ExecuteDefaultAction(evt);
@@ -287,36 +308,40 @@ namespace Sibz.ListElement
 
         private void DeleteAllClicked(DeleteAllEvent evt)
         {
-            
         }
 
         private void DeleteAllConfirmed(DeleteAllConfirmEvent evt)
         {
-            
         }
 
         private void DeleteAllCancelled(DeleteAllCancelEvent evt)
         {
-            
         }
+
+        public void ClearListItems()
+        {
+            serializedProperty.ClearArray();
+            serializedProperty.serializedObject.ApplyModifiedProperties();
+            Reset();
+        }
+
         public new class UxmlFactory : UxmlFactory<ListElement, UxmlTraits>
         {
         }
 
         public new class UxmlTraits : BindableElement.UxmlTraits
         {
-            
             private readonly UxmlStringAttributeDescription label;
-            private readonly  UxmlStringAttributeDescription itemTemplateName;
-            private readonly  UxmlStringAttributeDescription styleSheetName;
-            private readonly  UxmlStringAttributeDescription templateName;
+            private readonly UxmlStringAttributeDescription itemTemplateName;
+            private readonly UxmlStringAttributeDescription styleSheetName;
+            private readonly UxmlStringAttributeDescription templateName;
 
             public UxmlTraits()
             {
-                label = new UxmlStringAttributeDescription { name = "label" };
-                itemTemplateName = new UxmlStringAttributeDescription { name = "item-template-name" };
-                styleSheetName = new UxmlStringAttributeDescription { name = "stylesheet-name" };
-                templateName = new UxmlStringAttributeDescription { name = "template-name" };
+                label = new UxmlStringAttributeDescription {name = "label"};
+                itemTemplateName = new UxmlStringAttributeDescription {name = "item-template-name"};
+                styleSheetName = new UxmlStringAttributeDescription {name = "stylesheet-name"};
+                templateName = new UxmlStringAttributeDescription {name = "template-name"};
             }
 
             public override void Init(VisualElement ve, IUxmlAttributes bag, CreationContext cc)
@@ -332,24 +357,24 @@ namespace Sibz.ListElement
                 string itn = itemTemplateName.GetValueFromBag(bag, cc);
                 string ssn = styleSheetName.GetValueFromBag(bag, cc);
                 string tn = templateName.GetValueFromBag(bag, cc);
-                
+
                 le.Label = lbl;
- 
+
                 if (!string.IsNullOrEmpty(itn))
                 {
                     le.ItemTemplateName = itn;
                 }
-                
+
                 if (!string.IsNullOrEmpty(ssn))
                 {
                     le.StyleSheetName = ssn;
                 }
-                
+
                 if (!string.IsNullOrEmpty(tn))
                 {
                     le.TemplateName = tn;
                 }
-                
+
                 le.Initialise();
             }
         }

@@ -247,6 +247,16 @@ namespace Sibz.ListElement.Tests
             Assert.AreEqual(initialArraySize+1, prop.arraySize);
             Assert.AreEqual(initialArraySize+1, propFields.ToList().Count);
         }
+
+        [Test]
+        public void ShouldClearList()
+        {
+            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
+            ListElement listElement = new ListElement(prop);
+            listElement.ClearListItems();
+            var propFields = listElement.Query<PropertyField>();
+            Assert.AreEqual(0, propFields.ToList().Count);
+        }
     }
 
     [System.Serializable]
