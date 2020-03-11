@@ -22,6 +22,9 @@ namespace Sibz.ListElement
             public const string AddButtonClassName = "sibz-list-add-button";
             public const string DeleteConfirmButtonClassName = "sibz-list-delete-confirm-yes";
             public const string DeleteCancelButtonClassName = "sibz-list-delete-confirm-no";
+            public const string DeleteItemButtonClassName = "sibz-list-delete-item-button";
+            public const string MoveUpButtonClassName = "sibz-list-move-up-button";
+            public const string MoveDownButtonClassName = "sibz-list-move-down-button";
 
 
             public string TemplateName { get; set; } = DefaultTemplateName;
