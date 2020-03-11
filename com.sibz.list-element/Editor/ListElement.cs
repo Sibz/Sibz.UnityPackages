@@ -133,7 +133,6 @@ namespace Sibz.ListElement
             
             LoadItemTemplate();
             
-            PopulateList();
         }
 
         private void BindOutsideButtonsAndRegisterCallbacks()
@@ -154,6 +153,7 @@ namespace Sibz.ListElement
 
             int length = serializedProperty.arraySize;
             VisualElement listContainer = this.Q<VisualElement>(null, Config.ItemSectionClassName);
+            listContainer.Clear();
             for (int i = 0; i < length; i++)
             {
                 VisualElement listItemElement = new VisualElement();
@@ -219,14 +219,18 @@ namespace Sibz.ListElement
                 type.GetProperty("bindProperty")?.GetValue(evt) is SerializedProperty property)
             {
                 serializedProperty = property;
+                if (!IsInitialised)
+                {
+                    Initialise();
+                }
+
                 Reset();
             }
         }
 
         private void Reset()
         {
-            
-          Initialise();
+            PopulateList();
           
           OnReset?.Invoke();
         }
