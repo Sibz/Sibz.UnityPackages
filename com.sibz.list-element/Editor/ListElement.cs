@@ -311,14 +311,18 @@ namespace Sibz.ListElement
 
         private void DeleteAllClicked(DeleteAllEvent evt)
         {
+            this.Q(null, Config.DeleteConfirmSectionClassName).style.display = DisplayStyle.Flex;
         }
 
         private void DeleteAllConfirmed(DeleteAllConfirmEvent evt)
         {
+            this.Q(null, Config.DeleteConfirmSectionClassName).style.display = DisplayStyle.None;
+            ClearListItems();
         }
 
         private void DeleteAllCancelled(DeleteAllCancelEvent evt)
         {
+            this.Q(null, Config.DeleteConfirmSectionClassName).style.display = DisplayStyle.None;
         }
 
         public void ClearListItems()

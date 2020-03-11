@@ -11,4 +11,5 @@
     flex-direction: row;
     justify-content: flex-end;
     -unity-text-align: middle-left;
+    display: none;
 }
