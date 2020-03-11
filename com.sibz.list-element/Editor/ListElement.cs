@@ -119,9 +119,9 @@ namespace Sibz.ListElement
 
         private void BindInsideButtons(int index, VisualElement itemSection)
         {
-            void RaiseEventForButton<T>() where T : ItemButtonEventBase, new()
+            void RaiseEventForButton<T>() where T : ItemButtonEventBase<T>, new()
             {
-                SendEvent(new T() {target = this, index = index });
+                SendEvent(new T() {target = this, Index = index });
             }
 
             new ButtonBinder(Config.DeleteItemButtonClassName, RaiseEventForButton<ItemDeleteEvent>).BindToFunction(itemSection);
@@ -130,18 +130,18 @@ namespace Sibz.ListElement
             
         }
 
-        public class ItemButtonEventBase : EventBase<ItemButtonEventBase>
+        public class ItemButtonEventBase<T> : EventBase<T> where T: ItemButtonEventBase<T>, new()
         {
-            public int index;
+            public int Index;
         }
 
-        public class ItemMoveUpEvent : ItemButtonEventBase
+        public class ItemMoveUpEvent : ItemButtonEventBase<ItemMoveUpEvent>
         {
         }
-        public class  ItemMoveDownEvent : ItemButtonEventBase
+        public class  ItemMoveDownEvent : ItemButtonEventBase<ItemMoveDownEvent>
         {            
         }
-        public class ItemDeleteEvent : ItemButtonEventBase
+        public class ItemDeleteEvent : ItemButtonEventBase<ItemDeleteEvent>
         {
         }
         
@@ -168,7 +168,9 @@ namespace Sibz.ListElement
 
             LoadTemplate();
 
-            BindOutsideButtonsAndRegisterCallbacks();
+            BindOutsideButtons();
+            
+            RegisterCallbacks();
 
             SetLabelText();
             
@@ -190,13 +192,20 @@ namespace Sibz.ListElement
             LoadItemTemplate();
         }
 
-        private void BindOutsideButtonsAndRegisterCallbacks()
+        private void BindOutsideButtons()
         {
             outsideButtonBinders.BindButtons(this);
+        }
+
+        private void RegisterCallbacks()
+        {
             RegisterCallback<AddNewEvent>(AddNewItem);
             RegisterCallback<DeleteAllEvent>(DeleteAllClicked);
             RegisterCallback<DeleteAllConfirmEvent>(DeleteAllConfirmed);
             RegisterCallback<DeleteAllCancelEvent>(DeleteAllCancelled);
+            RegisterCallback<ItemMoveUpEvent>(MoveUpEvent);
+            RegisterCallback<ItemMoveDownEvent>(MoveDownEvent);
+            RegisterCallback<ItemDeleteEvent>(DeleteItemEvent);
         }
 
         private void PopulateList()
@@ -330,6 +339,18 @@ namespace Sibz.ListElement
             }
         }
 
+        private void DeleteItemEvent(ItemDeleteEvent evt)
+        {
+            DeleteItem(evt.Index);
+        }
+        private void MoveUpEvent(ItemMoveUpEvent evt)
+        {
+            MoveItemUp(evt.Index);
+        }
+        private void MoveDownEvent(ItemMoveDownEvent evt)
+        {
+            MoveItemDown(evt.Index);
+        }
         public void DeleteItem(int index)
         {
             if (index < 0 || index >= serializedProperty.arraySize)
