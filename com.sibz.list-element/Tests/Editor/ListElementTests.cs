@@ -257,6 +257,135 @@ namespace Sibz.ListElement.Tests
             var propFields = listElement.Query<PropertyField>();
             Assert.AreEqual(0, propFields.ToList().Count);
         }
+
+        [Test]
+        public void ShouldDeleteItem()
+        {
+            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
+            ListElement listElement = new ListElement(prop);
+            int initialArraySize = prop.arraySize;
+            var propFields = listElement.Query<PropertyField>();
+            listElement.DeleteItem(0);
+            Assert.AreEqual(initialArraySize-1, propFields.ToList().Count);
+        }
+
+        [Test]
+        public void ShouldDeleteCorrectItem()
+        {
+            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
+            ListElement listElement = new ListElement(prop);
+            listElement.DeleteItem(1);
+            var propFields = listElement.Query<PropertyField>();
+            Assert.AreEqual("item3", propFields.AtIndex(1).Q<TextField>().text);
+        }
+
+        [Test]
+        public void ShouldThrowWhenDeletingOutOfRangeItem()
+        {
+            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
+            ListElement listElement = new ListElement(prop);
+            bool errorThrown = false;
+            try
+            {
+                listElement.DeleteItem(10);
+            }
+            catch
+            {
+                errorThrown = true;
+            }
+            Assert.IsTrue(errorThrown);
+        }
+        [Test]
+        public void ShouldMoveItemUp()
+        {
+            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
+            ListElement listElement = new ListElement(prop);
+            listElement.MoveItemUp(1);
+            var propFields = listElement.Query<PropertyField>();
+            Assert.AreEqual("item2", propFields.AtIndex(0).Q<TextField>().text);
+        }
+
+        [Test]
+        public void ShouldSilentlyFailMovingFirstItemUp()
+        {
+            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
+            ListElement listElement = new ListElement(prop);
+            listElement.MoveItemUp(0);
+            var propFields = listElement.Query<PropertyField>();
+            Assert.AreEqual("item1", propFields.AtIndex(0).Q<TextField>().text);
+        }
+
+        [Test]
+        public void ShouldThrowIfMovingUpOutOfRangeItem()
+        {
+            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
+            ListElement listElement = new ListElement(prop);
+            bool errorThrown = false;
+            bool errorThrown2 = false;
+            try
+            {
+                listElement.MoveItemUp(10);
+            }
+            catch
+            {
+                errorThrown = true;
+            }
+            try
+            {
+                listElement.MoveItemUp(-1);
+            }
+            catch
+            {
+                errorThrown2 = true;
+            }
+            Assert.IsTrue(errorThrown && errorThrown2);
+        }
+
+        [Test]
+        public void ShouldMoveItemDown()
+        {
+            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
+            ListElement listElement = new ListElement(prop);
+            listElement.MoveItemDown(1);
+            var propFields = listElement.Query<PropertyField>();
+            Assert.AreEqual("item2", propFields.AtIndex(2).Q<TextField>().text);
+        }
+
+        [Test]
+        public void ShouldSilentlyFailMovingLastItemDown()
+        {
+            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
+            ListElement listElement = new ListElement(prop);
+            listElement.MoveItemDown(2);
+            var propFields = listElement.Query<PropertyField>();
+            Assert.AreEqual("item3", propFields.AtIndex(2).Q<TextField>().text);
+        }
+
+        [Test]
+        public void ShouldThrowIfMovingItemDownOutOfRangeItem()
+        {
+            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
+            ListElement listElement = new ListElement(prop);
+            bool errorThrown = false;
+            bool errorThrown2 = false;
+            try
+            {
+                listElement.MoveItemDown(10);
+            }
+            catch
+            {
+                errorThrown = true;
+            }
+            try
+            {
+                listElement.MoveItemDown(-1);
+            }
+            catch
+            {
+                errorThrown2 = true;
+            }
+            Assert.IsTrue(errorThrown && errorThrown2);
+        }
     }
 
     [System.Serializable]

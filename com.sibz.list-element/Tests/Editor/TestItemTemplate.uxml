@@ -1,10 +1,10 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
-    <ui:VisualElement>
+    <ui:VisualElement style="flex-direction: row;">
         <Style src="TestItemTemplate.uss" />
-        <uie:PropertyField />
-        <ui:Button text="-" />
-        <ui:Button text="^" />
-        <ui:Button text="." />
+        <uie:PropertyField style="flex-grow: 1;" />
+        <ui:Button text="↑" class="sibz-list-item-buttons sibz-list-move-up-button" />
+        <ui:Button text="↓" class="sibz-list-item-buttons sibz-list-move-down-button" />
+        <ui:Button text="X" class="sibz-list-item-buttons sibz-list-delete-item-button" />
     </ui:VisualElement>
     <ui:VisualElement name="TestItemTemplateCheck">
         <Style src="TestItemTemplate.uss" />

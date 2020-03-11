@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.UIElements;
@@ -117,6 +117,35 @@ namespace Sibz.ListElement
             };
         }
 
+        private void BindInsideButtons(int index, VisualElement itemSection)
+        {
+            void RaiseEventForButton<T>() where T : ItemButtonEventBase, new()
+            {
+                SendEvent(new T() {target = this, index = index });
+            }
+
+            new ButtonBinder(Config.DeleteItemButtonClassName, RaiseEventForButton<ItemDeleteEvent>).BindToFunction(itemSection);
+            new ButtonBinder(Config.MoveUpButtonClassName, RaiseEventForButton<ItemMoveUpEvent>).BindToFunction(itemSection);
+            new ButtonBinder(Config.MoveDownButtonClassName, RaiseEventForButton<ItemMoveDownEvent>).BindToFunction(itemSection);
+            
+        }
+
+        public class ItemButtonEventBase : EventBase<ItemButtonEventBase>
+        {
+            public int index;
+        }
+
+        public class ItemMoveUpEvent : ItemButtonEventBase
+        {
+        }
+        public class  ItemMoveDownEvent : ItemButtonEventBase
+        {            
+        }
+        public class ItemDeleteEvent : ItemButtonEventBase
+        {
+        }
+        
+
         private void AddArraySizeField()
         {
             IntegerField integerField = new IntegerField
@@ -186,6 +215,7 @@ namespace Sibz.ListElement
                 itemTemplate.CloneTree(listItemElement);
                 listItemElement.Q<PropertyField>().BindProperty(serializedProperty.GetArrayElementAtIndex(i));
                 listContainer.Add(listItemElement);
+                BindInsideButtons(i, listItemElement);
             }
         }
 
@@ -298,6 +328,49 @@ namespace Sibz.ListElement
             {
                 serializedProperty = property;
             }
+        }
+
+        public void DeleteItem(int index)
+        {
+            if (index < 0 || index >= serializedProperty.arraySize)
+            {
+                throw new IndexOutOfRangeException("Unable to delete item");
+            }
+            serializedProperty.DeleteArrayElementAtIndex(index);
+            serializedProperty.serializedObject.ApplyModifiedProperties();
+            Reset();
+        }
+
+        public void MoveItemUp(int index)
+        {
+            if (index == 0)
+            {
+                return;
+            }
+            if (index < 0  || index >= serializedProperty.arraySize)
+            {
+                throw new IndexOutOfRangeException("Unable to move item");
+            }
+
+            serializedProperty.MoveArrayElement(index, index - 1);
+            serializedProperty.serializedObject.ApplyModifiedProperties();
+            Reset();
+        }
+        
+        public void MoveItemDown(int index)
+        {
+            if (index == serializedProperty.arraySize -1)
+            {
+                return;
+            }
+            if (index < 0  || index >= serializedProperty.arraySize)
+            {
+                throw new IndexOutOfRangeException("Unable to move item");
+            }
+
+            serializedProperty.MoveArrayElement(index, index + 1);
+            serializedProperty.serializedObject.ApplyModifiedProperties();
+            Reset();
         }
 
         private void AddNewItem(AddNewEvent evt)
