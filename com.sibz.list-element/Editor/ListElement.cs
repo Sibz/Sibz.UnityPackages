@@ -134,22 +134,25 @@ namespace Sibz.ListElement
 
             Clear();
 
-            CloneTemplate();
+            LoadTemplate();
 
             BindOutsideButtonsAndRegisterCallbacks();
 
             SetLabelText();
-
-            if (serializedProperty is null)
+            
+            if (!(serializedProperty is null))
             {
-                return;
+                InitialiseWithSerializedProperty();
             }
+        }
 
+        private void InitialiseWithSerializedProperty()
+        {
             if (TryGetItemType(serializedProperty, out Type listItemType))
             {
                 ListItemType = listItemType;
             }
-
+            
             AddArraySizeField();
 
             LoadItemTemplate();
@@ -200,7 +203,7 @@ namespace Sibz.ListElement
             }
         }
 
-        private void CloneTemplate()
+        private void LoadTemplate()
         {
             try
             {
