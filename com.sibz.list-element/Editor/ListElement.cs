@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
@@ -191,7 +191,7 @@ namespace Sibz.ListElement
           OnReset?.Invoke();
         }
 
-        private bool TryGetItemType(SerializedProperty property, out Type type)
+        private static bool TryGetItemType(SerializedProperty property, out Type type)
         {
             
             type = null;
@@ -234,10 +234,10 @@ namespace Sibz.ListElement
         public new class UxmlTraits : BindableElement.UxmlTraits
         {
             
-            private UxmlStringAttributeDescription label;
-            private UxmlStringAttributeDescription itemTemplateName;
-            private UxmlStringAttributeDescription styleSheetName;
-            private UxmlStringAttributeDescription templateName;
+            private readonly UxmlStringAttributeDescription label;
+            private readonly  UxmlStringAttributeDescription itemTemplateName;
+            private readonly  UxmlStringAttributeDescription styleSheetName;
+            private readonly  UxmlStringAttributeDescription templateName;
 
             public UxmlTraits()
             {
