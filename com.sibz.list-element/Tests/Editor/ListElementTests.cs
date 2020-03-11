@@ -394,7 +394,7 @@ namespace Sibz.ListElement.Tests
             ListElement listElement = new ListElement(prop, new ListElement.Config() { HidePropertyLabel = true});
 
             Assert.IsTrue(listElement.styleSheets.Contains(
-                SingleAssetLoader.SingleAssetLoader.Load<StyleSheet>("Sibz.ListElement.Hide-Property-Label")));
+                SingleAssetLoader.SingleAssetLoader.Load<StyleSheet>(ListElement.Config.HidePropertyLabelStyleSheetName)));
         }
         [Test]
         public void ShouldNotAddHidePropertyLabelStyleSheetIfNotRequired()
@@ -403,7 +403,7 @@ namespace Sibz.ListElement.Tests
             ListElement listElement = new ListElement(prop, new ListElement.Config() { HidePropertyLabel = false});
 
             Assert.IsFalse(listElement.styleSheets.Contains(
-                SingleAssetLoader.SingleAssetLoader.Load<StyleSheet>("Sibz.ListElement.Hide-Property-Label")));
+                SingleAssetLoader.SingleAssetLoader.Load<StyleSheet>(ListElement.Config.HidePropertyLabelStyleSheetName)));
         }
     }
 

@@ -14,6 +14,7 @@ namespace Sibz.ListElement
             public const string DefaultTemplateName = "Sibz.ListElement.Template";
             public const string DefaultItemTemplateName = "Sibz.ListElement.ItemTemplate";
             public const string DefaultStyleSheetName = "Sibz.ListElement.Template";
+            public const string HidePropertyLabelStyleSheetName = "Sibz.ListElement.Hide-Property-Label";
             public const string HeaderSectionClassName = "sibz-list-header";
             public const string DeleteConfirmSectionClassName = "sibz-list-delete-all-confirm";
             public const string ItemSectionClassName = "sibz-list-items-section";
@@ -222,7 +223,7 @@ namespace Sibz.ListElement
         {
             if (HidePropertyLabel)
             {
-                styleSheets.Add(SingleAssetLoader.SingleAssetLoader.Load<StyleSheet>("Sibz.ListElement.Hide-Property-Label"));
+                styleSheets.Add(SingleAssetLoader.SingleAssetLoader.Load<StyleSheet>(Config.HidePropertyLabelStyleSheetName));
             }
         }
 
