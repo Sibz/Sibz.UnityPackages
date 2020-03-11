@@ -328,11 +328,11 @@ namespace Sibz.ListElement
             ToggleDeleteAll();
         }
 
-        private void ToggleDeleteAll(bool on = false)
+        private void ToggleDeleteAll(bool show = false)
         {
-            this.Q(null, Config.DeleteConfirmSectionClassName).style.display = on ? DisplayStyle.Flex : DisplayStyle.None;
-            this.Q(null, Config.DeleteAllButtonClassName).style.display = on ? DisplayStyle.None : DisplayStyle.Flex;
-            this.Q(null, Config.AddButtonClassName).style.display =on ? DisplayStyle.None : DisplayStyle.Flex;
+            this.Q(null, Config.DeleteConfirmSectionClassName).style.display = show ? DisplayStyle.Flex : DisplayStyle.None;
+            this.Q(null, Config.DeleteAllButtonClassName).style.display = show ? DisplayStyle.None : DisplayStyle.Flex;
+            this.Q(null, Config.AddButtonClassName).style.display =show ? DisplayStyle.None : DisplayStyle.Flex;
         }
 
         public void ClearListItems()
