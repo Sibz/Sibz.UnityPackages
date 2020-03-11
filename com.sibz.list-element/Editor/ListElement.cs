@@ -214,18 +214,20 @@ namespace Sibz.ListElement
         {
             base.ExecuteDefaultActionAtTarget(evt);
             Type type = evt.GetType();
-            if (type.Name == "SerializedPropertyBindEvent"
-                &&
-                type.GetProperty("bindProperty")?.GetValue(evt) is SerializedProperty property)
+            
+            if (type.Name != "SerializedPropertyBindEvent" ||
+                !(type.GetProperty("bindProperty")?.GetValue(evt) is SerializedProperty property))
             {
-                serializedProperty = property;
-                if (!IsInitialised)
-                {
-                    Initialise();
-                }
-
-                Reset();
+                return;
             }
+
+            serializedProperty = property;
+            if (!IsInitialised)
+            {
+                Initialise();
+            }
+
+            Reset();
         }
 
         private void Reset()
