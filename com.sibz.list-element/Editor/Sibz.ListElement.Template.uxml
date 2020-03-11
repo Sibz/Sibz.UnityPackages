@@ -4,12 +4,11 @@
         <ui:Label text="List" class="sibz-list-header-label" />
         <ui:Button text="Delete All" class="sibz-list-delete-all-button" />
         <ui:Button text="+" class="sibz-list-add-button" />
-    </ui:VisualElement>
-    <ui:VisualElement class="sibz-list-delete-all-confirm">
-        <Style src="Sibz.ListElement.Template.uss" />
-        <ui:Label text="Are you sure?" class="sibz-delete-confirm-label sibz-list-delete-all-confirm-label" />
-        <ui:Button text="Yes" class="sibz-list-delete-confirm-yes" />
-        <ui:Button text="No" class="sibz-list-delete-confirm-no" />
+        <ui:VisualElement class="sibz-list-delete-all-confirm">
+            <ui:Label text="Are you sure?" class="sibz-delete-confirm-label sibz-list-delete-all-confirm-label" />
+            <ui:Button text="Yes" class="sibz-list-delete-confirm-yes" />
+            <ui:Button text="No" class="sibz-list-delete-confirm-no" />
+        </ui:VisualElement>
     </ui:VisualElement>
     <ui:VisualElement class="sibz-list-items-section">
         <Style src="Sibz.ListElement.Template.uss" />

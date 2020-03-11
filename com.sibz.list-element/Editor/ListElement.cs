@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.UIElements;
@@ -314,18 +314,25 @@ namespace Sibz.ListElement
 
         private void DeleteAllClicked(DeleteAllEvent evt)
         {
-            this.Q(null, Config.DeleteConfirmSectionClassName).style.display = DisplayStyle.Flex;
+            ToggleDeleteAll(true);
         }
 
         private void DeleteAllConfirmed(DeleteAllConfirmEvent evt)
         {
-            this.Q(null, Config.DeleteConfirmSectionClassName).style.display = DisplayStyle.None;
+            ToggleDeleteAll();
             ClearListItems();
         }
 
         private void DeleteAllCancelled(DeleteAllCancelEvent evt)
         {
-            this.Q(null, Config.DeleteConfirmSectionClassName).style.display = DisplayStyle.None;
+            ToggleDeleteAll();
+        }
+
+        private void ToggleDeleteAll(bool on = false)
+        {
+            this.Q(null, Config.DeleteConfirmSectionClassName).style.display = on ? DisplayStyle.Flex : DisplayStyle.None;
+            this.Q(null, Config.DeleteAllButtonClassName).style.display = on ? DisplayStyle.None : DisplayStyle.Flex;
+            this.Q(null, Config.AddButtonClassName).style.display =on ? DisplayStyle.None : DisplayStyle.Flex;
         }
 
         public void ClearListItems()
