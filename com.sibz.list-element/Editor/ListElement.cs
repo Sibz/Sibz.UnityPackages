@@ -10,9 +10,17 @@ namespace Sibz.ListElement
     {
         public class Config
         {
-            public string TemplateName { get; set; } = "Sibz.ListElement.Template";
-            public string ItemTemplateName { get; set; }= "Sibz.ListElement.ItemTemplate";
-            public string StyleSheetName { get; set; }= "Sibz.ListElement.Template";
+            public const string DefaultTemplateName = "Sibz.ListElement.Template";
+            public const string DefaultItemTemplateName= "Sibz.ListElement.ItemTemplate";
+            public const string DefaultStyleSheetName = "Sibz.ListElement.Template";
+            public const string HeaderSectionClassName = "sibz-list-header";
+            public const string DeleteConfirmSectionClassName = "sibz-list-delete-all-confirm";
+            public const string ItemSectionClassName = "sibz-list-items-section";
+            public const string HeaderLabelClassName = "sibz-list-header-label";
+            
+            public string TemplateName { get; set; } = DefaultTemplateName;
+            public string ItemTemplateName { get; set; }= DefaultItemTemplateName;
+            public string StyleSheetName { get; set; }= DefaultStyleSheetName;
             public string Label { get; set; }
         }
         
@@ -20,6 +28,7 @@ namespace Sibz.ListElement
         private StyleSheet styleSheet;
         private VisualTreeAsset template;
         private SerializedProperty serializedProperty;
+        
 
         public string Label { get; set; }
         public string TemplateName { get; set; }
@@ -104,7 +113,7 @@ namespace Sibz.ListElement
             }
 
             int length = serializedProperty.arraySize;
-            VisualElement listContainer = this.Q<VisualElement>(null, "sibz-list-items-section");
+            VisualElement listContainer = this.Q<VisualElement>(null, Config.ItemSectionClassName);
             for (int i = 0; i < length; i++)
             {
                 VisualElement listItemElement = new VisualElement();
@@ -116,7 +125,7 @@ namespace Sibz.ListElement
 
         private void SetLabelText()
         {
-            Label label = this.Query<Label>(null, "sibz-list-header-label");
+            Label label = this.Query<Label>(null, Config.HeaderLabelClassName);
             if (string.IsNullOrEmpty(Label) && !(serializedProperty is null))
             {
                 label.text = ObjectNames.NicifyVariableName(serializedProperty.name);

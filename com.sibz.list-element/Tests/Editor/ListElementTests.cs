@@ -19,22 +19,22 @@ namespace Sibz.ListElement.Tests
         private GameObject testGameObject;
         private SerializedObject testSerializedGameObject;
 
-        private VisualElement template;
+       // private VisualElement template;
 
         [SetUp]
         public void TestSetup()
         {
-            template = new VisualElement();
+            //template = new VisualElement();
 
             testGameObject = Object.Instantiate(new GameObject());
             testGameObject.AddComponent<MyTestObject>();
 
             testSerializedGameObject = new SerializedObject(testGameObject.GetComponent<MyTestObject>());
 
-            VisualTreeAsset vta =
-                SingleAssetLoader.SingleAssetLoader.Load<VisualTreeAsset>("Sibz.ListElement.Template");
+            //VisualTreeAsset vta =
+           //     SingleAssetLoader.SingleAssetLoader.Load<VisualTreeAsset>("Sibz.ListElement.Template");
 
-            vta.CloneTree(template);
+            //vta.CloneTree(template);
         }
 
         [Test]
@@ -108,11 +108,11 @@ namespace Sibz.ListElement.Tests
         private bool CheckForDefaultTemplateItems(ListElement listElement)
         {
             return 
-                listElement.Q(null, "sibz-list-header") != null
+                listElement.Q(null, ListElement.Config.HeaderSectionClassName) != null
                 &&
-                listElement.Q(null, "sibz-list-delete-all-confirm") != null
+                listElement.Q(null, ListElement.Config.DeleteConfirmSectionClassName) != null
                 &&
-                listElement.Q(null, "sibz-list-items-section") != null
+                listElement.Q(null, ListElement.Config.ItemSectionClassName) != null
                 ;
         }
 
@@ -121,7 +121,7 @@ namespace Sibz.ListElement.Tests
         {
             SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
             ListElement listElement = new ListElement(prop, string.Empty);
-            Label label = listElement.Q<Label>(null, "sibz-list-header-label");
+            Label label = listElement.Q<Label>(null, ListElement.Config.HeaderLabelClassName);
             Assert.AreEqual( ObjectNames.NicifyVariableName(nameof(MyTestObject.myList)), label.text);
         }
         
@@ -130,7 +130,7 @@ namespace Sibz.ListElement.Tests
         {
             SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
             ListElement listElement = new ListElement(prop, "Label");
-            Label label = listElement.Q<Label>(null, "sibz-list-header-label");
+            Label label = listElement.Q<Label>(null, ListElement.Config.HeaderLabelClassName);
             Assert.AreEqual( "Label", label.text);
         }
 
@@ -139,7 +139,7 @@ namespace Sibz.ListElement.Tests
         {
             SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
             ListElement listElement = new ListElement(prop, new ListElement.Config() { Label = "Label"});
-            Label label = listElement.Q<Label>(null, "sibz-list-header-label");
+            Label label = listElement.Q<Label>(null, ListElement.Config.HeaderLabelClassName);
             Assert.AreEqual( "Label", label.text);
         }
 
@@ -165,7 +165,7 @@ namespace Sibz.ListElement.Tests
             vta.CloneTree(root);
             ListElement le = root.Q<ListElement>();
 
-            Label label = le.Q<Label>(null, "sibz-list-header-label");
+            Label label = le.Q<Label>(null, ListElement.Config.HeaderLabelClassName);
             Assert.IsNotNull(label);
             Assert.AreEqual( "TestLabel", label.text);
         }
@@ -221,7 +221,7 @@ namespace Sibz.ListElement.Tests
             SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
             ListElement listElement = new ListElement(prop);
 
-            Assert.AreEqual(prop.arraySize, listElement.Q<VisualElement>(null, "sibz-list-items-section").childCount);
+            Assert.AreEqual(prop.arraySize, listElement.Q<VisualElement>(null, ListElement.Config.ItemSectionClassName).childCount);
         }
         
         [Test]
