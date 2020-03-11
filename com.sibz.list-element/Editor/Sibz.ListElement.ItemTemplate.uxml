@@ -2,8 +2,8 @@
     <ui:VisualElement style="flex-direction: row;">
         <Style src="Sibz.ListElement.ItemTemplate.uss" />
         <uie:PropertyField />
-        <ui:Button class="sibz-list-item-buttons" />
-        <ui:Button class="sibz-list-item-buttons" />
-        <ui:Button class="sibz-list-item-buttons" />
+        <ui:Button text="↑" class="sibz-list-item-buttons" />
+        <ui:Button text="↓" class="sibz-list-item-buttons" />
+        <ui:Button text="X" class="sibz-list-item-buttons" />
     </ui:VisualElement>
 </ui:UXML>
