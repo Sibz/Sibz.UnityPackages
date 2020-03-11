@@ -232,7 +232,7 @@ namespace Sibz.ListElement
         {
             PopulateList();
           
-          OnReset?.Invoke();
+            OnReset?.Invoke();
         }
 
         private static bool TryGetItemType(SerializedProperty property, out Type type)
