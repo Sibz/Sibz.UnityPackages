@@ -272,6 +272,7 @@ MonoBehaviour:
   - test
   - test
   - test
+  - test
   MyList2:
     MyObjectList: []
 --- !u!4 &1230855095

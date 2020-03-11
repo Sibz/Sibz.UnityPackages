@@ -1,9 +1,9 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
-    <ui:VisualElement>
+    <ui:VisualElement style="flex-direction: row;">
         <Style src="Sibz.ListElement.ItemTemplate.uss" />
         <uie:PropertyField />
-        <ui:Button text="-" />
-        <ui:Button text="^" />
-        <ui:Button text="." />
+        <ui:Button class="sibz-list-item-buttons" />
+        <ui:Button class="sibz-list-item-buttons" />
+        <ui:Button class="sibz-list-item-buttons" />
     </ui:VisualElement>
 </ui:UXML>
