@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEditor.UIElements;
@@ -18,76 +17,63 @@ namespace Sibz.ListElement.Tests
     {
         private GameObject testGameObject;
         private SerializedObject testSerializedGameObject;
-
-       // private VisualElement template;
+        private SerializedProperty property;
+        private ListElement listElement;
 
         [SetUp]
         public void TestSetup()
         {
-            //template = new VisualElement();
-
             testGameObject = Object.Instantiate(new GameObject());
             testGameObject.AddComponent<MyTestObject>();
 
             testSerializedGameObject = new SerializedObject(testGameObject.GetComponent<MyTestObject>());
-
-            //VisualTreeAsset vta =
-           //     SingleAssetLoader.SingleAssetLoader.Load<VisualTreeAsset>("Sibz.ListElement.Template");
-
-            //vta.CloneTree(template);
+            property = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
+            listElement = new ListElement(property);
         }
 
         [Test]
-        public void InitialisedWhenLoadedFromUxml()
+        public void ShouldInitialiseWhenLoadedFromUxml()
         {
             VisualTreeAsset vta = SingleAssetLoader.SingleAssetLoader.Load<VisualTreeAsset>("ListElementTemplateTest");
             VisualElement testElement = new VisualElement();
             vta.CloneTree(testElement);
-
+            testElement.Q<ListElement>().BindProperty(property);
             Assert.IsTrue(testElement.Q<ListElement>().IsInitialised);
         }
 
         [Test]
         public void ShouldBeInitialisedWhenConstructedWithSerializedProperty()
         {
-            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
-            ListElement listElement = new ListElement(prop);
             Assert.IsTrue(listElement.IsInitialised);
         }
 
         [Test]
         public void ShouldNotBeInitialisedWhenConstructedWithOutSerializedProperty()
         {
-            ListElement listElement = new ListElement();
-            Assert.IsFalse(listElement.IsInitialised);
+            ListElement testListElement = new ListElement();
+            Assert.IsFalse(testListElement.IsInitialised);
         }
 
         [Test]
-        public void ResetShouldBeCalledWhenSerializedPropertyIsRebound()
+        public void ShouldCallResetWhenSerializedPropertyIsRebound()
         {
-            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
-            ListElement listElement = new ListElement(prop);
             bool hasReset = false;
             listElement.OnReset += () => hasReset = true;
             listElement.Unbind();
-            listElement.BindProperty(prop);
+            listElement.BindProperty(property);
             Assert.IsTrue(hasReset);
         }
 
         [Test]
         public void ShouldHaveOneArraySizeField()
         {
-            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
-            ListElement listElement = new ListElement(prop);
             Assert.AreEqual(1,
-                listElement.Query<IntegerField>().Where(x => x.bindingPath.Contains("Array.size")).ToList().Count());
+                listElement.Query<IntegerField>().Where(x => x.bindingPath.Contains("Array.size")).ToList().Count);
         }
 
         [Test]
-        public void ArraySizeShouldBeHidden()
+        public void ShouldHideArraySizeField()
         {
-            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
-            ListElement listElement = new ListElement(prop);
             IntegerField arraySize = listElement
                 .Query<IntegerField>()
                 .Where(x => x.bindingPath.Contains("Array.size"))
@@ -98,324 +84,213 @@ namespace Sibz.ListElement.Tests
         [Test]
         public void ShouldContainDefaultTemplateItems()
         {
-            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
-            ListElement listElement = new ListElement(prop, string.Empty);
-            
             listElement.BindProperty(testSerializedGameObject.FindProperty(nameof(MyTestObject.myList)));
             Assert.IsTrue(CheckForDefaultTemplateItems(listElement));
         }
 
-        private bool CheckForDefaultTemplateItems(ListElement listElement)
+        private bool CheckForDefaultTemplateItems(ListElement testElement)
         {
-            return 
-                listElement.Q(null, ListElement.Config.HeaderSectionClassName) != null
+            return
+                testElement.Q(null, Constants.HeaderSectionClassName) != null
                 &&
-                listElement.Q(null, ListElement.Config.DeleteConfirmSectionClassName) != null
+                testElement.Q(null, Constants.DeleteConfirmSectionClassName) != null
                 &&
-                listElement.Q(null, ListElement.Config.ItemSectionClassName) != null
+                testElement.Q(null, Constants.ItemSectionClassName) != null
                 ;
         }
 
         [Test]
         public void ShouldNameLabelSameAsListWhenNoLabelProvided()
         {
-            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
-            ListElement listElement = new ListElement(prop, string.Empty);
-            Label label = listElement.Q<Label>(null, ListElement.Config.HeaderLabelClassName);
-            Assert.AreEqual( ObjectNames.NicifyVariableName(nameof(MyTestObject.myList)), label.text);
+            ListElement testElement = new ListElement(property, string.Empty);
+            Label label = testElement.Q<Label>(null, Constants.HeaderLabelClassName);
+            Assert.AreEqual(ObjectNames.NicifyVariableName(nameof(MyTestObject.myList)), label.text);
         }
-        
+
         [Test]
         public void ShouldNameLabelAsProvided()
         {
-            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
-            ListElement listElement = new ListElement(prop, "Label");
-            Label label = listElement.Q<Label>(null, ListElement.Config.HeaderLabelClassName);
-            Assert.AreEqual( "Label", label.text);
+            ListElement testElement = new ListElement(property, "Label");
+            Label label = testElement.Q<Label>(null, Constants.HeaderLabelClassName);
+            Assert.AreEqual("Label", label.text);
         }
 
         [Test]
         public void ShouldNameLabelAsProvidedInConfig()
         {
-            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
-            ListElement listElement = new ListElement(prop, new ListElement.Config() { Label = "Label"});
-            Label label = listElement.Q<Label>(null, ListElement.Config.HeaderLabelClassName);
-            Assert.AreEqual( "Label", label.text);
+            ListElement testElement = new ListElement(property, new ListElementOptions() {Label = "Label"});
+            Label label = testElement.Q<Label>(null, Constants.HeaderLabelClassName);
+            Assert.AreEqual("Label", label.text);
         }
 
         [Test]
         public void ShouldLoadConfigFromUxml()
         {
-            VisualTreeAsset vta = SingleAssetLoader.SingleAssetLoader.Load<VisualTreeAsset>("sibz.list.tests.configtest");
+            VisualTreeAsset vta =
+                SingleAssetLoader.SingleAssetLoader.Load<VisualTreeAsset>("sibz.list.tests.config-test");
             VisualElement root = new VisualElement();
             vta.CloneTree(root);
             ListElement le = root.Q<ListElement>();
-            
+
             Assert.AreEqual("TestLabel", le.Label);
-            Assert.AreEqual("TestTemplate",le.TemplateName);
-            Assert.AreEqual("TestTemplate",le.StyleSheetName);
-            Assert.AreEqual("TestItemTemplate",le.ItemTemplateName);
+            Assert.AreEqual("TestTemplate", le.TemplateName);
+            Assert.AreEqual("TestTemplate", le.StyleSheetName);
+            Assert.AreEqual("TestItemTemplate", le.ItemTemplateName);
         }
 
         [Test]
         public void ShouldNameLabelAsProvidedByUxmlAttribute()
         {
-            VisualTreeAsset vta = SingleAssetLoader.SingleAssetLoader.Load<VisualTreeAsset>("sibz.list.tests.configtest");
+            VisualTreeAsset vta =
+                SingleAssetLoader.SingleAssetLoader.Load<VisualTreeAsset>("sibz.list.tests.config-test");
             VisualElement root = new VisualElement();
             vta.CloneTree(root);
             ListElement le = root.Q<ListElement>();
 
-            Label label = le.Q<Label>(null, ListElement.Config.HeaderLabelClassName);
+            Label label = le.Q<Label>(null, Constants.HeaderLabelClassName);
             Assert.IsNotNull(label);
-            Assert.AreEqual( "TestLabel", label.text);
+            Assert.AreEqual("TestLabel", label.text);
         }
 
         [Test]
         public void ShouldApplyCustomStylesheet()
         {
-            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
-            ListElement listElement = new ListElement(prop, new ListElement.Config() { StyleSheetName = "TestTemplate"});
+            ListElement testElement =
+                new ListElement(property, new ListElementOptions() {StyleSheetName = "TestTemplate"});
             Assert.IsTrue(
-                listElement.styleSheets.Contains(
+                testElement.styleSheets.Contains(
                     SingleAssetLoader.SingleAssetLoader.Load<StyleSheet>("TestTemplate")));
-
         }
-        
+
         [Test]
         public void ShouldApplyCustomTemplate()
         {
-            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
-            ListElement listElement = new ListElement(prop, new ListElement.Config() { TemplateName = "TestTemplate"});
+            ListElement testElement =
+                new ListElement(property, new ListElementOptions() {TemplateName = "TestTemplate"});
             Assert.IsNotNull(
-                listElement.Q<VisualElement>("TestTemplateCheck"));
+                testElement.Q<VisualElement>("TestTemplateCheck"));
         }
-        
+
         [Test]
         public void ShouldApplyCustomItemTemplate()
         {
-            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
-            ListElement listElement = new ListElement(prop, new ListElement.Config() { ItemTemplateName = "TestItemTemplate"});
+            ListElement testElement =
+                new ListElement(property, new ListElementOptions() {ItemTemplateName = "TestItemTemplate"});
             Assert.IsNotNull(
-                listElement.Q<VisualElement>("TestItemTemplateCheck"));
+                testElement.Q<VisualElement>("TestItemTemplateCheck"));
         }
 
         [Test]
         public void ShouldCorrectlyDetermineTypeOfListAsString()
         {
-             SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
-             ListElement listElement = new ListElement(prop);
-             Assert.AreEqual(typeof(string), listElement.ListItemType);
+            Assert.AreEqual(typeof(string), listElement.ListItemType);
         }
-        
+
         [Test]
         public void ShouldCorrectlyDetermineTypeOfListAsCustomObject()
         {
-            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myCustomList));
-            ListElement listElement = new ListElement(prop);
-            Assert.AreEqual(typeof(CustomObject), listElement.ListItemType);
+            ListElement testElement =
+                new ListElement(testSerializedGameObject.FindProperty(nameof(MyTestObject.myCustomList)));
+            Assert.AreEqual(typeof(CustomObject), testElement.ListItemType);
         }
-        
+
         [Test]
         public void ShouldPopulateList()
         {
-            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
-            ListElement listElement = new ListElement(prop);
-
-            Assert.AreEqual(prop.arraySize, listElement.Q<VisualElement>(null, ListElement.Config.ItemSectionClassName).childCount);
-        }
-        
-        [Test]
-        public void ShouldHaveCorrectListContents()
-        {
-            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
-            ListElement listElement = new ListElement(prop);
-            var propFields = listElement.Query<PropertyField>();
-            Assert.AreEqual(prop.arraySize, propFields.ToList().Count());
-            Assert.AreEqual("item1", propFields.AtIndex(0).Q<TextField>().text);
-            Assert.AreEqual("item2", propFields.AtIndex(1).Q<TextField>().text);
-            Assert.AreEqual("item3", propFields.AtIndex(2).Q<TextField>().text);
+            Assert.IsTrue(CheckArrayAndElementsAreInSync());
         }
 
         [Test]
-        public void ShouldAddItemToList()
+        public void ShouldKeepListInSyncAfterAddNew()
         {
-            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
-            ListElement listElement = new ListElement(prop);
-            int initialArraySize = prop.arraySize;
             listElement.AddNewItemToList();
-            var propFields = listElement.Query<PropertyField>();
-            Assert.AreEqual(initialArraySize+1, prop.arraySize);
-            Assert.AreEqual(initialArraySize+1, propFields.ToList().Count);
+            Assert.IsTrue(CheckArrayAndElementsAreInSync());
         }
 
         [Test]
-        public void ShouldClearList()
+        public void ShouldKeepListInSyncAfterClear()
         {
-            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
-            ListElement listElement = new ListElement(prop);
             listElement.ClearListItems();
-            var propFields = listElement.Query<PropertyField>();
-            Assert.AreEqual(0, propFields.ToList().Count);
+            Assert.AreEqual(0, property.arraySize);
+            Assert.IsTrue(CheckArrayAndElementsAreInSync());
         }
 
         [Test]
-        public void ShouldDeleteItem()
+        public void ShouldKeepListInSyncAfterDeleteItem()
         {
-            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
-            ListElement listElement = new ListElement(prop);
-            int initialArraySize = prop.arraySize;
-            var propFields = listElement.Query<PropertyField>();
-            listElement.DeleteItem(0);
-            Assert.AreEqual(initialArraySize-1, propFields.ToList().Count);
+            listElement.RemoveItem(1);
+            Assert.IsTrue(CheckArrayAndElementsAreInSync());
         }
 
         [Test]
-        public void ShouldDeleteCorrectItem()
+        public void ShouldKeepListInSyncAfterMoveUp()
         {
-            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
-            ListElement listElement = new ListElement(prop);
-            listElement.DeleteItem(1);
-            var propFields = listElement.Query<PropertyField>();
-            Assert.AreEqual("item3", propFields.AtIndex(1).Q<TextField>().text);
-        }
-
-        [Test]
-        public void ShouldThrowWhenDeletingOutOfRangeItem()
-        {
-            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
-            ListElement listElement = new ListElement(prop);
-            bool errorThrown = false;
-            try
-            {
-                listElement.DeleteItem(10);
-            }
-            catch
-            {
-                errorThrown = true;
-            }
-            Assert.IsTrue(errorThrown);
-        }
-        [Test]
-        public void ShouldMoveItemUp()
-        {
-            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
-            ListElement listElement = new ListElement(prop);
             listElement.MoveItemUp(1);
-            var propFields = listElement.Query<PropertyField>();
-            Assert.AreEqual("item2", propFields.AtIndex(0).Q<TextField>().text);
+            Assert.IsTrue(CheckArrayAndElementsAreInSync());
         }
 
         [Test]
-        public void ShouldSilentlyFailMovingFirstItemUp()
+        public void ShouldKeepListInSyncAfterMoveDown()
         {
-            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
-            ListElement listElement = new ListElement(prop);
-            listElement.MoveItemUp(0);
-            var propFields = listElement.Query<PropertyField>();
-            Assert.AreEqual("item1", propFields.AtIndex(0).Q<TextField>().text);
-        }
-
-        [Test]
-        public void ShouldThrowIfMovingUpOutOfRangeItem()
-        {
-            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
-            ListElement listElement = new ListElement(prop);
-            bool errorThrown = false;
-            bool errorThrown2 = false;
-            try
-            {
-                listElement.MoveItemUp(10);
-            }
-            catch
-            {
-                errorThrown = true;
-            }
-            try
-            {
-                listElement.MoveItemUp(-1);
-            }
-            catch
-            {
-                errorThrown2 = true;
-            }
-            Assert.IsTrue(errorThrown && errorThrown2);
-        }
-
-        [Test]
-        public void ShouldMoveItemDown()
-        {
-            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
-            ListElement listElement = new ListElement(prop);
             listElement.MoveItemDown(1);
-            var propFields = listElement.Query<PropertyField>();
-            Assert.AreEqual("item2", propFields.AtIndex(2).Q<TextField>().text);
+            Assert.IsTrue(CheckArrayAndElementsAreInSync());
         }
 
-        [Test]
-        public void ShouldSilentlyFailMovingLastItemDown()
+        private bool CheckArrayAndElementsAreInSync()
         {
-            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
-            ListElement listElement = new ListElement(prop);
-            listElement.MoveItemDown(2);
-            var propFields = listElement.Query<PropertyField>();
-            Assert.AreEqual("item3", propFields.AtIndex(2).Q<TextField>().text);
-        }
+            var propFields = listElement.Query<PropertyField>().ToList();
+            if (propFields.Count != property.arraySize)
+            {
+                Debug.LogWarning("Count is not the same");
+                return false;
+            }
 
-        [Test]
-        public void ShouldThrowIfMovingItemDownOutOfRangeItem()
-        {
-            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
-            ListElement listElement = new ListElement(prop);
-            bool errorThrown = false;
-            bool errorThrown2 = false;
-            try
+            for (int i = 0; i < property.arraySize; i++)
             {
-                listElement.MoveItemDown(10);
+                if (propFields[i].Q<TextField>().text == property.GetArrayElementAtIndex(i).stringValue)
+                {
+                    continue;
+                }
+
+                Debug.LogWarningFormat(
+                    "Item {0} is not the same (textfield:{1} vs array:{2})",
+                    i,
+                    propFields[i].Q<TextField>().text,
+                    property.GetArrayElementAtIndex(i).stringValue);
+                return false;
             }
-            catch
-            {
-                errorThrown = true;
-            }
-            try
-            {
-                listElement.MoveItemDown(-1);
-            }
-            catch
-            {
-                errorThrown2 = true;
-            }
-            Assert.IsTrue(errorThrown && errorThrown2);
+
+            return true;
         }
 
         [Test]
         public void ShouldAddHidePropertyLabelStyleSheetIfRequired()
         {
-            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
-            ListElement listElement = new ListElement(prop, new ListElement.Config() { HidePropertyLabel = true});
+            ListElement testElement = new ListElement(property, new ListElementOptions() {HidePropertyLabel = true});
 
-            Assert.IsTrue(listElement.styleSheets.Contains(
-                SingleAssetLoader.SingleAssetLoader.Load<StyleSheet>(ListElement.Config.HidePropertyLabelStyleSheetName)));
+            Assert.IsTrue(testElement.styleSheets.Contains(
+                SingleAssetLoader.SingleAssetLoader.Load<StyleSheet>(Constants.HidePropertyLabelStyleSheetName)));
         }
+
         [Test]
         public void ShouldNotAddHidePropertyLabelStyleSheetIfNotRequired()
         {
-            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
-            ListElement listElement = new ListElement(prop, new ListElement.Config() { HidePropertyLabel = false});
+            ListElement testElement = new ListElement(property, new ListElementOptions() {HidePropertyLabel = false});
 
-            Assert.IsFalse(listElement.styleSheets.Contains(
-                SingleAssetLoader.SingleAssetLoader.Load<StyleSheet>(ListElement.Config.HidePropertyLabelStyleSheetName)));
+            Assert.IsFalse(testElement.styleSheets.Contains(
+                SingleAssetLoader.SingleAssetLoader.Load<StyleSheet>(Constants.HidePropertyLabelStyleSheetName)));
+        }
+
+        [System.Serializable]
+        public class MyTestObject : MonoBehaviour
+        {
+            public List<string> myList = new List<string>() {"item1", "item2", "item3"};
+            public List<CustomObject> myCustomList = new List<CustomObject>() {new CustomObject()};
         }
     }
 
-    [System.Serializable]
-    public class MyTestObject : MonoBehaviour
-    {
-        public List<string> myList = new List<string>() {"item1", "item2", "item3"};
-        public List<CustomObject> myCustomList = new List<CustomObject>() { new CustomObject() { Value = "test" }};
-    }
 
     public class CustomObject : Object
     {
-        public string Value;
     }
 }

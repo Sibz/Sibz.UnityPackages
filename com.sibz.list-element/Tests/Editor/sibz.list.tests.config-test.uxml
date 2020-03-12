@@ -1,5 +1,5 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
     <Sibz.ListElement.ListElement label="TestLabel" item-template-name="TestItemTemplate" stylesheet-name="TestTemplate" template-name="TestTemplate">
-        <Style src="sibz.list.tests.configtest.uss" />
+        <Style src="sibz.list.tests.config-test.uss" />
     </Sibz.ListElement.ListElement>
 </ui:UXML>

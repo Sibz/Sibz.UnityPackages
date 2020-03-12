@@ -1,5 +1,5 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
-    <Sibz.ListElement.ListElement>
+    <Sibz.ListElement.ListElement hide-property-label="true">
         <Style src="/Assets/ListTest.uss" />
     </Sibz.ListElement.ListElement>
 </ui:UXML>

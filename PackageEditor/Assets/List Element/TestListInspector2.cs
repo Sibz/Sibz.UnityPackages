@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Sibz.ListElement;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -13,10 +14,10 @@ namespace Sibz.UXMLList
     [CustomEditor(typeof(TestListBehaviour2))]
     public class TestListInspector2 : Editor
     {
-        VisualElement m_Root;
-        VisualTreeAsset m_VisualTreeAsset;
+        private VisualElement m_Root;
+        private VisualTreeAsset m_VisualTreeAsset;
 
-        TestListBehaviour2 Target => (TestListBehaviour2)target;
+        private TestListBehaviour2 Target => (TestListBehaviour2) target;
 
         public override VisualElement CreateInspectorGUI()
         {
@@ -36,7 +37,8 @@ namespace Sibz.UXMLList
             }
 
             m_Root.Clear();
-                m_Root.Add(new ListElement.ListElement(serializedObject.FindProperty(nameof(TestListBehaviour2.MyList)), new ListElement.ListElement.Config() { HidePropertyLabel = true }));
+            m_Root.Add(new ListElement.ListElement(serializedObject.FindProperty(nameof(TestListBehaviour2.MyList)),
+                new ListElementOptions() {HidePropertyLabel = true}));
         }
     }
 }
