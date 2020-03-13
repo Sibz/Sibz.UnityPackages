@@ -318,7 +318,7 @@ namespace Sibz.ListElement
             }
             else if (!(button is null || button.enabledSelf))
             {
-                button?.SetEnabled(true);
+                button.SetEnabled(true);
             }
         }
 
