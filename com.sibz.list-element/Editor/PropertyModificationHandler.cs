@@ -1,5 +1,6 @@
-﻿using UnityEditor;
-using UnityEngine;
+﻿using System;
+using UnityEditor;
+using Object = UnityEngine.Object;
 
 namespace Sibz.ListElement
 {
@@ -7,9 +8,9 @@ namespace Sibz.ListElement
     {
         private readonly SerializedProperty property;
 
-        private readonly System.Action onModify;
+        private readonly Action onModify;
 
-        public PropertyModificationHandler(SerializedProperty property, System.Action onModify = null)
+        public PropertyModificationHandler(SerializedProperty property, Action onModify = null)
         {
             this.property = property;
             this.onModify = onModify;
@@ -38,7 +39,7 @@ namespace Sibz.ListElement
         {
             if (index < 0 || index >= property.arraySize)
             {
-                throw new System.IndexOutOfRangeException("Unable to delete item");
+                throw new IndexOutOfRangeException("Unable to delete item");
             }
 
             int initialArraySize = property.arraySize;
@@ -62,7 +63,7 @@ namespace Sibz.ListElement
 
             if (index < 0 || index >= property.arraySize)
             {
-                throw new System.IndexOutOfRangeException("Unable to move item");
+                throw new IndexOutOfRangeException("Unable to move item");
             }
 
             property.MoveArrayElement(index, index - 1);
@@ -78,7 +79,7 @@ namespace Sibz.ListElement
 
             if (index < 0 || index >= property.arraySize)
             {
-                throw new System.IndexOutOfRangeException("Unable to move item");
+                throw new IndexOutOfRangeException("Unable to move item");
             }
 
             property.MoveArrayElement(index, index + 1);

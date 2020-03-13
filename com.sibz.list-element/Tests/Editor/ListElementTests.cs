@@ -1,17 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
-
+using Object = UnityEngine.Object;
 
 namespace Sibz.ListElement.Tests
 {
     /// <summary>
-    /// ListElement renders a list using defaults or provided options dealing with the
-    /// interactions that modify the list
+    ///     ListElement renders a list using defaults or provided options dealing with the
+    ///     interactions that modify the list
     /// </summary>
     [SuppressMessage("ReSharper", "HeapView.BoxingAllocation")]
     public class ListElementTests
@@ -119,7 +120,7 @@ namespace Sibz.ListElement.Tests
         [Test]
         public void ShouldNameLabelAsProvidedInConfig()
         {
-            ListElement testElement = new ListElement(property, new ListElementOptions() {Label = "Label"});
+            ListElement testElement = new ListElement(property, new ListElementOptions {Label = "Label"});
             Label label = testElement.Q<Label>(null, Constants.HeaderLabelClassName);
             Assert.AreEqual("Label", label.text);
         }
@@ -157,7 +158,7 @@ namespace Sibz.ListElement.Tests
         public void ShouldApplyCustomStylesheet()
         {
             ListElement testElement =
-                new ListElement(property, new ListElementOptions() {StyleSheetName = "TestTemplate"});
+                new ListElement(property, new ListElementOptions {StyleSheetName = "TestTemplate"});
             Assert.IsTrue(
                 testElement.styleSheets.Contains(
                     SingleAssetLoader.SingleAssetLoader.Load<StyleSheet>("TestTemplate")));
@@ -167,7 +168,7 @@ namespace Sibz.ListElement.Tests
         public void ShouldApplyCustomTemplate()
         {
             ListElement testElement =
-                new ListElement(property, new ListElementOptions() {TemplateName = "TestTemplate"});
+                new ListElement(property, new ListElementOptions {TemplateName = "TestTemplate"});
             Assert.IsNotNull(
                 testElement.Q<VisualElement>("TestTemplateCheck"));
         }
@@ -176,7 +177,7 @@ namespace Sibz.ListElement.Tests
         public void ShouldApplyCustomItemTemplate()
         {
             ListElement testElement =
-                new ListElement(property, new ListElementOptions() {ItemTemplateName = "TestItemTemplate"});
+                new ListElement(property, new ListElementOptions {ItemTemplateName = "TestItemTemplate"});
             Assert.IsNotNull(
                 testElement.Q<VisualElement>("TestItemTemplateCheck"));
         }
@@ -267,7 +268,7 @@ namespace Sibz.ListElement.Tests
         [Test]
         public void ShouldAddHidePropertyLabelStyleSheetIfRequired()
         {
-            ListElement testElement = new ListElement(property, new ListElementOptions() {HidePropertyLabel = true});
+            ListElement testElement = new ListElement(property, new ListElementOptions {HidePropertyLabel = true});
 
             Assert.IsTrue(testElement.styleSheets.Contains(
                 SingleAssetLoader.SingleAssetLoader.Load<StyleSheet>(Constants.HidePropertyLabelStyleSheetName)));
@@ -276,7 +277,7 @@ namespace Sibz.ListElement.Tests
         [Test]
         public void ShouldNotAddHidePropertyLabelStyleSheetIfNotRequired()
         {
-            ListElement testElement = new ListElement(property, new ListElementOptions() {HidePropertyLabel = false});
+            ListElement testElement = new ListElement(property, new ListElementOptions {HidePropertyLabel = false});
 
             Assert.IsFalse(testElement.styleSheets.Contains(
                 SingleAssetLoader.SingleAssetLoader.Load<StyleSheet>(Constants.HidePropertyLabelStyleSheetName)));
@@ -312,7 +313,7 @@ namespace Sibz.ListElement.Tests
             ListElement testElement =
                 new ListElement(
                     testSerializedGameObject.FindProperty(nameof(MyTestObject.myCustomList)),
-                    new ListElementOptions() {DoNotUseObjectField = true});
+                    new ListElementOptions {DoNotUseObjectField = true});
 
             Assert.AreEqual(
                 DisplayStyle.Flex,
@@ -322,11 +323,11 @@ namespace Sibz.ListElement.Tests
                 testElement.Q(null, Constants.AddItemObjectField).style.display.value);
         }
 
-        [System.Serializable]
+        [Serializable]
         public class MyTestObject : MonoBehaviour
         {
-            public List<string> myList = new List<string>() {"item1", "item2", "item3"};
-            public List<CustomObject> myCustomList = new List<CustomObject>() {new CustomObject()};
+            public List<string> myList = new List<string> {"item1", "item2", "item3"};
+            public List<CustomObject> myCustomList = new List<CustomObject> {new CustomObject()};
         }
     }
 

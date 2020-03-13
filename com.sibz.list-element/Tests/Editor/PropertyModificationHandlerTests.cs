@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
-
+using Object = UnityEngine.Object;
 
 namespace Sibz.ListElement.Tests
 {
@@ -14,15 +15,15 @@ namespace Sibz.ListElement.Tests
         private SerializedObject testSerializedGameObject;
         private SerializedProperty property;
         private PropertyModificationHandler handler;
-            
 
-        [System.Serializable]
+
+        [Serializable]
         private class TestObject : MonoBehaviour
         {
-            public List<string> myList = new List<string>() {"item1", "item2", "item3"};
+            public List<string> myList = new List<string> {"item1", "item2", "item3"};
             public List<Object> myObjectList = new List<Object>();
         }
-        
+
         [SetUp]
         public void SetUp()
         {
@@ -32,13 +33,13 @@ namespace Sibz.ListElement.Tests
             property = testSerializedGameObject.FindProperty(nameof(TestObject.myList));
             handler = new PropertyModificationHandler(property);
         }
-        
+
         [Test]
         public void ShouldAddItemToList()
         {
             int initialArraySize = property.arraySize;
             handler.Add();
-            Assert.AreEqual(initialArraySize+1, property.arraySize);
+            Assert.AreEqual(initialArraySize + 1, property.arraySize);
         }
 
         [Test]
@@ -49,12 +50,12 @@ namespace Sibz.ListElement.Tests
             testHandler.Add(new Object());
             Assert.AreEqual(1, prop.arraySize);
         }
-        
+
         [Test]
         public void ShouldClearList()
         {
-           handler.Clear();
-           Assert.AreEqual(0, property.arraySize);
+            handler.Clear();
+            Assert.AreEqual(0, property.arraySize);
         }
 
         [Test]
@@ -62,7 +63,7 @@ namespace Sibz.ListElement.Tests
         {
             int initialArraySize = property.arraySize;
             handler.Remove(0);
-            Assert.AreEqual(initialArraySize-1, property.arraySize);
+            Assert.AreEqual(initialArraySize - 1, property.arraySize);
         }
 
         [Test]
@@ -75,7 +76,6 @@ namespace Sibz.ListElement.Tests
         [Test]
         public void ShouldThrowWhenDeletingOutOfRangeItem()
         {
-
             bool errorThrown = false;
             try
             {
@@ -85,9 +85,10 @@ namespace Sibz.ListElement.Tests
             {
                 errorThrown = true;
             }
+
             Assert.IsTrue(errorThrown);
         }
-        
+
         [Test]
         public void ShouldMoveItemUp()
         {
@@ -105,7 +106,6 @@ namespace Sibz.ListElement.Tests
         [Test]
         public void ShouldThrowIfMovingUpOutOfRangeItem()
         {
-            
             bool errorThrown = false;
             bool errorThrown2 = false;
             try
@@ -116,6 +116,7 @@ namespace Sibz.ListElement.Tests
             {
                 errorThrown = true;
             }
+
             try
             {
                 handler.MoveUp(-1);
@@ -124,6 +125,7 @@ namespace Sibz.ListElement.Tests
             {
                 errorThrown2 = true;
             }
+
             Assert.IsTrue(errorThrown && errorThrown2);
         }
 
@@ -144,7 +146,6 @@ namespace Sibz.ListElement.Tests
         [Test]
         public void ShouldThrowIfMovingItemDownOutOfRangeItem()
         {
-
             bool errorThrown = false;
             bool errorThrown2 = false;
             try
@@ -155,6 +156,7 @@ namespace Sibz.ListElement.Tests
             {
                 errorThrown = true;
             }
+
             try
             {
                 handler.MoveDown(-1);
@@ -163,6 +165,7 @@ namespace Sibz.ListElement.Tests
             {
                 errorThrown2 = true;
             }
+
             Assert.IsTrue(errorThrown && errorThrown2);
         }
     }

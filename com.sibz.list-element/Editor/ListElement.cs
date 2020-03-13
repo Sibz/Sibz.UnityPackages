@@ -2,8 +2,8 @@
 using Sibz.ListElement.Events;
 using UnityEditor;
 using UnityEditor.UIElements;
-using UnityEngine.UIElements;
 using UnityEngine;
+using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 
 namespace Sibz.ListElement
@@ -43,7 +43,7 @@ namespace Sibz.ListElement
         }
 
         public ListElement(SerializedProperty property, string label) : this(property,
-            new ListElementOptions() {Label = label})
+            new ListElementOptions {Label = label})
         {
         }
 
@@ -303,7 +303,7 @@ namespace Sibz.ListElement
         private void Reset()
         {
             DisableClearListButtonIfRequired();
-            
+
             PopulateList();
 
             OnReset?.Invoke();
@@ -315,7 +315,8 @@ namespace Sibz.ListElement
             if (serializedProperty.arraySize == 0)
             {
                 button?.SetEnabled(false);
-            } else if (!(button is null || button.enabledSelf))
+            }
+            else if (!(button is null || button.enabledSelf))
             {
                 button?.SetEnabled(true);
             }
@@ -335,11 +336,11 @@ namespace Sibz.ListElement
             for (int i = 0; i < serializedProperty.arraySize; i++)
             {
                 VisualElement itemRow = CreateItemRow(i);
-                
+
                 DisableReorderButtonIfRequired(itemRow, i, serializedProperty.arraySize);
-                
+
                 listContainer.Add(itemRow);
-                
+
                 eventHandler.BindItemButtons(i, itemRow);
             }
         }
@@ -348,18 +349,19 @@ namespace Sibz.ListElement
         {
             VisualElement itemRow = new VisualElement();
             itemTemplate.CloneTree(itemRow);
-            
+
             itemRow.Q<PropertyField>().BindProperty(serializedProperty.GetArrayElementAtIndex(index));
-            
+
             return itemRow;
         }
-        
+
         private static void DisableReorderButtonIfRequired(VisualElement itemRow, int index, int arraySize)
         {
             if (index == 0)
             {
                 itemRow.Q<Button>(null, Constants.MoveUpButtonClassName)?.SetEnabled(false);
             }
+
             if (index == arraySize - 1 || arraySize <= 1)
             {
                 itemRow.Q<Button>(null, Constants.MoveDownButtonClassName)?.SetEnabled(false);
@@ -411,8 +413,8 @@ namespace Sibz.ListElement
                 itemTemplateName = new UxmlStringAttributeDescription {name = "item-template-name"};
                 styleSheetName = new UxmlStringAttributeDescription {name = "stylesheet-name"};
                 templateName = new UxmlStringAttributeDescription {name = "template-name"};
-                hidePropertyLabel = new UxmlBoolAttributeDescription() {name = "hide-property-label"};
-                doNotUseObjectField = new UxmlBoolAttributeDescription() {name = "do-not-use-object-field"};
+                hidePropertyLabel = new UxmlBoolAttributeDescription {name = "hide-property-label"};
+                doNotUseObjectField = new UxmlBoolAttributeDescription {name = "do-not-use-object-field"};
             }
 
             public override void Init(VisualElement ve, IUxmlAttributes bag, CreationContext cc)

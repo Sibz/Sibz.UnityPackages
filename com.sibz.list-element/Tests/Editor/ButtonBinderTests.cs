@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
@@ -84,7 +83,7 @@ namespace Sibz.ListElement.Tests
         [Test]
         public void EnumerableBindShouldBindMultipleButtons()
         {
-            var binders = new List<ButtonBinder>()
+            var binders = new List<ButtonBinder>
             {
                 buttonBinder,
                 new ButtonBinder(ClassName2, DummyFunctionToCall)
@@ -93,11 +92,11 @@ namespace Sibz.ListElement.Tests
             Assert.IsTrue(HasFunctionBoundToClicked(button1, nameof(DummyFunctionToCall)));
             Assert.IsTrue(HasFunctionBoundToClicked(button1a, nameof(DummyFunctionToCall)));
         }
-        
+
         [Test]
         public void EnumerableBindShouldThrowIfAnyButtonDoesntExist()
         {
-            var binders = new List<ButtonBinder>()
+            var binders = new List<ButtonBinder>
             {
                 buttonBinder,
                 new ButtonBinder(ClassName2, DummyFunctionToCall)
@@ -118,13 +117,15 @@ namespace Sibz.ListElement.Tests
         private bool HasFunctionBoundToClicked(Button button, string funcName)
         {
             if (button is null)
+            {
                 throw new ArgumentException("button is null");
+            }
 
             // The actual clicked event is proxied into the m_Clickable field
             object mClickedValue = typeof(Button)
                 .GetField("m_Clickable", BindingFlags.Instance | BindingFlags.NonPublic)?
                 .GetValue(button);
-            
+
             // Get the private clicked field from the Clickable m_Clickable member on our button
             MulticastDelegate eventDelegate = (MulticastDelegate) typeof(Clickable)
                 .GetField("clicked", BindingFlags.Instance | BindingFlags.NonPublic)?

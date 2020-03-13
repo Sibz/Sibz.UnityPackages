@@ -31,10 +31,10 @@ namespace Sibz.UXMLList
 
             m_Root.Clear();
             m_Root.Add(new ListElement.ListElement(serializedObject.FindProperty(nameof(TestListBehaviour2.MyList)),
-                new ListElementOptions() {HidePropertyLabel = true}));
+                new ListElementOptions {HidePropertyLabel = true}));
             m_Root.Add(new ListElement.ListElement(
                 serializedObject.FindProperty(nameof(TestListBehaviour2.MyObjectList)),
-                new ListElementOptions() {HidePropertyLabel = true}));
+                new ListElementOptions {HidePropertyLabel = true}));
         }
     }
 }

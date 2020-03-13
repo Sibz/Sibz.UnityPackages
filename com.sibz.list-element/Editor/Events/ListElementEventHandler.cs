@@ -38,7 +38,7 @@ namespace Sibz.ListElement.Events
         {
             void RaiseEvent<T>() where T : EventBase, new()
             {
-                listElement.SendEvent(new T() {target = listElement});
+                listElement.SendEvent(new T {target = listElement});
             }
 
             outerButtonBinders = new[]
@@ -46,7 +46,7 @@ namespace Sibz.ListElement.Events
                 new ButtonBinder(Constants.AddButtonClassName, RaiseEvent<AddNewRequestedEvent>),
                 new ButtonBinder(Constants.DeleteAllButtonClassName, RaiseEvent<ClearListRequestedEvent>),
                 new ButtonBinder(Constants.DeleteConfirmButtonClassName, RaiseEvent<ClearListConfirmedEvent>),
-                new ButtonBinder(Constants.DeleteCancelButtonClassName, RaiseEvent<ClearListCancelledEvent>),
+                new ButtonBinder(Constants.DeleteCancelButtonClassName, RaiseEvent<ClearListCancelledEvent>)
             };
         }
 
@@ -59,7 +59,7 @@ namespace Sibz.ListElement.Events
 
         private void OnObjectFieldDrop(ChangeEvent<Object> evt)
         {
-            listElement.SendEvent(new AddNewRequestedEvent()
+            listElement.SendEvent(new AddNewRequestedEvent
             {
                 target = listElement,
                 Item = evt.newValue
@@ -70,18 +70,18 @@ namespace Sibz.ListElement.Events
         {
             void RaiseDeleteEvent()
             {
-                listElement.SendEvent(new RemoveItemRequestedEvent() {target = listElement, Index = index});
+                listElement.SendEvent(new RemoveItemRequestedEvent {target = listElement, Index = index});
             }
 
             void RaiseMoveUpEvent()
             {
-                listElement.SendEvent(new MoveItemRequestedEvent()
+                listElement.SendEvent(new MoveItemRequestedEvent
                     {target = listElement, Index = index, Direction = MoveItemRequestedEvent.MoveDirection.Up});
             }
 
             void RaiseMoveDownEvent()
             {
-                listElement.SendEvent(new MoveItemRequestedEvent()
+                listElement.SendEvent(new MoveItemRequestedEvent
                     {target = listElement, Index = index, Direction = MoveItemRequestedEvent.MoveDirection.Down});
             }
 
