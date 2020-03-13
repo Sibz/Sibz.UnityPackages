@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEditor.UIElements;
@@ -321,6 +322,56 @@ namespace Sibz.ListElement.Tests
             Assert.AreEqual(
                 DisplayStyle.None,
                 testElement.Q(null, Constants.AddItemObjectField).style.display.value);
+        }
+
+        [Test]
+        public void ShouldDisableFirstMoveUpButton()
+        {
+            Assert.IsFalse(listElement.Q(null, Constants.MoveUpButtonClassName).enabledSelf);
+        }
+
+        [Test]
+        public void ShouldDisableLastMoveDownButton()
+        {
+            Assert.IsFalse(listElement.Query(null, Constants.MoveDownButtonClassName).Build().Last().enabledSelf);
+        }
+
+        [Test]
+        public void ShouldDisableOnlyFirstMoveUpButton()
+        {
+            Assert.AreEqual(1,
+                listElement.Query(null, Constants.MoveUpButtonClassName).Build().ToList()
+                    .Count(x => x.enabledSelf == false));
+        }
+
+        [Test]
+        public void ShouldDisableOnlyLastMoveDownButton()
+        {
+            Assert.AreEqual(1,
+                listElement.Query(null, Constants.MoveDownButtonClassName).Build().ToList()
+                    .Count(x => x.enabledSelf == false));
+        }
+
+        [Test]
+        public void ShouldDisableBothReorderButtonsWithOnlyOneItem()
+        {
+            listElement.ClearListItems();
+            listElement.AddNewItemToList();
+            Assert.IsFalse(listElement.Q(null, Constants.MoveUpButtonClassName).enabledSelf);
+            Assert.IsFalse(listElement.Q(null, Constants.MoveDownButtonClassName).enabledSelf);
+        }
+
+        [Test]
+        public void ShouldDisableClearListButtonWhenNoItems()
+        {
+            listElement.ClearListItems();
+            Assert.IsFalse(listElement.Q(null, Constants.DeleteAllButtonClassName).enabledSelf);
+        }
+
+        [Test]
+        public void ShouldNotDisableClearListButtonWhenNoItems()
+        {
+            Assert.IsTrue(listElement.Q(null, Constants.DeleteAllButtonClassName).enabledSelf);
         }
 
         [Serializable]
