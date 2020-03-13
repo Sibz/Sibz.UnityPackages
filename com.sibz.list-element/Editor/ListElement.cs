@@ -4,6 +4,7 @@ using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Sibz.ListElement
 {
@@ -23,6 +24,7 @@ namespace Sibz.ListElement
         public string ItemTemplateName { get; private set; }
         public string StyleSheetName { get; private set; }
         private bool HidePropertyLabel { get; set; }
+        private bool DoNotUseObjectField { get; set; }
 
         #endregion
 
@@ -49,7 +51,7 @@ namespace Sibz.ListElement
         {
             serializedProperty = property;
 
-            eventHandler = new ListElementEventHandler(this, modHandler);
+            eventHandler = new ListElementEventHandler(this);
 
             ImportOptions(options);
 
@@ -63,6 +65,7 @@ namespace Sibz.ListElement
             ItemTemplateName = options.ItemTemplateName;
             StyleSheetName = options.StyleSheetName;
             HidePropertyLabel = options.HidePropertyLabel;
+            DoNotUseObjectField = options.DoNotUseObjectField;
         }
 
         private void InitialiseAndBindIfPropertyIsDefined()
@@ -91,11 +94,13 @@ namespace Sibz.ListElement
 
             SetLabelText();
 
+            SetObjectFieldLabelText();
+
             AddHidePropertyStyleSheetIfRequired();
 
             InitialiseWithSerializedProperty();
         }
-
+       
         private void LoadAndCloneTemplate()
         {
             try
@@ -135,6 +140,33 @@ namespace Sibz.ListElement
                 label.text = Label;
             }
         }
+        
+        private void SetObjectFieldLabelText()
+        {
+            if (!(GetLabelInHierarchy() is Label label))
+            {
+                return;
+            }
+
+            label.parent.style.justifyContent = Justify.Center;
+            label.style.display = DisplayStyle.None;
+            label.parent.Add(new Label("Drop here to add new item") {pickingMode = PickingMode.Ignore});
+        }
+
+        private VisualElement GetLabelInHierarchy()
+        {
+            try
+            {
+                return this.Q(null, Constants.AddItemObjectField)
+                    .hierarchy[0]
+                    .hierarchy[0]
+                    .hierarchy[1];
+            }
+            catch(NullReferenceException){}
+
+            return null;
+        }
+
 
         private void AddHidePropertyStyleSheetIfRequired()
         {
@@ -155,6 +187,9 @@ namespace Sibz.ListElement
             ListItemType = GetItemType(serializedProperty);
 
             modHandler = new PropertyModificationHandler(serializedProperty, Reset);
+            eventHandler.Initialise(modHandler);
+            
+            UseObjectFieldIfTypeIsUnityObject();
 
             AddArraySizeField();
 
@@ -183,6 +218,29 @@ namespace Sibz.ListElement
             return baseObject.GetType().IsGenericType
                 ? baseObject.GetType().GetGenericArguments()[0]
                 : baseObject.GetType();
+        }
+
+        private void UseObjectFieldIfTypeIsUnityObject()
+        {
+            VisualElement addItemSection = this.Q(null, Constants.AddItemSection);
+            if (addItemSection is null)
+            {
+                return;
+            }
+            ObjectField objectField = addItemSection.Q<ObjectField>(null, Constants.AddItemObjectField);
+            Button addButton = addItemSection.Q<Button>(null, Constants.AddButtonClassName);
+            
+            if (DoNotUseObjectField || !ListItemType.IsSubclassOf(typeof(Object)))
+            {
+                addButton.style.display = DisplayStyle.Flex;
+                objectField.style.display = DisplayStyle.None;
+            }
+            else
+            {
+                addButton.style.display = DisplayStyle.None;
+                objectField.style.display = DisplayStyle.Flex;
+                objectField.objectType = ListItemType;
+            }
         }
 
         private void AddArraySizeField()
@@ -261,7 +319,8 @@ namespace Sibz.ListElement
             {
                 VisualElement listItemElement = new VisualElement();
                 itemTemplate.CloneTree(listItemElement);
-                listItemElement.Q<PropertyField>().BindProperty(serializedProperty.GetArrayElementAtIndex(i));
+                listItemElement.Q<PropertyField>()
+                    .BindProperty(serializedProperty.GetArrayElementAtIndex(i));
                 listContainer.Add(listItemElement);
                 eventHandler.BindItemButtons(i, listItemElement);
             }
@@ -304,6 +363,7 @@ namespace Sibz.ListElement
             private readonly UxmlStringAttributeDescription styleSheetName;
             private readonly UxmlStringAttributeDescription templateName;
             private readonly UxmlBoolAttributeDescription hidePropertyLabel;
+            private readonly UxmlBoolAttributeDescription doNotUseObjectField;
 
             public UxmlTraits()
             {
@@ -312,6 +372,7 @@ namespace Sibz.ListElement
                 styleSheetName = new UxmlStringAttributeDescription {name = "stylesheet-name"};
                 templateName = new UxmlStringAttributeDescription {name = "template-name"};
                 hidePropertyLabel = new UxmlBoolAttributeDescription() {name = "hide-property-label"};
+                doNotUseObjectField = new UxmlBoolAttributeDescription() {name = "do-not-use-object-field"};
             }
 
             public override void Init(VisualElement ve, IUxmlAttributes bag, CreationContext cc)
@@ -325,6 +386,7 @@ namespace Sibz.ListElement
 
                 le.Label = label.GetValueFromBag(bag, cc);
                 le.HidePropertyLabel = hidePropertyLabel.GetValueFromBag(bag, cc);
+                le.DoNotUseObjectField = doNotUseObjectField.GetValueFromBag(bag, cc);
 
                 string itn = itemTemplateName.GetValueFromBag(bag, cc);
                 string ssn = styleSheetName.GetValueFromBag(bag, cc);

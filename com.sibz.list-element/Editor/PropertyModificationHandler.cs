@@ -1,4 +1,5 @@
 ﻿using UnityEditor;
+using UnityEngine;
 
 namespace Sibz.ListElement
 {
@@ -20,9 +21,15 @@ namespace Sibz.ListElement
             onModify?.Invoke();
         }
 
-        public void Add()
+        public void Add(Object obj = null)
         {
             property.InsertArrayElementAtIndex(property.arraySize);
+            if (!(obj is null))
+            {
+                property
+                    .GetArrayElementAtIndex(property.arraySize - 1)
+                    .objectReferenceValue = obj;
+            }
             ApplyModification();
         }
 
@@ -33,7 +40,15 @@ namespace Sibz.ListElement
                 throw new System.IndexOutOfRangeException("Unable to delete item");
             }
 
+            int initialArraySize = property.arraySize;
             property.DeleteArrayElementAtIndex(index);
+            
+            // Delete doesn't delete first time if it's an object
+            if (initialArraySize == property.arraySize)
+            {
+                property.DeleteArrayElementAtIndex(index);
+            }
+
             ApplyModification();
         }
 

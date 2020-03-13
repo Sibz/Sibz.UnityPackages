@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -7,15 +8,19 @@ namespace Sibz.ListElement.Events
     public class ListElementEventHandler
     {
         private readonly ListElement listElement;
-        private readonly PropertyModificationHandler handler;
+        private PropertyModificationHandler handler;
         private ButtonBinder[] outerButtonBinders;
 
-        public ListElementEventHandler(ListElement le, PropertyModificationHandler handler)
+        public ListElementEventHandler(ListElement le)
         {
             listElement = le;
-            this.handler = handler;
             RegisterCallbacks();
             CreateOuterButtonBinders();
+        }
+
+        public void Initialise(PropertyModificationHandler modHandler)
+        {
+            handler = modHandler;
         }
 
         [SuppressMessage("ReSharper", "HeapView.DelegateAllocation")]
@@ -33,7 +38,6 @@ namespace Sibz.ListElement.Events
         {
             void RaiseEvent<T>() where T : EventBase, new()
             {
-                Debug.Log("Event Raised");
                 listElement.SendEvent(new T() {target = listElement});
             }
 
@@ -49,6 +53,16 @@ namespace Sibz.ListElement.Events
         public void BindOuterButtons()
         {
             outerButtonBinders.BindButtons(listElement);
+            listElement.Q<ObjectField>(null, Constants.AddItemObjectField)?.RegisterCallback<ChangeEvent<Object>>(OnObjectFieldDrop);
+        }
+
+        private void OnObjectFieldDrop(ChangeEvent<Object> evt)
+        {
+            listElement.SendEvent(new AddNewRequestedEvent()
+            {
+                target = listElement,
+                Item = evt.newValue
+            });
         }
 
         public void BindItemButtons(int index, VisualElement itemSection)
@@ -77,7 +91,13 @@ namespace Sibz.ListElement.Events
 
         private void OnAddNewRequested(AddNewRequestedEvent evt)
         {
-            handler.Add();
+            handler.Add(evt.Item);
+            ResetAddObjectFieldValueToNull();
+        }
+
+        private void ResetAddObjectFieldValueToNull()
+        {
+            listElement.Q<ObjectField>(null, Constants.AddItemObjectField).SetValueWithoutNotify(null);
         }
 
         private void OnClearListRequested(ClearListRequestedEvent evt)
@@ -118,8 +138,6 @@ namespace Sibz.ListElement.Events
             listElement.Q(null, Constants.DeleteConfirmSectionClassName).style.display =
                 show ? DisplayStyle.Flex : DisplayStyle.None;
             listElement.Q(null, Constants.DeleteAllButtonClassName).style.display =
-                show ? DisplayStyle.None : DisplayStyle.Flex;
-            listElement.Q(null, Constants.AddButtonClassName).style.display =
                 show ? DisplayStyle.None : DisplayStyle.Flex;
         }
     }

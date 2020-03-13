@@ -6,7 +6,7 @@
         public string ItemTemplateName { get; set; } = Constants.DefaultItemTemplateName;
         public string StyleSheetName { get; set; } = Constants.DefaultStyleSheetName;
         public string Label { get; set; }
-
         public bool HidePropertyLabel { get; set; }
+        public bool DoNotUseObjectField { get; set; }
     }
 }

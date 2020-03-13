@@ -6,6 +6,7 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
+
 namespace Sibz.ListElement.Tests
 {
     /// <summary>
@@ -279,6 +280,45 @@ namespace Sibz.ListElement.Tests
 
             Assert.IsFalse(testElement.styleSheets.Contains(
                 SingleAssetLoader.SingleAssetLoader.Load<StyleSheet>(Constants.HidePropertyLabelStyleSheetName)));
+        }
+
+        [Test]
+        public void ShouldHaveAddButtonForSimpleTypes()
+        {    
+            Assert.AreEqual(
+                DisplayStyle.Flex,
+                listElement.Q(null, Constants.AddButtonClassName).style.display.value);
+            Assert.AreEqual(
+                DisplayStyle.None,
+                listElement.Q(null, Constants.AddItemObjectField).style.display.value);
+        }
+
+        [Test]
+        public void ShouldHaveObjectFieldForObjectTypes()
+        {
+            ListElement testElement = new ListElement(testSerializedGameObject.FindProperty(nameof(MyTestObject.myCustomList)));
+            Assert.AreEqual(
+                DisplayStyle.None ,
+                testElement.Q(null, Constants.AddButtonClassName).style.display.value);
+            Assert.AreEqual(
+                DisplayStyle.Flex,
+                testElement.Q(null, Constants.AddItemObjectField).style.display.value);
+        }
+
+        [Test]
+        public void ShouldNotUseObjectFieldIfSpecified()
+        {
+            ListElement testElement = 
+                new ListElement(
+                    testSerializedGameObject.FindProperty(nameof(MyTestObject.myCustomList)),
+                    new ListElementOptions() { DoNotUseObjectField = true });
+
+            Assert.AreEqual(
+                DisplayStyle.Flex,
+                testElement.Q(null, Constants.AddButtonClassName).style.display.value);
+            Assert.AreEqual(
+                DisplayStyle.None,
+                testElement.Q(null, Constants.AddItemObjectField).style.display.value);
         }
 
         [System.Serializable]

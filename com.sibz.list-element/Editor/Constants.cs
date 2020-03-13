@@ -11,11 +11,13 @@
         public const string ItemSectionClassName = "sibz-list-items-section";
         public const string HeaderLabelClassName = "sibz-list-header-label";
         public const string DeleteAllButtonClassName = "sibz-list-delete-all-button";
-        public const string AddButtonClassName = "sibz-list-add-button";
         public const string DeleteConfirmButtonClassName = "sibz-list-delete-confirm-yes";
         public const string DeleteCancelButtonClassName = "sibz-list-delete-confirm-no";
         public const string DeleteItemButtonClassName = "sibz-list-delete-item-button";
         public const string MoveUpButtonClassName = "sibz-list-move-up-button";
         public const string MoveDownButtonClassName = "sibz-list-move-down-button";
+        public const string AddItemSection = "sibz-list-add-section";
+        public const string AddButtonClassName = "sibz-list-add-button";
+        public const string AddItemObjectField = "sibz-list-add-item-object-field";
     }
 }

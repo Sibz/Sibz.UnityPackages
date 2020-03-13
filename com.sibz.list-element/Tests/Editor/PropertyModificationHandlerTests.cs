@@ -2,9 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using NUnit.Framework;
 using UnityEditor;
-using UnityEditor.UIElements;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 
 namespace Sibz.ListElement.Tests
@@ -22,6 +20,7 @@ namespace Sibz.ListElement.Tests
         private class TestObject : MonoBehaviour
         {
             public List<string> myList = new List<string>() {"item1", "item2", "item3"};
+            public List<Object> myObjectList = new List<Object>();
         }
         
         [SetUp]
@@ -43,6 +42,15 @@ namespace Sibz.ListElement.Tests
         }
 
         [Test]
+        public void ShouldAddObjectItemToList()
+        {
+            SerializedProperty prop = testSerializedGameObject.FindProperty(nameof(TestObject.myObjectList));
+            PropertyModificationHandler testHandler = new PropertyModificationHandler(prop);
+            testHandler.Add(new Object());
+            Assert.AreEqual(1, prop.arraySize);
+        }
+        
+        [Test]
         public void ShouldClearList()
         {
            handler.Clear();
@@ -60,7 +68,6 @@ namespace Sibz.ListElement.Tests
         [Test]
         public void ShouldDeleteCorrectItem()
         {
-            int initialArraySize = property.arraySize;
             handler.Remove(0);
             Assert.AreEqual("item3", property.GetArrayElementAtIndex(1).stringValue);
         }

@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Sibz.ListElement;
+﻿using Sibz.ListElement;
 using UnityEditor;
 using UnityEditor.UIElements;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Sibz.UXMLList
@@ -38,6 +32,8 @@ namespace Sibz.UXMLList
 
             m_Root.Clear();
             m_Root.Add(new ListElement.ListElement(serializedObject.FindProperty(nameof(TestListBehaviour2.MyList)),
+                new ListElementOptions() {HidePropertyLabel = true}));
+            m_Root.Add(new ListElement.ListElement(serializedObject.FindProperty(nameof(TestListBehaviour2.MyObjectList)),
                 new ListElementOptions() {HidePropertyLabel = true}));
         }
     }
