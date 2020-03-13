@@ -302,9 +302,23 @@ namespace Sibz.ListElement
 
         private void Reset()
         {
+            DisableClearListButtonIfRequired();
+            
             PopulateList();
 
             OnReset?.Invoke();
+        }
+
+        private void DisableClearListButtonIfRequired()
+        {
+            Button button = this.Q<Button>(null, Constants.DeleteAllButtonClassName);
+            if (serializedProperty.arraySize == 0)
+            {
+                button?.SetEnabled(false);
+            } else if (!(button is null || button.enabledSelf))
+            {
+                button?.SetEnabled(true);
+            }
         }
 
         private void PopulateList()
@@ -320,12 +334,35 @@ namespace Sibz.ListElement
 
             for (int i = 0; i < serializedProperty.arraySize; i++)
             {
-                VisualElement listItemElement = new VisualElement();
-                itemTemplate.CloneTree(listItemElement);
-                listItemElement.Q<PropertyField>()
-                    .BindProperty(serializedProperty.GetArrayElementAtIndex(i));
-                listContainer.Add(listItemElement);
-                eventHandler.BindItemButtons(i, listItemElement);
+                VisualElement itemRow = CreateItemRow(i);
+                
+                DisableReorderButtonIfRequired(itemRow, i, serializedProperty.arraySize);
+                
+                listContainer.Add(itemRow);
+                
+                eventHandler.BindItemButtons(i, itemRow);
+            }
+        }
+
+        private VisualElement CreateItemRow(int index)
+        {
+            VisualElement itemRow = new VisualElement();
+            itemTemplate.CloneTree(itemRow);
+            
+            itemRow.Q<PropertyField>().BindProperty(serializedProperty.GetArrayElementAtIndex(index));
+            
+            return itemRow;
+        }
+        
+        private static void DisableReorderButtonIfRequired(VisualElement itemRow, int index, int arraySize)
+        {
+            if (index == 0)
+            {
+                itemRow.Q<Button>(null, Constants.MoveUpButtonClassName)?.SetEnabled(false);
+            }
+            if (index == arraySize - 1 || arraySize <= 1)
+            {
+                itemRow.Q<Button>(null, Constants.MoveDownButtonClassName)?.SetEnabled(false);
             }
         }
 
