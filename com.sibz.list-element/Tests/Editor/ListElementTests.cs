@@ -91,7 +91,7 @@ namespace Sibz.ListElement.Tests
             Assert.IsTrue(CheckForDefaultTemplateItems(listElement));
         }
 
-        private bool CheckForDefaultTemplateItems(ListElement testElement)
+        private static bool CheckForDefaultTemplateItems(VisualElement testElement)
         {
             return
                 testElement.Q(null, Constants.HeaderSectionClassName) != null
