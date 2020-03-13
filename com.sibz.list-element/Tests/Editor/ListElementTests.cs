@@ -284,7 +284,7 @@ namespace Sibz.ListElement.Tests
 
         [Test]
         public void ShouldHaveAddButtonForSimpleTypes()
-        {    
+        {
             Assert.AreEqual(
                 DisplayStyle.Flex,
                 listElement.Q(null, Constants.AddButtonClassName).style.display.value);
@@ -296,9 +296,10 @@ namespace Sibz.ListElement.Tests
         [Test]
         public void ShouldHaveObjectFieldForObjectTypes()
         {
-            ListElement testElement = new ListElement(testSerializedGameObject.FindProperty(nameof(MyTestObject.myCustomList)));
+            ListElement testElement =
+                new ListElement(testSerializedGameObject.FindProperty(nameof(MyTestObject.myCustomList)));
             Assert.AreEqual(
-                DisplayStyle.None ,
+                DisplayStyle.None,
                 testElement.Q(null, Constants.AddButtonClassName).style.display.value);
             Assert.AreEqual(
                 DisplayStyle.Flex,
@@ -308,10 +309,10 @@ namespace Sibz.ListElement.Tests
         [Test]
         public void ShouldNotUseObjectFieldIfSpecified()
         {
-            ListElement testElement = 
+            ListElement testElement =
                 new ListElement(
                     testSerializedGameObject.FindProperty(nameof(MyTestObject.myCustomList)),
-                    new ListElementOptions() { DoNotUseObjectField = true });
+                    new ListElementOptions() {DoNotUseObjectField = true});
 
             Assert.AreEqual(
                 DisplayStyle.Flex,

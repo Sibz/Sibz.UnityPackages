@@ -53,7 +53,8 @@ namespace Sibz.ListElement.Events
         public void BindOuterButtons()
         {
             outerButtonBinders.BindButtons(listElement);
-            listElement.Q<ObjectField>(null, Constants.AddItemObjectField)?.RegisterCallback<ChangeEvent<Object>>(OnObjectFieldDrop);
+            listElement.Q<ObjectField>(null, Constants.AddItemObjectField)
+                ?.RegisterCallback<ChangeEvent<Object>>(OnObjectFieldDrop);
         }
 
         private void OnObjectFieldDrop(ChangeEvent<Object> evt)

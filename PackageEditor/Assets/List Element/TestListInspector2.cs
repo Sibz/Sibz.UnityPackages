@@ -22,7 +22,6 @@ namespace Sibz.UXMLList
             return m_Root;
         }
 
-
         public void OnEnable()
         {
             if (m_Root is null)
@@ -33,7 +32,8 @@ namespace Sibz.UXMLList
             m_Root.Clear();
             m_Root.Add(new ListElement.ListElement(serializedObject.FindProperty(nameof(TestListBehaviour2.MyList)),
                 new ListElementOptions() {HidePropertyLabel = true}));
-            m_Root.Add(new ListElement.ListElement(serializedObject.FindProperty(nameof(TestListBehaviour2.MyObjectList)),
+            m_Root.Add(new ListElement.ListElement(
+                serializedObject.FindProperty(nameof(TestListBehaviour2.MyObjectList)),
                 new ListElementOptions() {HidePropertyLabel = true}));
         }
     }

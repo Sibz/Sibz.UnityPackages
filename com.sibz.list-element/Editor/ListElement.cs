@@ -100,7 +100,7 @@ namespace Sibz.ListElement
 
             InitialiseWithSerializedProperty();
         }
-       
+
         private void LoadAndCloneTemplate()
         {
             try
@@ -126,7 +126,7 @@ namespace Sibz.ListElement
 
         private void SetLabelText()
         {
-            Label label = this.Query<Label>(null, Constants.HeaderLabelClassName);
+            Label label = this.Q<Label>(null, Constants.HeaderLabelClassName);
             if (string.IsNullOrEmpty(Label) && !(serializedProperty is null))
             {
                 label.text = ObjectNames.NicifyVariableName(serializedProperty.name);
@@ -140,7 +140,7 @@ namespace Sibz.ListElement
                 label.text = Label;
             }
         }
-        
+
         private void SetObjectFieldLabelText()
         {
             if (!(GetLabelInHierarchy() is Label label))
@@ -162,7 +162,9 @@ namespace Sibz.ListElement
                     .hierarchy[0]
                     .hierarchy[1];
             }
-            catch(NullReferenceException){}
+            catch (NullReferenceException)
+            {
+            }
 
             return null;
         }
@@ -188,7 +190,7 @@ namespace Sibz.ListElement
 
             modHandler = new PropertyModificationHandler(serializedProperty, Reset);
             eventHandler.Initialise(modHandler);
-            
+
             UseObjectFieldIfTypeIsUnityObject();
 
             AddArraySizeField();
@@ -227,9 +229,10 @@ namespace Sibz.ListElement
             {
                 return;
             }
+
             ObjectField objectField = addItemSection.Q<ObjectField>(null, Constants.AddItemObjectField);
             Button addButton = addItemSection.Q<Button>(null, Constants.AddButtonClassName);
-            
+
             if (DoNotUseObjectField || !ListItemType.IsSubclassOf(typeof(Object)))
             {
                 addButton.style.display = DisplayStyle.Flex;

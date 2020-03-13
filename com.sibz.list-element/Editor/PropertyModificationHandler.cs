@@ -30,6 +30,7 @@ namespace Sibz.ListElement
                     .GetArrayElementAtIndex(property.arraySize - 1)
                     .objectReferenceValue = obj;
             }
+
             ApplyModification();
         }
 
@@ -42,7 +43,7 @@ namespace Sibz.ListElement
 
             int initialArraySize = property.arraySize;
             property.DeleteArrayElementAtIndex(index);
-            
+
             // Delete doesn't delete first time if it's an object
             if (initialArraySize == property.arraySize)
             {
