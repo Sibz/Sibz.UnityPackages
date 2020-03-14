@@ -33,7 +33,7 @@ namespace Sibz.ListElement.Tests.EventHandling
             testSerializedGameObject = new SerializedObject(testGameObject.GetComponent<TestBehaviour>());
             property = testSerializedGameObject.FindProperty(nameof(TestBehaviour.myList));
             eventHandler = new TestEventHandler();
-            listElement = new ListElement(property, eventHandler);
+            listElement = new ListElement(property, null, eventHandler);
             testWindow.rootVisualElement.Add(listElement);
         }
 

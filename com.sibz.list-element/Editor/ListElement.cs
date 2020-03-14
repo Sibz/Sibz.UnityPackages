@@ -17,18 +17,19 @@ namespace Sibz.ListElement
         private StyleSheet styleSheet;
         private VisualTreeAsset template;
 
+        public readonly ListElementOptionsInternal Options;
         public bool IsInitialised { get; private set; }
         public Type ListItemType { get; private set; }
         public event Action OnReset;
 
         #region Attribute Properties
 
-        public string Label { get; private set; }
-        public string TemplateName { get; private set; }
-        public string ItemTemplateName { get; private set; }
-        public string StyleSheetName { get; private set; }
-        private bool HidePropertyLabel { get; set; }
-        private bool DoNotUseObjectField { get; set; }
+        private string Label => Options.Label;
+        private string TemplateName => Options.TemplateName;
+        private string ItemTemplateName => Options.ItemTemplateName;
+        private string StyleSheetName => Options.StyleSheetName;
+        private bool HidePropertyLabel => Options.HidePropertyLabel;
+        private bool DoNotUseObjectField => Options.DoNotUseObjectField;
 
         #endregion
 
@@ -38,41 +39,28 @@ namespace Sibz.ListElement
         {
         }
 
-        public ListElement(IListElementEventHandler evtHandler) : this(null, new ListElementOptions(), evtHandler)
+        public ListElement(SerializedProperty property) : this(
+            string.Empty, property)
         {
         }
 
-        public ListElement(SerializedProperty property, IListElementEventHandler evtHandler = null) : this(property,
-            new ListElementOptions(), evtHandler)
-        {
-        }
-
-        public ListElement(SerializedProperty property, string label, IListElementEventHandler evtHandler = null) :
+        public ListElement(string label, SerializedProperty property, IListElementEventHandler evtHandler = null) :
             this(property,
                 new ListElementOptions {Label = label}, evtHandler)
         {
         }
 
+        // ReSharper disable once SuggestBaseTypeForParameter
         public ListElement(SerializedProperty property, ListElementOptions options,
             IListElementEventHandler evtHandler = null)
         {
             serializedProperty = property;
 
+            Options = options ?? new ListElementOptionsInternal();
+
             eventHandler = evtHandler ?? new ListElementEventHandler(this);
 
-            ImportOptions(options);
-
             InitialiseAndBindIfPropertyIsDefined();
-        }
-
-        private void ImportOptions(ListElementOptions options)
-        {
-            Label = options.Label;
-            TemplateName = options.TemplateName;
-            ItemTemplateName = options.ItemTemplateName;
-            StyleSheetName = options.StyleSheetName;
-            HidePropertyLabel = options.HidePropertyLabel;
-            DoNotUseObjectField = options.DoNotUseObjectField;
         }
 
         private void InitialiseAndBindIfPropertyIsDefined()
@@ -540,7 +528,8 @@ namespace Sibz.ListElement
 
         // ReSharper disable once UnusedMember.Global
         public new class UxmlFactory : UxmlFactory<ListElement, UxmlTraits>
-        {}
+        {
+        }
 
         public new class UxmlTraits : BindableElement.UxmlTraits
         {
@@ -570,9 +559,9 @@ namespace Sibz.ListElement
                     return;
                 }
 
-                le.Label = label.GetValueFromBag(bag, cc);
-                le.HidePropertyLabel = hidePropertyLabel.GetValueFromBag(bag, cc);
-                le.DoNotUseObjectField = doNotUseObjectField.GetValueFromBag(bag, cc);
+                le.Options.Label = label.GetValueFromBag(bag, cc);
+                le.Options.HidePropertyLabel = hidePropertyLabel.GetValueFromBag(bag, cc);
+                le.Options.DoNotUseObjectField = doNotUseObjectField.GetValueFromBag(bag, cc);
 
                 string itn = itemTemplateName.GetValueFromBag(bag, cc);
                 string ssn = styleSheetName.GetValueFromBag(bag, cc);
@@ -580,17 +569,17 @@ namespace Sibz.ListElement
 
                 if (!string.IsNullOrEmpty(itn))
                 {
-                    le.ItemTemplateName = itn;
+                    le.Options.ItemTemplateName = itn;
                 }
 
                 if (!string.IsNullOrEmpty(ssn))
                 {
-                    le.StyleSheetName = ssn;
+                    le.Options.StyleSheetName = ssn;
                 }
 
                 if (!string.IsNullOrEmpty(tn))
                 {
-                    le.TemplateName = tn;
+                    le.Options.TemplateName = tn;
                 }
 
                 le.Initialise();

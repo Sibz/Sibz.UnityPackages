@@ -136,7 +136,7 @@ namespace Sibz.ListElement.Tests
         [Test]
         public void ShouldNameLabelSameAsListWhenNoLabelProvided()
         {
-            ListElement testElement = new ListElement(property, string.Empty);
+            ListElement testElement = new ListElement(string.Empty, property);
             Label label = testElement.Q<Label>(null, Constants.HeaderLabelClassName);
             Assert.AreEqual(ObjectNames.NicifyVariableName(nameof(MyTestObject.myList)), label.text);
         }
@@ -144,7 +144,7 @@ namespace Sibz.ListElement.Tests
         [Test]
         public void ShouldNameLabelAsProvided()
         {
-            ListElement testElement = new ListElement(property, "Label");
+            ListElement testElement = new ListElement("Label", property);
             Label label = testElement.Q<Label>(null, Constants.HeaderLabelClassName);
             Assert.AreEqual("Label", label.text);
         }
@@ -166,10 +166,10 @@ namespace Sibz.ListElement.Tests
             vta.CloneTree(root);
             ListElement le = root.Q<ListElement>();
 
-            Assert.AreEqual("TestLabel", le.Label);
-            Assert.AreEqual("TestTemplate", le.TemplateName);
-            Assert.AreEqual("TestTemplate", le.StyleSheetName);
-            Assert.AreEqual("TestItemTemplate", le.ItemTemplateName);
+            Assert.AreEqual("TestLabel", le.Options.Label);
+            Assert.AreEqual("TestTemplate", le.Options.TemplateName);
+            Assert.AreEqual("TestTemplate", le.Options.StyleSheetName);
+            Assert.AreEqual("TestItemTemplate", le.Options.ItemTemplateName);
         }
 
         [Test]

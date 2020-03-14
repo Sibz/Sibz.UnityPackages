@@ -1,12 +1,43 @@
 ﻿namespace Sibz.ListElement
 {
-    public class ListElementOptions
+    public class ListElementOptions : ListElementOptionsInternal
     {
-        public string TemplateName { get; set; } = Constants.DefaultTemplateName;
-        public string ItemTemplateName { get; set; } = Constants.DefaultItemTemplateName;
-        public string StyleSheetName { get; set; } = Constants.DefaultStyleSheetName;
-        public string Label { get; set; }
-        public bool HidePropertyLabel { get; set; } = true;
-        public bool DoNotUseObjectField { get; set; }
+
+        public new string TemplateName
+        {
+            get => base.TemplateName;
+            set => base.TemplateName = value;
+        }
+
+        public new string ItemTemplateName
+        {
+            get => base.ItemTemplateName;
+            set => base.ItemTemplateName = value;
+        }
+
+        public new string StyleSheetName
+        {
+            get => base.StyleSheetName;
+            set => base.StyleSheetName = value;
+        }
+
+        public new string Label
+        {
+            get => base.Label;
+            set => base.Label = value;
+        }
+
+        public new bool HidePropertyLabel
+        {
+            get => base.HidePropertyLabel;
+            set => base.HidePropertyLabel = value;
+        }
+
+        public new bool DoNotUseObjectField
+        {
+            get => base.DoNotUseObjectField;
+            set => base.DoNotUseObjectField = value;
+        }
     }
+  
 }
