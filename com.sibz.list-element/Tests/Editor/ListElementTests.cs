@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -6,11 +7,16 @@ using NUnit.Framework;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
+using UnityEngine.TestTools;
 using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 
 namespace Sibz.ListElement.Tests
 {
+    public class TestWindow : EditorWindow
+    {
+    }
+
     /// <summary>
     ///     ListElement renders a list using defaults or provided options dealing with the
     ///     interactions that modify the list
@@ -18,20 +24,46 @@ namespace Sibz.ListElement.Tests
     [SuppressMessage("ReSharper", "HeapView.BoxingAllocation")]
     public class ListElementTests
     {
+        private ListElement listElement;
+        private SerializedProperty property;
         private GameObject testGameObject;
         private SerializedObject testSerializedGameObject;
-        private SerializedProperty property;
-        private ListElement listElement;
+
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            EditorWindow.GetWindow<TestWindow>();
+            testGameObject = Object.Instantiate(new GameObject());
+        }
 
         [SetUp]
         public void TestSetup()
         {
-            testGameObject = Object.Instantiate(new GameObject());
             testGameObject.AddComponent<MyTestObject>();
-
             testSerializedGameObject = new SerializedObject(testGameObject.GetComponent<MyTestObject>());
             property = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
             listElement = new ListElement(property);
+
+            EditorWindow.GetWindow<TestWindow>().rootVisualElement.Add(listElement);
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            EditorWindow.GetWindow<TestWindow>().rootVisualElement.Clear();
+            Object.DestroyImmediate(testGameObject.GetComponent<MyTestObject>());
+            testSerializedGameObject = null;
+            property = null;
+            listElement = null;
+        }
+
+        [OneTimeTearDown]
+        public void OneTimeTearDown()
+        {
+            TestWindow w = EditorWindow.GetWindow<TestWindow>();
+            w.Close();
+            Object.DestroyImmediate(w);
+            Object.DestroyImmediate(testGameObject);
         }
 
         [Test]
@@ -284,6 +316,24 @@ namespace Sibz.ListElement.Tests
                 SingleAssetLoader.SingleAssetLoader.Load<StyleSheet>(Constants.HidePropertyLabelStyleSheetName)));
         }
 
+        [UnityTest]
+        public IEnumerator ShouldHidePropertyLabelsIfRequired()
+        {
+            yield return null;
+            Assert.IsTrue(listElement.Query<PropertyField>().Build().ToList().All(x =>
+                x.hierarchy[0].hierarchy[0].resolvedStyle.display == DisplayStyle.None));
+        }
+
+        [UnityTest]
+        public IEnumerator ShouldNotHidePropertyLabelsIfNotRequired()
+        {
+            ListElement testElement = new ListElement(property, new ListElementOptions {HidePropertyLabel = false});
+            EditorWindow.GetWindow<TestWindow>().rootVisualElement.Add(testElement);
+            yield return null;
+            Assert.IsFalse(testElement.Query<PropertyField>().Build().ToList().Any(x =>
+                x.hierarchy[0].hierarchy[0].resolvedStyle.display == DisplayStyle.None));
+        }
+
         [Test]
         public void ShouldHaveAddButtonForSimpleTypes()
         {
@@ -377,8 +427,8 @@ namespace Sibz.ListElement.Tests
         [Serializable]
         public class MyTestObject : MonoBehaviour
         {
-            public List<string> myList = new List<string> {"item1", "item2", "item3"};
             public List<CustomObject> myCustomList = new List<CustomObject> {new CustomObject()};
+            public List<string> myList = new List<string> {"item1", "item2", "item3"};
         }
     }
 
