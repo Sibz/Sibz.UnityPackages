@@ -3,7 +3,7 @@ using UnityEngine.UIElements;
 
 namespace Sibz.ListElement.Events
 {
-    public class AddNewRequestedEvent : EventBase<AddNewRequestedEvent>
+    public class AddItemEvent : EventBase<AddItemEvent>
     {
         public Object Item;
     }

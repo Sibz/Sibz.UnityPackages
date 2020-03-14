@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Sibz.ListElement.Events;
 using UnityEditor;
 using UnityEditor.UIElements;
@@ -10,12 +11,200 @@ namespace Sibz.ListElement
 {
     public class ListElement : BindableElement
     {
-        private VisualTreeAsset template;
-        private StyleSheet styleSheet;
+        private readonly IListElementEventHandler eventHandler;
         private VisualTreeAsset itemTemplate;
         private SerializedProperty serializedProperty;
-        private PropertyModificationHandler modHandler;
-        private readonly ListElementEventHandler eventHandler;
+        private StyleSheet styleSheet;
+        private VisualTreeAsset template;
+
+        public bool IsInitialised { get; private set; }
+        public Type ListItemType { get; private set; }
+        public event Action OnReset;
+
+        protected override void ExecuteDefaultActionAtTarget(EventBase evt)
+        {
+            base.ExecuteDefaultActionAtTarget(evt);
+            Type type = evt.GetType();
+
+            if (type.Name != "SerializedPropertyBindEvent" ||
+                !(type.GetProperty("bindProperty")?.GetValue(evt) is SerializedProperty property))
+            {
+                return;
+            }
+
+            serializedProperty = property;
+            if (!IsInitialised)
+            {
+                Initialise();
+            }
+
+            Reset();
+        }
+
+        private void Reset()
+        {
+            DisableClearListButtonIfRequired();
+
+            PopulateList();
+
+            OnReset?.Invoke();
+        }
+
+        private void DisableClearListButtonIfRequired()
+        {
+            Button button = this.Q<Button>(null, Constants.DeleteAllButtonClassName);
+            if (serializedProperty.arraySize == 0)
+            {
+                button?.SetEnabled(false);
+            }
+            else if (!(button is null || button.enabledSelf))
+            {
+                button.SetEnabled(true);
+            }
+        }
+
+        private void PopulateList()
+        {
+            if (!serializedProperty.isArray)
+            {
+                Debug.LogWarning("Bound property is not an array type");
+                return;
+            }
+
+            VisualElement listContainer = this.Q<VisualElement>(null, Constants.ItemSectionClassName);
+            listContainer.Clear();
+
+            for (int i = 0; i < serializedProperty.arraySize; i++)
+            {
+                VisualElement itemRow = CreateItemRow(i);
+
+                DisableReorderButtonIfRequired(itemRow, i, serializedProperty.arraySize);
+
+                listContainer.Add(itemRow);
+            }
+        }
+
+        private VisualElement CreateItemRow(int index)
+        {
+            ListRowElement itemRow = new ListRowElement(index);
+            itemTemplate.CloneTree(itemRow);
+
+            itemRow.Q<PropertyField>().BindProperty(serializedProperty.GetArrayElementAtIndex(index));
+
+            return itemRow;
+        }
+
+        private static void DisableReorderButtonIfRequired(VisualElement itemRow, int index, int arraySize)
+        {
+            if (index == 0)
+            {
+                itemRow.Q<Button>(null, Constants.MoveUpButtonClassName)?.SetEnabled(false);
+            }
+
+            if (index == arraySize - 1 || arraySize <= 1)
+            {
+                itemRow.Q<Button>(null, Constants.MoveDownButtonClassName)?.SetEnabled(false);
+            }
+        }
+
+        public void RemoveItem(int index)
+        {
+            SendEvent(new RemoveItemEvent
+            {
+                target = this,
+                Index = index
+            });
+        }
+
+        public void MoveItemUp(int index)
+        {
+            SendEvent(new MoveItemEvent
+            {
+                target = this,
+                Direction = MoveItemEvent.MoveDirection.Up,
+                Index = index
+            });
+        }
+
+        public void MoveItemDown(int index)
+        {
+            SendEvent(new MoveItemEvent
+            {
+                target = this,
+                Direction = MoveItemEvent.MoveDirection.Down,
+                Index = index
+            });
+        }
+
+        public void AddNewItemToList()
+        {
+            SendEvent(new AddItemEvent {target = this});
+        }
+
+        public void ClearListItems()
+        {
+            SendEvent(new ClearListEvent {target = this});
+        }
+
+        // ReSharper disable once UnusedMember.Global
+        public new class UxmlFactory : UxmlFactory<ListElement, UxmlTraits>
+        {
+        }
+
+        public new class UxmlTraits : BindableElement.UxmlTraits
+        {
+            private readonly UxmlBoolAttributeDescription doNotUseObjectField;
+            private readonly UxmlBoolAttributeDescription hidePropertyLabel;
+            private readonly UxmlStringAttributeDescription itemTemplateName;
+            private readonly UxmlStringAttributeDescription label;
+            private readonly UxmlStringAttributeDescription styleSheetName;
+            private readonly UxmlStringAttributeDescription templateName;
+
+            public UxmlTraits()
+            {
+                label = new UxmlStringAttributeDescription {name = "label"};
+                itemTemplateName = new UxmlStringAttributeDescription {name = "item-template-name"};
+                styleSheetName = new UxmlStringAttributeDescription {name = "stylesheet-name"};
+                templateName = new UxmlStringAttributeDescription {name = "template-name"};
+                hidePropertyLabel = new UxmlBoolAttributeDescription {name = "hide-property-label"};
+                doNotUseObjectField = new UxmlBoolAttributeDescription {name = "do-not-use-object-field"};
+            }
+
+            public override void Init(VisualElement ve, IUxmlAttributes bag, CreationContext cc)
+            {
+                base.Init(ve, bag, cc);
+
+                if (!(ve is ListElement le))
+                {
+                    return;
+                }
+
+                le.Label = label.GetValueFromBag(bag, cc);
+                le.HidePropertyLabel = hidePropertyLabel.GetValueFromBag(bag, cc);
+                le.DoNotUseObjectField = doNotUseObjectField.GetValueFromBag(bag, cc);
+
+                string itn = itemTemplateName.GetValueFromBag(bag, cc);
+                string ssn = styleSheetName.GetValueFromBag(bag, cc);
+                string tn = templateName.GetValueFromBag(bag, cc);
+
+                if (!string.IsNullOrEmpty(itn))
+                {
+                    le.ItemTemplateName = itn;
+                }
+
+                if (!string.IsNullOrEmpty(ssn))
+                {
+                    le.StyleSheetName = ssn;
+                }
+
+                if (!string.IsNullOrEmpty(tn))
+                {
+                    le.TemplateName = tn;
+                }
+
+                le.Initialise();
+            }
+        }
 
         #region Attribute Properties
 
@@ -28,30 +217,33 @@ namespace Sibz.ListElement
 
         #endregion
 
-        public bool IsInitialised { get; private set; }
-        public Type ListItemType { get; private set; }
-        public event Action OnReset;
-
         #region Construction
 
-        public ListElement() : this(null, new ListElementOptions())
+        public ListElement() : this(null)
         {
         }
 
-        public ListElement(SerializedProperty property) : this(property, new ListElementOptions())
+        public ListElement(IListElementEventHandler evtHandler) : this(null, new ListElementOptions(), evtHandler)
         {
         }
 
-        public ListElement(SerializedProperty property, string label) : this(property,
-            new ListElementOptions {Label = label})
+        public ListElement(SerializedProperty property, IListElementEventHandler evtHandler = null) : this(property,
+            new ListElementOptions(), evtHandler)
         {
         }
 
-        public ListElement(SerializedProperty property, ListElementOptions options)
+        public ListElement(SerializedProperty property, string label, IListElementEventHandler evtHandler = null) :
+            this(property,
+                new ListElementOptions {Label = label}, evtHandler)
+        {
+        }
+
+        public ListElement(SerializedProperty property, ListElementOptions options,
+            IListElementEventHandler evtHandler = null)
         {
             serializedProperty = property;
 
-            eventHandler = new ListElementEventHandler(this);
+            eventHandler = evtHandler ?? new ListElementEventHandler(this);
 
             ImportOptions(options);
 
@@ -82,6 +274,8 @@ namespace Sibz.ListElement
 
         #endregion
 
+        #region Initialisation
+
         private void Initialise()
         {
             Clear();
@@ -89,8 +283,6 @@ namespace Sibz.ListElement
             LoadAndCloneTemplate();
 
             ImportStyleSheetIfCustom();
-
-            eventHandler.BindOuterButtons();
 
             SetLabelText();
 
@@ -181,21 +373,22 @@ namespace Sibz.ListElement
 
         private void InitialiseWithSerializedProperty()
         {
-            if (serializedProperty is null)
+            if (IsInitialised || serializedProperty is null)
             {
                 return;
             }
 
             ListItemType = GetItemType(serializedProperty);
 
-            modHandler = new PropertyModificationHandler(serializedProperty, Reset);
-            eventHandler.Initialise(modHandler);
+            eventHandler.Handler = new PropertyModificationHandler(serializedProperty, Reset);
 
             UseObjectFieldIfTypeIsUnityObject();
 
             AddArraySizeField();
 
             LoadItemTemplate();
+
+            RegisterCallbacks();
 
             IsInitialised = true;
         }
@@ -280,177 +473,123 @@ namespace Sibz.ListElement
             }
         }
 
-        protected override void ExecuteDefaultActionAtTarget(EventBase evt)
+        [SuppressMessage("ReSharper", "HeapView.DelegateAllocation")]
+        private void RegisterCallbacks()
         {
-            base.ExecuteDefaultActionAtTarget(evt);
-            Type type = evt.GetType();
+            try
+            {
+                RegisterButtonDelegatedCallback<AddItemEvent>(
+                    GetButton(Constants.AddButtonClassName),
+                    eventHandler.OnAddItem);
+                RegisterButtonDelegatedCallback<ClearListRequestedEvent>(
+                    GetButton(Constants.DeleteAllButtonClassName),
+                    eventHandler.OnClearListRequested);
+                RegisterButtonDelegatedCallback<ClearListEvent>(
+                    GetButton(Constants.DeleteConfirmButtonClassName),
+                    eventHandler.OnClearList);
+                RegisterButtonDelegatedCallback<ClearListCancelledEvent>(
+                    GetButton(Constants.DeleteCancelButtonClassName),
+                    eventHandler.OnClearListCancelled);
+            }
+            catch (MissingFieldException e)
+            {
+                if (TemplateName == Constants.DefaultTemplateName)
+                {
+                    Debug.LogWarningFormat("Default template is missing field: {0}", e.Message);
+                }
+            }
 
-            if (type.Name != "SerializedPropertyBindEvent" ||
-                !(type.GetProperty("bindProperty")?.GetValue(evt) is SerializedProperty property))
+            RegisterCallback<MoveItemEvent>(eventHandler.OnMoveItem);
+            RegisterCallback<RemoveItemEvent>(eventHandler.OnRemoveItem);
+
+            RegisterCallback<ClickEvent>(OnItemButtonClicked);
+
+            RegisterAddObjectFieldCallback();
+        }
+
+        private Button GetButton(string className)
+        {
+            if (!(this.Q(null, className) is Button button))
+            {
+                throw new MissingFieldException(nameof(Button), className);
+            }
+
+            return button;
+        }
+
+        private void RegisterButtonDelegatedCallback<T2>(Button button, EventCallback<T2> endAction,
+            Func<T2> eventCreator = null)
+            where T2 : EventBase<T2>, new()
+        {
+            if (button is null)
+            {
+                throw new ArgumentNullException(nameof(button));
+            }
+
+            void DoSendEvent(ClickEvent evt)
+            {
+                if (eventCreator is null)
+                {
+                    SendEvent(new T2 {target = this});
+                }
+                else
+                {
+                    T2 e = eventCreator();
+                    e.target = this;
+                    SendEvent(e);
+                }
+            }
+
+            button.RegisterCallback<ClickEvent>(DoSendEvent);
+            RegisterCallback(endAction);
+        }
+
+        private void RegisterAddObjectFieldCallback()
+        {
+            void SendObjectAddEvent(ChangeEvent<Object> e)
+            {
+                SendEvent(new AddItemEvent {target = this, Item = e.newValue});
+            }
+
+            this.Q<ObjectField>(null, Constants.AddItemObjectField)?
+                .RegisterCallback<ChangeEvent<Object>>(SendObjectAddEvent);
+        }
+
+        private void OnItemButtonClicked(ClickEvent evt)
+        {
+            ListRowElement element;
+            if (!(evt.target is Button button) || (element = button.GetFirstAncestorOfType<ListRowElement>()) is null)
             {
                 return;
             }
 
-            serializedProperty = property;
-            if (!IsInitialised)
+            if (button.ClassListContains(Constants.DeleteItemButtonClassName))
             {
-                Initialise();
-            }
-
-            Reset();
-        }
-
-        private void Reset()
-        {
-            DisableClearListButtonIfRequired();
-
-            PopulateList();
-
-            OnReset?.Invoke();
-        }
-
-        private void DisableClearListButtonIfRequired()
-        {
-            Button button = this.Q<Button>(null, Constants.DeleteAllButtonClassName);
-            if (serializedProperty.arraySize == 0)
-            {
-                button?.SetEnabled(false);
-            }
-            else if (!(button is null || button.enabledSelf))
-            {
-                button.SetEnabled(true);
-            }
-        }
-
-        private void PopulateList()
-        {
-            if (!serializedProperty.isArray)
-            {
-                Debug.LogWarning("Bound property is not an array type");
-                return;
-            }
-
-            VisualElement listContainer = this.Q<VisualElement>(null, Constants.ItemSectionClassName);
-            listContainer.Clear();
-
-            for (int i = 0; i < serializedProperty.arraySize; i++)
-            {
-                VisualElement itemRow = CreateItemRow(i);
-
-                DisableReorderButtonIfRequired(itemRow, i, serializedProperty.arraySize);
-
-                listContainer.Add(itemRow);
-
-                eventHandler.BindItemButtons(i, itemRow);
-            }
-        }
-
-        private VisualElement CreateItemRow(int index)
-        {
-            VisualElement itemRow = new VisualElement();
-            itemTemplate.CloneTree(itemRow);
-
-            itemRow.Q<PropertyField>().BindProperty(serializedProperty.GetArrayElementAtIndex(index));
-
-            return itemRow;
-        }
-
-        private static void DisableReorderButtonIfRequired(VisualElement itemRow, int index, int arraySize)
-        {
-            if (index == 0)
-            {
-                itemRow.Q<Button>(null, Constants.MoveUpButtonClassName)?.SetEnabled(false);
-            }
-
-            if (index == arraySize - 1 || arraySize <= 1)
-            {
-                itemRow.Q<Button>(null, Constants.MoveDownButtonClassName)?.SetEnabled(false);
-            }
-        }
-
-        public void RemoveItem(int index)
-        {
-            modHandler.Remove(index);
-        }
-
-        public void MoveItemUp(int index)
-        {
-            modHandler.MoveUp(index);
-        }
-
-        public void MoveItemDown(int index)
-        {
-            modHandler.MoveDown(index);
-        }
-
-        public void AddNewItemToList()
-        {
-            modHandler.Add();
-        }
-
-        public void ClearListItems()
-        {
-            modHandler.Clear();
-        }
-
-        // ReSharper disable once UnusedMember.Global
-        public new class UxmlFactory : UxmlFactory<ListElement, UxmlTraits>
-        {
-        }
-
-        public new class UxmlTraits : BindableElement.UxmlTraits
-        {
-            private readonly UxmlStringAttributeDescription label;
-            private readonly UxmlStringAttributeDescription itemTemplateName;
-            private readonly UxmlStringAttributeDescription styleSheetName;
-            private readonly UxmlStringAttributeDescription templateName;
-            private readonly UxmlBoolAttributeDescription hidePropertyLabel;
-            private readonly UxmlBoolAttributeDescription doNotUseObjectField;
-
-            public UxmlTraits()
-            {
-                label = new UxmlStringAttributeDescription {name = "label"};
-                itemTemplateName = new UxmlStringAttributeDescription {name = "item-template-name"};
-                styleSheetName = new UxmlStringAttributeDescription {name = "stylesheet-name"};
-                templateName = new UxmlStringAttributeDescription {name = "template-name"};
-                hidePropertyLabel = new UxmlBoolAttributeDescription {name = "hide-property-label"};
-                doNotUseObjectField = new UxmlBoolAttributeDescription {name = "do-not-use-object-field"};
-            }
-
-            public override void Init(VisualElement ve, IUxmlAttributes bag, CreationContext cc)
-            {
-                base.Init(ve, bag, cc);
-
-                if (!(ve is ListElement le))
+                SendEvent(new RemoveItemEvent
                 {
-                    return;
-                }
-
-                le.Label = label.GetValueFromBag(bag, cc);
-                le.HidePropertyLabel = hidePropertyLabel.GetValueFromBag(bag, cc);
-                le.DoNotUseObjectField = doNotUseObjectField.GetValueFromBag(bag, cc);
-
-                string itn = itemTemplateName.GetValueFromBag(bag, cc);
-                string ssn = styleSheetName.GetValueFromBag(bag, cc);
-                string tn = templateName.GetValueFromBag(bag, cc);
-
-                if (!string.IsNullOrEmpty(itn))
+                    target = this, Index = element.Index
+                });
+            }
+            else if (button.ClassListContains(Constants.MoveUpButtonClassName))
+            {
+                SendEvent(new MoveItemEvent
                 {
-                    le.ItemTemplateName = itn;
-                }
-
-                if (!string.IsNullOrEmpty(ssn))
+                    target = this,
+                    Index = element.Index,
+                    Direction = MoveItemEvent.MoveDirection.Up
+                });
+            }
+            else if (button.ClassListContains(Constants.MoveDownButtonClassName))
+            {
+                SendEvent(new MoveItemEvent
                 {
-                    le.StyleSheetName = ssn;
-                }
-
-                if (!string.IsNullOrEmpty(tn))
-                {
-                    le.TemplateName = tn;
-                }
-
-                le.Initialise();
+                    target = this,
+                    Index = element.Index,
+                    Direction = MoveItemEvent.MoveDirection.Down
+                });
             }
         }
+
+        #endregion
     }
 }

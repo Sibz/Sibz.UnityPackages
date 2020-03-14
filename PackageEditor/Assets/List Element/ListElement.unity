@@ -390,8 +390,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd94c0cc81cc3f44b94956a60ad1a5f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MyList: []
+  MyList:
+  - 3
+  - 5
   MyObjectList:
+  - {fileID: 1839769265}
+  - {fileID: 533557754}
   - {fileID: 1839769265}
 --- !u!4 &1839769267
 Transform:

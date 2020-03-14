@@ -2,7 +2,7 @@
 
 namespace Sibz.ListElement.Events
 {
-    public class ClearListConfirmedEvent : EventBase<ClearListConfirmedEvent>
+    public class ClearListEvent : EventBase<ClearListEvent>
     {
     }
 }

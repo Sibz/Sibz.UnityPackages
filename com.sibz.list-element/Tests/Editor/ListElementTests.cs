@@ -17,10 +17,7 @@ namespace Sibz.ListElement.Tests
     {
     }
 
-    /// <summary>
-    ///     ListElement renders a list using defaults or provided options dealing with the
-    ///     interactions that modify the list
-    /// </summary>
+
     [SuppressMessage("ReSharper", "HeapView.BoxingAllocation")]
     public class ListElementTests
     {
@@ -28,11 +25,12 @@ namespace Sibz.ListElement.Tests
         private SerializedProperty property;
         private GameObject testGameObject;
         private SerializedObject testSerializedGameObject;
+        private TestWindow testWindow;
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            EditorWindow.GetWindow<TestWindow>();
+            testWindow = EditorWindow.GetWindow<TestWindow>();
             testGameObject = Object.Instantiate(new GameObject());
         }
 
@@ -44,13 +42,13 @@ namespace Sibz.ListElement.Tests
             property = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
             listElement = new ListElement(property);
 
-            EditorWindow.GetWindow<TestWindow>().rootVisualElement.Add(listElement);
+            testWindow.rootVisualElement.Add(listElement);
         }
 
         [TearDown]
         public void TearDown()
         {
-            EditorWindow.GetWindow<TestWindow>().rootVisualElement.Clear();
+            testWindow.rootVisualElement.Clear();
             Object.DestroyImmediate(testGameObject.GetComponent<MyTestObject>());
             testSerializedGameObject = null;
             property = null;
@@ -60,20 +58,21 @@ namespace Sibz.ListElement.Tests
         [OneTimeTearDown]
         public void OneTimeTearDown()
         {
-            TestWindow w = EditorWindow.GetWindow<TestWindow>();
-            w.Close();
-            Object.DestroyImmediate(w);
+            testWindow.Close();
+            Object.DestroyImmediate(testWindow);
             Object.DestroyImmediate(testGameObject);
         }
 
-        [Test]
-        public void ShouldInitialiseWhenLoadedFromUxml()
+        [UnityTest]
+        public IEnumerator ShouldInitialiseWhenLoadedFromUxml()
         {
             VisualTreeAsset vta = SingleAssetLoader.SingleAssetLoader.Load<VisualTreeAsset>("ListElementTemplateTest");
             VisualElement testElement = new VisualElement();
             vta.CloneTree(testElement);
+
             testElement.Q<ListElement>().BindProperty(property);
             Assert.IsTrue(testElement.Q<ListElement>().IsInitialised);
+            yield return null;
         }
 
         [Test]

@@ -1,13 +1,13 @@
 ﻿namespace Sibz.ListElement.Events
 {
-    public class MoveItemRequestedEvent : ItemRequestEventBase<MoveItemRequestedEvent>
+    public class MoveItemEvent : ItemEventBase<MoveItemEvent>
     {
-        public MoveDirection Direction;
-
         public enum MoveDirection
         {
             Up,
             Down
         }
+
+        public MoveDirection Direction;
     }
 }
