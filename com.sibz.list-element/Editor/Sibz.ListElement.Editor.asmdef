@@ -1,6 +1,8 @@
 {
     "name": "Sibz.ListElement.Editor",
-    "references": [],
+    "references": [
+        "GUID:e7c870b5043aca5429144c66499f2e07"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
