@@ -13,56 +13,9 @@ using Object = UnityEngine.Object;
 
 namespace Sibz.ListElement.Tests
 {
-    public class TestWindow : EditorWindow
-    {
-    }
-
-
     [SuppressMessage("ReSharper", "HeapView.BoxingAllocation")]
-    public class ListElementTests
+    public class ListElementTests : ListElementTestBase
     {
-        private ListElement listElement;
-        private SerializedProperty property;
-        private GameObject testGameObject;
-        private SerializedObject testSerializedGameObject;
-        private TestWindow testWindow;
-
-        [OneTimeSetUp]
-        public void OneTimeSetUp()
-        {
-            testWindow = EditorWindow.GetWindow<TestWindow>();
-            testGameObject = Object.Instantiate(new GameObject());
-        }
-
-        [SetUp]
-        public void TestSetup()
-        {
-            testGameObject.AddComponent<MyTestObject>();
-            testSerializedGameObject = new SerializedObject(testGameObject.GetComponent<MyTestObject>());
-            property = testSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
-            listElement = new ListElement(property);
-
-            testWindow.rootVisualElement.Add(listElement);
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            testWindow.rootVisualElement.Clear();
-            Object.DestroyImmediate(testGameObject.GetComponent<MyTestObject>());
-            testSerializedGameObject = null;
-            property = null;
-            listElement = null;
-        }
-
-        [OneTimeTearDown]
-        public void OneTimeTearDown()
-        {
-            testWindow.Close();
-            Object.DestroyImmediate(testWindow);
-            Object.DestroyImmediate(testGameObject);
-        }
-
         [UnityTest]
         public IEnumerator ShouldInitialiseWhenLoadedFromUxml()
         {
@@ -70,7 +23,7 @@ namespace Sibz.ListElement.Tests
             VisualElement testElement = new VisualElement();
             vta.CloneTree(testElement);
 
-            testElement.Q<ListElement>().BindProperty(property);
+            testElement.Q<ListElement>().BindProperty(Property);
             Assert.IsTrue(testElement.Q<ListElement>().IsInitialised);
             yield return null;
         }
@@ -78,7 +31,7 @@ namespace Sibz.ListElement.Tests
         [Test]
         public void ShouldBeInitialisedWhenConstructedWithSerializedProperty()
         {
-            Assert.IsTrue(listElement.IsInitialised);
+            Assert.IsTrue(ListElement.IsInitialised);
         }
 
         [Test]
@@ -92,9 +45,9 @@ namespace Sibz.ListElement.Tests
         public void ShouldCallResetWhenSerializedPropertyIsRebound()
         {
             bool hasReset = false;
-            listElement.OnReset += () => hasReset = true;
-            listElement.Unbind();
-            listElement.BindProperty(property);
+            ListElement.OnReset += () => hasReset = true;
+            ListElement.Unbind();
+            ListElement.BindProperty(Property);
             Assert.IsTrue(hasReset);
         }
 
@@ -102,13 +55,13 @@ namespace Sibz.ListElement.Tests
         public void ShouldHaveOneArraySizeField()
         {
             Assert.AreEqual(1,
-                listElement.Query<IntegerField>().Where(x => x.bindingPath.Contains("Array.size")).ToList().Count);
+                ListElement.Query<IntegerField>().Where(x => x.bindingPath.Contains("Array.size")).ToList().Count);
         }
 
         [Test]
         public void ShouldHideArraySizeField()
         {
-            IntegerField arraySize = listElement
+            IntegerField arraySize = ListElement
                 .Query<IntegerField>()
                 .Where(x => x.bindingPath.Contains("Array.size"))
                 .First();
@@ -118,8 +71,8 @@ namespace Sibz.ListElement.Tests
         [Test]
         public void ShouldContainDefaultTemplateItems()
         {
-            listElement.BindProperty(testSerializedGameObject.FindProperty(nameof(MyTestObject.myList)));
-            Assert.IsTrue(CheckForDefaultTemplateItems(listElement));
+            ListElement.BindProperty(TestSerializedGameObject.FindProperty(nameof(MyTestObject.myList)));
+            Assert.IsTrue(CheckForDefaultTemplateItems(ListElement));
         }
 
         private static bool CheckForDefaultTemplateItems(VisualElement testElement)
@@ -136,7 +89,7 @@ namespace Sibz.ListElement.Tests
         [Test]
         public void ShouldNameLabelSameAsListWhenNoLabelProvided()
         {
-            ListElement testElement = new ListElement(string.Empty, property);
+            ListElement testElement = new ListElement(string.Empty, Property);
             Label label = testElement.Q<Label>(null, Constants.HeaderLabelClassName);
             Assert.AreEqual(ObjectNames.NicifyVariableName(nameof(MyTestObject.myList)), label.text);
         }
@@ -144,7 +97,7 @@ namespace Sibz.ListElement.Tests
         [Test]
         public void ShouldNameLabelAsProvided()
         {
-            ListElement testElement = new ListElement("Label", property);
+            ListElement testElement = new ListElement("Label", Property);
             Label label = testElement.Q<Label>(null, Constants.HeaderLabelClassName);
             Assert.AreEqual("Label", label.text);
         }
@@ -152,7 +105,7 @@ namespace Sibz.ListElement.Tests
         [Test]
         public void ShouldNameLabelAsProvidedInConfig()
         {
-            ListElement testElement = new ListElement(property, new ListElementOptions {Label = "Label"});
+            ListElement testElement = new ListElement(Property, new ListElementOptions {Label = "Label"});
             Label label = testElement.Q<Label>(null, Constants.HeaderLabelClassName);
             Assert.AreEqual("Label", label.text);
         }
@@ -190,7 +143,7 @@ namespace Sibz.ListElement.Tests
         public void ShouldApplyCustomStylesheet()
         {
             ListElement testElement =
-                new ListElement(property, new ListElementOptions {StyleSheetName = "TestTemplate"});
+                new ListElement(Property, new ListElementOptions {StyleSheetName = "TestTemplate"});
             Assert.IsTrue(
                 testElement.styleSheets.Contains(
                     SingleAssetLoader.SingleAssetLoader.Load<StyleSheet>("TestTemplate")));
@@ -200,7 +153,7 @@ namespace Sibz.ListElement.Tests
         public void ShouldApplyCustomTemplate()
         {
             ListElement testElement =
-                new ListElement(property, new ListElementOptions {TemplateName = "TestTemplate"});
+                new ListElement(Property, new ListElementOptions {TemplateName = "TestTemplate"});
             Assert.IsNotNull(
                 testElement.Q<VisualElement>("TestTemplateCheck"));
         }
@@ -209,7 +162,7 @@ namespace Sibz.ListElement.Tests
         public void ShouldApplyCustomItemTemplate()
         {
             ListElement testElement =
-                new ListElement(property, new ListElementOptions {ItemTemplateName = "TestItemTemplate"});
+                new ListElement(Property, new ListElementOptions {ItemTemplateName = "TestItemTemplate"});
             Assert.IsNotNull(
                 testElement.Q<VisualElement>("TestItemTemplateCheck"));
         }
@@ -217,14 +170,14 @@ namespace Sibz.ListElement.Tests
         [Test]
         public void ShouldCorrectlyDetermineTypeOfListAsString()
         {
-            Assert.AreEqual(typeof(string), listElement.ListItemType);
+            Assert.AreEqual(typeof(string), ListElement.ListItemType);
         }
 
         [Test]
         public void ShouldCorrectlyDetermineTypeOfListAsCustomObject()
         {
             ListElement testElement =
-                new ListElement(testSerializedGameObject.FindProperty(nameof(MyTestObject.myCustomList)));
+                new ListElement(TestSerializedGameObject.FindProperty(nameof(MyTestObject.myCustomList)));
             Assert.AreEqual(typeof(CustomObject), testElement.ListItemType);
         }
 
@@ -237,51 +190,51 @@ namespace Sibz.ListElement.Tests
         [Test]
         public void ShouldKeepListInSyncAfterAddNew()
         {
-            listElement.AddNewItemToList();
+            ListElement.AddNewItemToList();
             Assert.IsTrue(CheckArrayAndElementsAreInSync());
         }
 
         [Test]
         public void ShouldKeepListInSyncAfterClear()
         {
-            listElement.ClearListItems();
-            Assert.AreEqual(0, property.arraySize);
+            ListElement.ClearListItems();
+            Assert.AreEqual(0, Property.arraySize);
             Assert.IsTrue(CheckArrayAndElementsAreInSync());
         }
 
         [Test]
         public void ShouldKeepListInSyncAfterDeleteItem()
         {
-            listElement.RemoveItem(1);
+            ListElement.RemoveItem(1);
             Assert.IsTrue(CheckArrayAndElementsAreInSync());
         }
 
         [Test]
         public void ShouldKeepListInSyncAfterMoveUp()
         {
-            listElement.MoveItemUp(1);
+            ListElement.MoveItemUp(1);
             Assert.IsTrue(CheckArrayAndElementsAreInSync());
         }
 
         [Test]
         public void ShouldKeepListInSyncAfterMoveDown()
         {
-            listElement.MoveItemDown(1);
+            ListElement.MoveItemDown(1);
             Assert.IsTrue(CheckArrayAndElementsAreInSync());
         }
 
         private bool CheckArrayAndElementsAreInSync()
         {
-            var propFields = listElement.Query<PropertyField>().ToList();
-            if (propFields.Count != property.arraySize)
+            var propFields = ListElement.Query<PropertyField>().ToList();
+            if (propFields.Count != Property.arraySize)
             {
                 Debug.LogWarning("Count is not the same");
                 return false;
             }
 
-            for (int i = 0; i < property.arraySize; i++)
+            for (int i = 0; i < Property.arraySize; i++)
             {
-                if (propFields[i].Q<TextField>().text == property.GetArrayElementAtIndex(i).stringValue)
+                if (propFields[i].Q<TextField>().text == Property.GetArrayElementAtIndex(i).stringValue)
                 {
                     continue;
                 }
@@ -290,7 +243,7 @@ namespace Sibz.ListElement.Tests
                     "Item {0} is not the same (textfield:{1} vs array:{2})",
                     i,
                     propFields[i].Q<TextField>().text,
-                    property.GetArrayElementAtIndex(i).stringValue);
+                    Property.GetArrayElementAtIndex(i).stringValue);
                 return false;
             }
 
@@ -300,7 +253,7 @@ namespace Sibz.ListElement.Tests
         [Test]
         public void ShouldAddHidePropertyLabelStyleSheetIfRequired()
         {
-            ListElement testElement = new ListElement(property, new ListElementOptions {HidePropertyLabel = true});
+            ListElement testElement = new ListElement(Property, new ListElementOptions {HidePropertyLabel = true});
 
             Assert.IsTrue(testElement.styleSheets.Contains(
                 SingleAssetLoader.SingleAssetLoader.Load<StyleSheet>(Constants.HidePropertyLabelStyleSheetName)));
@@ -309,7 +262,7 @@ namespace Sibz.ListElement.Tests
         [Test]
         public void ShouldNotAddHidePropertyLabelStyleSheetIfNotRequired()
         {
-            ListElement testElement = new ListElement(property, new ListElementOptions {HidePropertyLabel = false});
+            ListElement testElement = new ListElement(Property, new ListElementOptions {HidePropertyLabel = false});
 
             Assert.IsFalse(testElement.styleSheets.Contains(
                 SingleAssetLoader.SingleAssetLoader.Load<StyleSheet>(Constants.HidePropertyLabelStyleSheetName)));
@@ -319,18 +272,19 @@ namespace Sibz.ListElement.Tests
         public IEnumerator ShouldHidePropertyLabelsIfRequired()
         {
             yield return null;
-            Assert.IsTrue(listElement.Query<PropertyField>().Build().ToList().All(x =>
+            Assert.IsTrue(ListElement.Query<PropertyField>().Build().ToList().All(x =>
                 x.hierarchy[0].hierarchy[0].resolvedStyle.display == DisplayStyle.None));
         }
 
         [UnityTest]
         public IEnumerator ShouldNotHidePropertyLabelsIfNotRequired()
         {
-            ListElement testElement = new ListElement(property, new ListElementOptions {HidePropertyLabel = false});
-            EditorWindow.GetWindow<TestWindow>().rootVisualElement.Add(testElement);
+            ListElement testElement = new ListElement(Property, new ListElementOptions {HidePropertyLabel = false});
+            TestWindow.rootVisualElement.Add(testElement);
             yield return null;
             Assert.IsFalse(testElement.Query<PropertyField>().Build().ToList().Any(x =>
                 x.hierarchy[0].hierarchy[0].resolvedStyle.display == DisplayStyle.None));
+            TestWindow.rootVisualElement.Remove(testElement);
         }
 
         [Test]
@@ -338,17 +292,17 @@ namespace Sibz.ListElement.Tests
         {
             Assert.AreEqual(
                 DisplayStyle.Flex,
-                listElement.Q(null, Constants.AddButtonClassName).style.display.value);
+                ListElement.Q(null, Constants.AddButtonClassName).style.display.value);
             Assert.AreEqual(
                 DisplayStyle.None,
-                listElement.Q(null, Constants.AddItemObjectField).style.display.value);
+                ListElement.Q(null, Constants.AddItemObjectField).style.display.value);
         }
 
         [Test]
         public void ShouldHaveObjectFieldForObjectTypes()
         {
             ListElement testElement =
-                new ListElement(testSerializedGameObject.FindProperty(nameof(MyTestObject.myCustomList)));
+                new ListElement(TestSerializedGameObject.FindProperty(nameof(MyTestObject.myCustomList)));
             Assert.AreEqual(
                 DisplayStyle.None,
                 testElement.Q(null, Constants.AddButtonClassName).style.display.value);
@@ -362,7 +316,7 @@ namespace Sibz.ListElement.Tests
         {
             ListElement testElement =
                 new ListElement(
-                    testSerializedGameObject.FindProperty(nameof(MyTestObject.myCustomList)),
+                    TestSerializedGameObject.FindProperty(nameof(MyTestObject.myCustomList)),
                     new ListElementOptions {DoNotUseObjectField = true});
 
             Assert.AreEqual(
@@ -376,20 +330,20 @@ namespace Sibz.ListElement.Tests
         [Test]
         public void ShouldDisableFirstMoveUpButton()
         {
-            Assert.IsFalse(listElement.Q(null, Constants.MoveUpButtonClassName).enabledSelf);
+            Assert.IsFalse(ListElement.Q(null, Constants.MoveUpButtonClassName).enabledSelf);
         }
 
         [Test]
         public void ShouldDisableLastMoveDownButton()
         {
-            Assert.IsFalse(listElement.Query(null, Constants.MoveDownButtonClassName).Build().Last().enabledSelf);
+            Assert.IsFalse(ListElement.Query(null, Constants.MoveDownButtonClassName).Build().Last().enabledSelf);
         }
 
         [Test]
         public void ShouldDisableOnlyFirstMoveUpButton()
         {
             Assert.AreEqual(1,
-                listElement.Query(null, Constants.MoveUpButtonClassName).Build().ToList()
+                ListElement.Query(null, Constants.MoveUpButtonClassName).Build().ToList()
                     .Count(x => x.enabledSelf == false));
         }
 
@@ -397,30 +351,30 @@ namespace Sibz.ListElement.Tests
         public void ShouldDisableOnlyLastMoveDownButton()
         {
             Assert.AreEqual(1,
-                listElement.Query(null, Constants.MoveDownButtonClassName).Build().ToList()
+                ListElement.Query(null, Constants.MoveDownButtonClassName).Build().ToList()
                     .Count(x => x.enabledSelf == false));
         }
 
         [Test]
         public void ShouldDisableBothReorderButtonsWithOnlyOneItem()
         {
-            listElement.ClearListItems();
-            listElement.AddNewItemToList();
-            Assert.IsFalse(listElement.Q(null, Constants.MoveUpButtonClassName).enabledSelf);
-            Assert.IsFalse(listElement.Q(null, Constants.MoveDownButtonClassName).enabledSelf);
+            ListElement.ClearListItems();
+            ListElement.AddNewItemToList();
+            Assert.IsFalse(ListElement.Q(null, Constants.MoveUpButtonClassName).enabledSelf);
+            Assert.IsFalse(ListElement.Q(null, Constants.MoveDownButtonClassName).enabledSelf);
         }
 
         [Test]
         public void ShouldDisableClearListButtonWhenNoItems()
         {
-            listElement.ClearListItems();
-            Assert.IsFalse(listElement.Q(null, Constants.DeleteAllButtonClassName).enabledSelf);
+            ListElement.ClearListItems();
+            Assert.IsFalse(ListElement.Q(null, Constants.DeleteAllButtonClassName).enabledSelf);
         }
 
         [Test]
         public void ShouldNotDisableClearListButtonWhenNoItems()
         {
-            Assert.IsTrue(listElement.Q(null, Constants.DeleteAllButtonClassName).enabledSelf);
+            Assert.IsTrue(ListElement.Q(null, Constants.DeleteAllButtonClassName).enabledSelf);
         }
 
         [Serializable]
