@@ -250,42 +250,23 @@ namespace Sibz.ListElement.Tests
             return true;
         }
 
-        [Test]
-        public void ShouldAddHidePropertyLabelStyleSheetIfRequired()
-        {
-            ListElement testElement = new ListElement(Property, new ListElementOptions {HidePropertyLabel = true});
-
-            Assert.IsTrue(testElement.styleSheets.Contains(
-                SingleAssetLoader.SingleAssetLoader.Load<StyleSheet>(ListElementOptionsInternal
-                    .HidePropertyLabelStyleSheetName)));
-        }
-
-        [Test]
-        public void ShouldNotAddHidePropertyLabelStyleSheetIfNotRequired()
-        {
-            ListElement testElement = new ListElement(Property, new ListElementOptions {HidePropertyLabel = false});
-
-            Assert.IsFalse(testElement.styleSheets.Contains(
-                SingleAssetLoader.SingleAssetLoader.Load<StyleSheet>(ListElementOptionsInternal
-                    .HidePropertyLabelStyleSheetName)));
-        }
-
         [UnityTest]
-        public IEnumerator ShouldHidePropertyLabelsIfRequired()
+        public IEnumerator ShouldHidePropertyLabelsIfRequired([Values(0,1,2)] int row)
         {
             yield return null;
-            Assert.IsTrue(ListElement.Query<PropertyField>().Build().ToList().All(x =>
-                x.hierarchy[0].hierarchy[0].resolvedStyle.display == DisplayStyle.None));
+            Assert.AreEqual(
+                DisplayStyle.None, 
+                ListElement.Controls.Row[row].PropertyFieldLabel.resolvedStyle.display);
         }
 
         [UnityTest]
-        public IEnumerator ShouldNotHidePropertyLabelsIfNotRequired()
+        public IEnumerator ShouldNotHidePropertyLabelsIfNotRequired([Values(0,1,2)] int row)
         {
             ListElement testElement = new ListElement(Property, new ListElementOptions {HidePropertyLabel = false});
             TestWindow.rootVisualElement.Add(testElement);
             yield return null;
-            Assert.IsFalse(testElement.Query<PropertyField>().Build().ToList().Any(x =>
-                x.hierarchy[0].hierarchy[0].resolvedStyle.display == DisplayStyle.None));
+            Assert.IsFalse(testElement.Controls.Row[row].PropertyFieldLabel
+                    .resolvedStyle.display == DisplayStyle.None);
             TestWindow.rootVisualElement.Remove(testElement);
         }
 

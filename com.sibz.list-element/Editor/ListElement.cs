@@ -95,8 +95,6 @@ namespace Sibz.ListElement
 
             SetObjectFieldLabelText();
 
-            AddHidePropertyStyleSheetIfRequired();
-
             InitialiseWithSerializedProperty();
         }
 
@@ -155,16 +153,6 @@ namespace Sibz.ListElement
             label.parent.style.justifyContent = Justify.Center;
             label.style.display = DisplayStyle.None;
             label.parent.Add(new Label("Drop here to add new item") {pickingMode = PickingMode.Ignore});
-        }
-
-        private void AddHidePropertyStyleSheetIfRequired()
-        {
-            if (HidePropertyLabel)
-            {
-                styleSheets.Add(
-                    SingleAssetLoader.SingleAssetLoader.Load<StyleSheet>(ListElementOptionsInternal
-                        .HidePropertyLabelStyleSheetName));
-            }
         }
 
         private void InitialiseWithSerializedProperty()
@@ -433,6 +421,16 @@ namespace Sibz.ListElement
                 Controls.ItemsSection.Add(itemRow);
 
                 DisableReorderButtonIfRequired(i, serializedProperty.arraySize);
+
+                HidePropertyLabelIfRequired(i);
+            }
+        }
+
+        private void HidePropertyLabelIfRequired(int i)
+        {
+            if (HidePropertyLabel)
+            {
+                Controls.Row[i].PropertyField.AddToClassList("hide-inner-label");
             }
         }
 

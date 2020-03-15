@@ -1,7 +1,7 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
-    <ui:VisualElement style="flex-direction: row;">
+    <ui:VisualElement style="flex-direction: row;&#10;">
         <Style src="Sibz.ListElement.ItemTemplate.uss" />
-        <uie:PropertyField style="flex-grow: 1;" />
+        <uie:PropertyField style="flex-grow: 1;&#10;" />
         <ui:Button text="↑" class="sibz-list-item-buttons sibz-list-move-up-button" />
         <ui:Button text="↓" class="sibz-list-item-buttons sibz-list-move-down-button" />
         <ui:Button text="X" class="sibz-list-item-buttons sibz-list-delete-item-button" />

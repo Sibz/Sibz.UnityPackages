@@ -13,3 +13,7 @@
     -unity-text-align: middle-left;
     display: none;
 }
+
+.hide-inner-label Label {
+    display: none;
+}
