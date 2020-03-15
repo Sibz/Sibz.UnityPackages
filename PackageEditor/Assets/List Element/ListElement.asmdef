@@ -1,7 +1,8 @@
 {
     "name": "ListElement",
     "references": [
-        "GUID:5246a7ecd35304b429456c29fc551ecb"
+        "GUID:5246a7ecd35304b429456c29fc551ecb",
+        "GUID:e7c870b5043aca5429144c66499f2e07"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

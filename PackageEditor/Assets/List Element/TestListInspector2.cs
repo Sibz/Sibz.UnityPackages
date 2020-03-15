@@ -30,6 +30,8 @@ namespace Sibz.UXMLList
             }
 
             m_Root.Clear();
+            m_Root.Bind(serializedObject);
+            SingleAssetLoader.SingleAssetLoader.Load<VisualTreeAsset>("ListElementTemplateTest").CloneTree(m_Root);
             m_Root.Add(new ListElement.ListElement(serializedObject.FindProperty(nameof(TestListBehaviour2.MyList)),
                 new ListElementOptions {HidePropertyLabel = true}));
             m_Root.Add(new ListElement.ListElement(

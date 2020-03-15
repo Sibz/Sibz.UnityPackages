@@ -391,12 +391,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MyList:
-  - 3
   - 5
+  - 7
+  - 7
   MyObjectList:
-  - {fileID: 1839769265}
   - {fileID: 533557754}
   - {fileID: 1839769265}
+  - {fileID: 533557754}
 --- !u!4 &1839769267
 Transform:
   m_ObjectHideFlags: 0
