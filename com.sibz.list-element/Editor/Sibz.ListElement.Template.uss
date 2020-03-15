@@ -1,13 +1,8 @@
-.sibz-list-header {
-    flex-direction: row;
-    -unity-text-align: middle-left;
-}
-
-.sibz-list-header-label {
+.header-label {
     flex-grow: 1;
 }
 
-.sibz-list-delete-all-confirm {
+.clear-list-confirm {
     flex-direction: row;
     justify-content: flex-end;
     -unity-text-align: middle-left;
@@ -16,4 +11,9 @@
 
 .hide-inner-label Label {
     display: none;
+}
+
+.header {
+    flex-direction: row;
+    -unity-text-align: middle-left;
 }
