@@ -1,8 +1,10 @@
-﻿namespace Sibz.ListElement
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Sibz.ListElement
 {
+    [SuppressMessage("ReSharper", "UnusedMember.Global")]
     public class ListElementOptions : ListElementOptionsInternal
     {
-
         public new string TemplateName
         {
             get => base.TemplateName;
@@ -39,5 +41,4 @@
             set => base.DoNotUseObjectField = value;
         }
     }
-  
 }
