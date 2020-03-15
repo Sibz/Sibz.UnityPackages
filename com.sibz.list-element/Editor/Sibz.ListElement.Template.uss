@@ -2,18 +2,38 @@
     flex-grow: 1;
 }
 
-.clear-list-confirm {
+.clear-list-confirm-section {
     flex-direction: row;
     justify-content: flex-end;
     -unity-text-align: middle-left;
     display: none;
 }
 
-.hide-inner-label Label {
+.hide-field-label > TextField > Label {
     display: none;
 }
 
 .header {
     flex-direction: row;
     -unity-text-align: middle-left;
+}
+
+.hide-remove-buttons .remove {
+    display: none;
+}
+
+.hide-remove-buttons .clear-list {
+    display: none;
+}
+
+.hide-reorder-buttons .move-up {
+    display: none;
+}
+
+.hide-reorder-buttons .move-down {
+    display: none;
+}
+
+.hide-field-label .unity-object-field__label {
+    display: none;
 }

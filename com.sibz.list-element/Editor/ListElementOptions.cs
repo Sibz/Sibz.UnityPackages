@@ -40,5 +40,17 @@ namespace Sibz.ListElement
             get => base.DoNotUseObjectField;
             set => base.DoNotUseObjectField = value;
         }
+
+        public new bool EnableReordering
+        {
+            get => base.EnableReordering;
+            set => base.EnableReordering = value;
+        }
+
+        public new bool EnableDeletions
+        {
+            get => base.EnableDeletions;
+            set => base.EnableDeletions = value;
+        }
     }
 }

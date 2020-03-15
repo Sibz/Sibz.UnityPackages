@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -17,6 +18,16 @@ namespace Sibz.ListElement.Tests
 
         protected ListElementOptionsInternal options => ListElement.Options;
 
+        public class MyTestObject : MonoBehaviour
+        {
+            public List<string> myList = new List<string> {"item1", "item2", "item3"};
+            public List<CustomObject> myCustomList = new List<CustomObject> { new CustomObject(),  new CustomObject(), new CustomObject()};
+        }
+        
+        public class CustomObject : Object
+        {
+        }
+
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
@@ -26,10 +37,10 @@ namespace Sibz.ListElement.Tests
         [SetUp]
         public void TestSetup()
         {
-            testGameObject.AddComponent<ListElementTests.MyTestObject>();
+            testGameObject.AddComponent<MyTestObject>();
             TestSerializedGameObject =
-                new SerializedObject(testGameObject.GetComponent<ListElementTests.MyTestObject>());
-            Property = TestSerializedGameObject.FindProperty(nameof(ListElementTests.MyTestObject.myList));
+                new SerializedObject(testGameObject.GetComponent<MyTestObject>());
+            Property = TestSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
             ListElement = new ListElement(Property);
 
             TestWindow.rootVisualElement.Add(ListElement);
@@ -39,7 +50,7 @@ namespace Sibz.ListElement.Tests
         public void TearDown()
         {
             TestWindow.rootVisualElement.Remove(ListElement);
-            Object.DestroyImmediate(testGameObject.GetComponent<ListElementTests.MyTestObject>());
+            Object.DestroyImmediate(testGameObject.GetComponent<MyTestObject>());
             TestSerializedGameObject = null;
             Property = null;
             ListElement = null;

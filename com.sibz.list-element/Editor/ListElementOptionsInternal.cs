@@ -5,7 +5,6 @@
         internal const string DefaultTemplateName = "Sibz.ListElement.Template";
         private const string DefaultItemTemplateName = "Sibz.ListElement.ItemTemplate";
         private const string DefaultStyleSheetName = "Sibz.ListElement.Template";
-        public const string HidePropertyLabelStyleSheetName = "Sibz.ListElement.Hide-Property-Label";
         private const string DefaultHeaderSectionClassName = "header";
         private const string DefaultHeaderLabelClassName = "header-label";
         private const string DefaultItemsSectionClassName = "items";
@@ -20,12 +19,15 @@
         private const string DefaultAddItemButtonClassName = "add-button";
         private const string DefaultAddItemObjectFieldClassName = "add-field";
 
+        public static string HidePropertyLabelClassName => "hide-field-label";
         public string TemplateName { get; internal set; } = DefaultTemplateName;
         public string ItemTemplateName { get; internal set; } = DefaultItemTemplateName;
         public string StyleSheetName { get; internal set; } = DefaultStyleSheetName;
         public string Label { get; internal set; }
         public bool HidePropertyLabel { get; internal set; } = true;
         public bool DoNotUseObjectField { get; internal set; }
+        public bool EnableReordering { get; internal set; } = true;
+        public bool EnableDeletions { get; internal set; } = true;
 
         public string HeaderSectionClassName { get; internal set; } = DefaultHeaderSectionClassName;
         public string HeaderLabelClassName { get; internal set; } = DefaultHeaderLabelClassName;

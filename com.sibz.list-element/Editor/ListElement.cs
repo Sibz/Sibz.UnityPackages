@@ -17,7 +17,7 @@ namespace Sibz.ListElement
         private StyleSheet styleSheet;
         private VisualTreeAsset template;
 
-        public Controls Controls;
+        public readonly Controls Controls;
 
         public readonly ListElementOptionsInternal Options;
         public bool IsInitialised { get; private set; }
@@ -32,6 +32,8 @@ namespace Sibz.ListElement
         private string StyleSheetName => Options.StyleSheetName;
         private bool HidePropertyLabel => Options.HidePropertyLabel;
         private bool DoNotUseObjectField => Options.DoNotUseObjectField;
+        private bool EnableReordering => Options.EnableReordering;
+        private bool EnableDeletions => Options.EnableDeletions;
 
         #endregion
 
@@ -90,10 +92,6 @@ namespace Sibz.ListElement
             LoadAndCloneTemplate();
 
             ImportStyleSheetIfCustom();
-
-            SetLabelText();
-
-            SetObjectFieldLabelText();
 
             InitialiseWithSerializedProperty();
         }
@@ -173,6 +171,12 @@ namespace Sibz.ListElement
             LoadItemTemplate();
 
             RegisterCallbacks();
+            
+            SetLabelText();
+
+            SetObjectFieldLabelText();
+
+            ApplyOptions();
 
             IsInitialised = true;
         }
@@ -359,6 +363,20 @@ namespace Sibz.ListElement
             }
         }
 
+        private void ApplyOptions()
+        {
+            if (!EnableDeletions)
+            {
+                Controls.HeaderSection.AddToClassList("hide-remove-buttons");
+                Controls.ItemsSection.AddToClassList("hide-remove-buttons");
+            }
+
+            if (!EnableReordering)
+            {
+                Controls.ItemsSection.AddToClassList("hide-reorder-buttons");
+            }
+        }
+
         #endregion
 
         #region Reset
@@ -430,7 +448,7 @@ namespace Sibz.ListElement
         {
             if (HidePropertyLabel)
             {
-                Controls.Row[i].PropertyField.AddToClassList("hide-inner-label");
+                Controls.Row[i].PropertyField.AddToClassList(ListElementOptionsInternal.HidePropertyLabelClassName);
             }
         }
 
@@ -456,6 +474,10 @@ namespace Sibz.ListElement
                 Controls.Row[index].MoveDown?.SetEnabled(false);
             }
         }
+
+        #endregion
+
+        #region Public Methods
 
         public void RemoveItem(int index)
         {
@@ -509,6 +531,8 @@ namespace Sibz.ListElement
         {
             private readonly UxmlBoolAttributeDescription doNotUseObjectField;
             private readonly UxmlBoolAttributeDescription hidePropertyLabel;
+            private readonly UxmlBoolAttributeDescription enableReordering;
+            private readonly UxmlBoolAttributeDescription enableDeletions;
             private readonly UxmlStringAttributeDescription itemTemplateName;
             private readonly UxmlStringAttributeDescription label;
             private readonly UxmlStringAttributeDescription styleSheetName;
@@ -516,12 +540,22 @@ namespace Sibz.ListElement
 
             public UxmlTraits()
             {
-                label = new UxmlStringAttributeDescription {name = "label"};
-                itemTemplateName = new UxmlStringAttributeDescription {name = "item-template-name"};
-                styleSheetName = new UxmlStringAttributeDescription {name = "stylesheet-name"};
-                templateName = new UxmlStringAttributeDescription {name = "template-name"};
-                hidePropertyLabel = new UxmlBoolAttributeDescription {name = "hide-property-label"};
-                doNotUseObjectField = new UxmlBoolAttributeDescription {name = "do-not-use-object-field"};
+                ListElementOptionsInternal defaults = new ListElementOptionsInternal();
+                label = new UxmlStringAttributeDescription {name = "label", defaultValue = defaults.Label};
+                itemTemplateName = new UxmlStringAttributeDescription
+                    {name = "item-template-name", defaultValue = defaults.ItemTemplateName};
+                styleSheetName = new UxmlStringAttributeDescription
+                    {name = "stylesheet-name", defaultValue = defaults.StyleSheetName};
+                templateName = new UxmlStringAttributeDescription
+                    {name = "template-name", defaultValue = defaults.TemplateName};
+                hidePropertyLabel = new UxmlBoolAttributeDescription
+                    {name = "hide-property-label", defaultValue = defaults.HidePropertyLabel};
+                doNotUseObjectField = new UxmlBoolAttributeDescription
+                    {name = "do-not-use-object-field", defaultValue = defaults.DoNotUseObjectField};
+                enableReordering = new UxmlBoolAttributeDescription
+                    {name = "enable-reordering", defaultValue = defaults.EnableReordering};
+                enableDeletions = new UxmlBoolAttributeDescription
+                    {name = "enable-deletions", defaultValue = defaults.EnableDeletions};
             }
 
             public override void Init(VisualElement ve, IUxmlAttributes bag, CreationContext cc)
@@ -536,6 +570,8 @@ namespace Sibz.ListElement
                 le.Options.Label = label.GetValueFromBag(bag, cc);
                 le.Options.HidePropertyLabel = hidePropertyLabel.GetValueFromBag(bag, cc);
                 le.Options.DoNotUseObjectField = doNotUseObjectField.GetValueFromBag(bag, cc);
+                le.Options.EnableDeletions = enableDeletions.GetValueFromBag(bag, cc);
+                le.Options.EnableReordering = enableReordering.GetValueFromBag(bag, cc);
 
                 string itn = itemTemplateName.GetValueFromBag(bag, cc);
                 string ssn = styleSheetName.GetValueFromBag(bag, cc);

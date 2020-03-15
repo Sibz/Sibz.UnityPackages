@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using NUnit.Framework;
@@ -9,7 +7,6 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.TestTools;
 using UnityEngine.UIElements;
-using Object = UnityEngine.Object;
 
 namespace Sibz.ListElement.Tests
 {
@@ -22,10 +19,10 @@ namespace Sibz.ListElement.Tests
             VisualTreeAsset vta = SingleAssetLoader.SingleAssetLoader.Load<VisualTreeAsset>("ListElementTemplateTest");
             VisualElement testElement = new VisualElement();
             vta.CloneTree(testElement);
-
+            yield return null;
             testElement.Q<ListElement>().BindProperty(Property);
             Assert.IsTrue(testElement.Q<ListElement>().IsInitialised);
-            yield return null;
+ 
         }
 
         [Test]
@@ -258,6 +255,22 @@ namespace Sibz.ListElement.Tests
                 DisplayStyle.None, 
                 ListElement.Controls.Row[row].PropertyFieldLabel.resolvedStyle.display);
         }
+        
+        
+        [UnityTest]
+        public IEnumerator ShouldOnlyHidePropertyLabelsIfRequired([Values(0,1,2)] int row)
+        {
+            ListElement testElement = new ListElement(
+                TestSerializedGameObject.FindProperty(nameof(MyTestObject.myCustomList)),
+                new ListElementOptions {HidePropertyLabel = true});
+            TestWindow.rootVisualElement.Add(testElement);
+            yield return null;
+            Assert.AreEqual(
+                DisplayStyle.Flex, 
+                testElement.Controls.Row[row].PropertyField
+                    .hierarchy[0].hierarchy[1].hierarchy[0].hierarchy[1].resolvedStyle.display);
+            TestWindow.rootVisualElement.Remove(testElement);
+        }
 
         [UnityTest]
         public IEnumerator ShouldNotHidePropertyLabelsIfNotRequired([Values(0,1,2)] int row)
@@ -360,16 +373,99 @@ namespace Sibz.ListElement.Tests
             Assert.IsTrue(ListElement.Controls.ClearList.enabledSelf);
         }
 
-        [Serializable]
-        public class MyTestObject : MonoBehaviour
+        [UnityTest]
+        public IEnumerator ShouldDisableReorderButtonsIfRequested([Values(0,1,2)] int row)
         {
-            public List<CustomObject> myCustomList = new List<CustomObject> {new CustomObject()};
-            public List<string> myList = new List<string> {"item1", "item2", "item3"};
+            ListElement testElement = new ListElement(Property, new ListElementOptions() { EnableReordering = false});
+            TestWindow.rootVisualElement.Add(testElement);
+            
+            yield return null;
+
+            Assert.AreEqual(
+                DisplayStyle.None , 
+                testElement.Controls.Row[row].MoveUp.resolvedStyle.display);
+            Assert.AreEqual(
+                DisplayStyle.None , 
+                testElement.Controls.Row[row].MoveDown.resolvedStyle.display);
+            
+            TestWindow.rootVisualElement.Remove(testElement);
         }
-    }
+        
+        [UnityTest]
+        public IEnumerator ShouldDisableRemoveItemButtonIfRequested([Values(0,1,2)] int row)
+        {
+            ListElement testElement = new ListElement(Property, new ListElementOptions() { EnableDeletions = false});
+            TestWindow.rootVisualElement.Add(testElement);
+            
+            yield return null;
+            
+            Assert.AreEqual(
+                DisplayStyle.None , 
+                testElement.Controls.Row[row].RemoveItem.resolvedStyle.display);
+            
+            TestWindow.rootVisualElement.Remove(testElement);
+        }
+        
+        [UnityTest]
+        public IEnumerator ShouldDisableClearListButtonIfRequested([Values(0,1,2)] int row)
+        {
+            ListElement testElement = new ListElement(Property, new ListElementOptions() { EnableDeletions = false});
+            TestWindow.rootVisualElement.Add(testElement);
+            
+            yield return null;
+            
+            Assert.AreEqual(
+                DisplayStyle.None , 
+                testElement.Controls.Row[row].RemoveItem.resolvedStyle.display);
+            
+            TestWindow.rootVisualElement.Remove(testElement);
+        }
+        [UnityTest]
+        public IEnumerator ShouldNotDisableReorderButtonsIfRequested([Values(0,1,2)] int row)
+        {
+            ListElement testElement = new ListElement(Property, new ListElementOptions() { EnableReordering = true});
+            TestWindow.rootVisualElement.Add(testElement);
+            
+            yield return null;
 
-
-    public class CustomObject : Object
-    {
+            Assert.AreEqual(
+                DisplayStyle.Flex , 
+                testElement.Controls.Row[row].MoveUp.resolvedStyle.display);
+            Assert.AreEqual(
+                DisplayStyle.Flex , 
+                testElement.Controls.Row[row].MoveDown.resolvedStyle.display);
+            
+            TestWindow.rootVisualElement.Remove(testElement);
+        }
+        
+        [UnityTest]
+        public IEnumerator ShouldNotDisableRemoveItemButtonIfRequested([Values(0,1,2)] int row)
+        {
+            ListElement testElement = new ListElement(Property, new ListElementOptions() { EnableDeletions = true});
+            TestWindow.rootVisualElement.Add(testElement);
+            
+            yield return null;
+            
+            Assert.AreEqual(
+                DisplayStyle.Flex , 
+                testElement.Controls.Row[row].RemoveItem.resolvedStyle.display);
+            
+            TestWindow.rootVisualElement.Remove(testElement);
+        }
+        
+        [UnityTest]
+        public IEnumerator ShouldNotDisableClearListButtonIfRequested([Values(0,1,2)] int row)
+        {
+            ListElement testElement = new ListElement(Property, new ListElementOptions() { EnableDeletions = true});
+            TestWindow.rootVisualElement.Add(testElement);
+            
+            yield return null;
+            
+            Assert.AreEqual(
+                DisplayStyle.Flex , 
+                testElement.Controls.Row[row].RemoveItem.resolvedStyle.display);
+            
+            TestWindow.rootVisualElement.Remove(testElement);
+        }
     }
 }
