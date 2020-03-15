@@ -2,7 +2,7 @@
 using Sibz.ListElement.Events;
 using UnityEngine.UIElements;
 
-namespace Sibz.ListElement.Tests.EventHandling
+namespace Sibz.ListElement.Tests
 {
     public class ListElementEventHandlingTests : ListElementTestBase
     {
