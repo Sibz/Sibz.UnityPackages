@@ -28,14 +28,15 @@ namespace Sibz.ListElement.Tests
                     return new ConstraintResult(this, actual?.GetType().Name, ConstraintStatus.Failure);
                 }
 
-                if (!element.ClassListContains(className))
+                if (element.ClassListContains(className))
                 {
-                    Description = $"Class name should contain '{className}'";
-                    return new ConstraintResult(this, string.Join(" ", element.GetClasses()),
-                        ConstraintStatus.Failure);
+                    return new ConstraintResult(this, actual, ConstraintStatus.Success);
                 }
 
-                return new ConstraintResult(this, actual, ConstraintStatus.Success);
+                Description = $"Class name should contain '{className}'";
+                return new ConstraintResult(this, string.Join(" ", element.GetClasses()),
+                    ConstraintStatus.Failure);
+
             }
 
             public override string Description { get; protected set; }
@@ -44,7 +45,7 @@ namespace Sibz.ListElement.Tests
         [SetUp]
         public void ControlSetup()
         {
-            controls = new Controls(ListElement);
+            controls = new Controls(ListElement, ListElement.Options);
         }
 
         [Test]

@@ -13,6 +13,7 @@ namespace Sibz.ListElement.Tests
 
         protected ListElement ListElement;
         protected SerializedProperty Property;
+        protected SerializedProperty ObjectProperty;
         private GameObject testGameObject;
         protected SerializedObject TestSerializedGameObject;
 
@@ -21,9 +22,11 @@ namespace Sibz.ListElement.Tests
         public class MyTestObject : MonoBehaviour
         {
             public List<string> myList = new List<string> {"item1", "item2", "item3"};
-            public List<CustomObject> myCustomList = new List<CustomObject> { new CustomObject(),  new CustomObject(), new CustomObject()};
+
+            public List<CustomObject> myCustomList = new List<CustomObject>
+                {new CustomObject(), new CustomObject(), new CustomObject()};
         }
-        
+
         public class CustomObject : Object
         {
         }
@@ -41,6 +44,7 @@ namespace Sibz.ListElement.Tests
             TestSerializedGameObject =
                 new SerializedObject(testGameObject.GetComponent<MyTestObject>());
             Property = TestSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
+            ObjectProperty = TestSerializedGameObject.FindProperty(nameof(MyTestObject.myCustomList));
             ListElement = new ListElement(Property);
 
             TestWindow.rootVisualElement.Add(ListElement);

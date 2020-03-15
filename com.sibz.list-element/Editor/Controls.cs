@@ -6,8 +6,8 @@ namespace Sibz.ListElement
 {
     public class Controls
     {
-        private readonly ListElement root;
-        private ListElementOptionsInternal options => root.Options;
+        private readonly VisualElement root;
+        private readonly ListElementOptionsInternal options;
 
         public readonly RowElements Row;
 
@@ -77,36 +77,40 @@ namespace Sibz.ListElement
             return element;
         }
 
-        public Controls(ListElement rootElement)
+        public Controls(VisualElement rootElement, ListElementOptionsInternal options)
         {
             root = rootElement;
-            Row = new RowElements(root);
+            this.options = options;
+            Row = new RowElements(root, options);
         }
 
         public class RowElements
         {
-            private readonly ListElement root;
+            private readonly ListElementOptionsInternal options;
+            private readonly VisualElement root;
 
-            public RowElements(ListElement rootElement)
+            public RowElements(VisualElement rootElement, ListElementOptionsInternal options)
             {
                 root = rootElement;
+                this.options = options;
             }
 
-            public RowElementsSet this[int index] => new RowElementsSet(root, index);
+            public RowElementsSet this[int index] => new RowElementsSet(root, options, index);
 
             public class RowElementsSet
             {
                 private readonly VisualElement root;
-                private readonly ListElement listElement;
+                private readonly ListElementOptionsInternal options;
+                private readonly VisualElement listElement;
 
                 public Button MoveUp =>
-                    root.Q<Button>(null, listElement.Options.MoveItemUpButtonClassName);
+                    root.Q<Button>(null, options.MoveItemUpButtonClassName);
 
                 public Button MoveDown =>
-                    root.Q<Button>(null, listElement.Options.MoveItemDownButtonClassName);
+                    root.Q<Button>(null, options.MoveItemDownButtonClassName);
 
                 public Button RemoveItem =>
-                    root.Q<Button>(null, listElement.Options.RemoveItemButtonClassName);
+                    root.Q<Button>(null, options.RemoveItemButtonClassName);
 
                 public PropertyField PropertyField =>
                     root.Q<PropertyField>();
@@ -125,10 +129,11 @@ namespace Sibz.ListElement
                     }
                 }
 
-                public RowElementsSet(ListElement listElement, int index)
+                public RowElementsSet(VisualElement listElement, ListElementOptionsInternal options, int index)
                 {
                     this.listElement = listElement;
-                    root = listElement.Q(null, listElement.Options.ItemsSectionClassName)[index];
+                    this.options = options;
+                    root = listElement.Q(null, options.ItemsSectionClassName)[index];
                 }
             }
         }

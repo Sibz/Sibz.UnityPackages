@@ -16,16 +16,20 @@ namespace Sibz.ListElement
         private SerializedProperty serializedProperty;
         private StyleSheet styleSheet;
         private VisualTreeAsset template;
+        private IRowGenerator rowGenerator;
 
-        public readonly Controls Controls;
+        public Controls Controls;
 
         public readonly ListElementOptionsInternal Options;
         public bool IsInitialised { get; private set; }
         public Type ListItemType { get; private set; }
+
+        public string ListName => serializedProperty == null ? "" : serializedProperty.displayName;
         public event Action OnReset;
 
         #region Attribute Properties
 
+        // ReSharper disable UnusedMember.Local
         private string Label => Options.Label;
         private string TemplateName => Options.TemplateName;
         private string ItemTemplateName => Options.ItemTemplateName;
@@ -33,7 +37,9 @@ namespace Sibz.ListElement
         private bool HidePropertyLabel => Options.HidePropertyLabel;
         private bool DoNotUseObjectField => Options.DoNotUseObjectField;
         private bool EnableReordering => Options.EnableReordering;
+
         private bool EnableDeletions => Options.EnableDeletions;
+        // ReSharper restore UnusedMember.Local
 
         #endregion
 
@@ -58,8 +64,6 @@ namespace Sibz.ListElement
         public ListElement(SerializedProperty property, ListElementOptions options,
             IListElementEventHandler evtHandler = null)
         {
-            Controls = new Controls(this);
-
             serializedProperty = property;
 
             Options = options ?? new ListElementOptionsInternal();
@@ -119,40 +123,6 @@ namespace Sibz.ListElement
             }
         }
 
-        private void SetLabelText()
-        {
-            if (Controls.HeaderLabel is null)
-            {
-                return;
-            }
-
-            if (string.IsNullOrEmpty(Options.Label) && !(serializedProperty is null))
-            {
-                Controls.HeaderLabel.text = ObjectNames.NicifyVariableName(serializedProperty.name);
-            }
-            else if (string.IsNullOrEmpty(Options.Label) && serializedProperty is null)
-            {
-                Controls.HeaderLabel.text = "<List Name>";
-            }
-            else
-            {
-                Controls.HeaderLabel.text = Label;
-            }
-        }
-
-        private void SetObjectFieldLabelText()
-        {
-            Label label = Controls.AddObjectFieldLabel;
-            if (label is null)
-            {
-                return;
-            }
-
-            label.parent.style.justifyContent = Justify.Center;
-            label.style.display = DisplayStyle.None;
-            label.parent.Add(new Label("Drop here to add new item") {pickingMode = PickingMode.Ignore});
-        }
-
         private void InitialiseWithSerializedProperty()
         {
             if (IsInitialised || serializedProperty is null)
@@ -160,23 +130,19 @@ namespace Sibz.ListElement
                 return;
             }
 
+            Controls = new Controls(this, Options);
+
             ListItemType = GetItemType(serializedProperty);
 
             eventHandler.Handler = new PropertyModificationHandler(serializedProperty, Reset);
 
-            UseObjectFieldIfTypeIsUnityObject();
+            rowGenerator = Options.RowGenerator ?? new RowGenerator(Options.ItemTemplateName);
+
+            OptionApplicator.ApplyAll(this);
 
             AddArraySizeField();
 
-            LoadItemTemplate();
-
             RegisterCallbacks();
-            
-            SetLabelText();
-
-            SetObjectFieldLabelText();
-
-            ApplyOptions();
 
             IsInitialised = true;
         }
@@ -203,26 +169,6 @@ namespace Sibz.ListElement
                 : baseObject.GetType();
         }
 
-        private void UseObjectFieldIfTypeIsUnityObject()
-        {
-            if (Controls.Add is null || Controls.AddObjectField == null)
-            {
-                return;
-            }
-
-            if (DoNotUseObjectField || !ListItemType.IsSubclassOf(typeof(Object)))
-            {
-                Controls.Add.style.display = DisplayStyle.Flex;
-                Controls.AddObjectField.style.display = DisplayStyle.None;
-            }
-            else
-            {
-                Controls.Add.style.display = DisplayStyle.None;
-                Controls.AddObjectField.style.display = DisplayStyle.Flex;
-                Controls.AddObjectField.objectType = ListItemType;
-            }
-        }
-
         private void AddArraySizeField()
         {
             IntegerField integerField = new IntegerField
@@ -240,21 +186,6 @@ namespace Sibz.ListElement
             integerField.RegisterCallback<ChangeEvent<int>>(DoReset);
 
             Add(integerField);
-        }
-
-        private void LoadItemTemplate()
-        {
-            try
-            {
-                itemTemplate = SingleAssetLoader.SingleAssetLoader.Load<VisualTreeAsset>(ItemTemplateName);
-            }
-            catch (Exception e)
-            {
-                Debug.LogErrorFormat(
-                    "Unable to load item template ('{0}'): {1}",
-                    TemplateName,
-                    e.Message);
-            }
         }
 
         [SuppressMessage("ReSharper", "HeapView.DelegateAllocation")]
@@ -363,20 +294,6 @@ namespace Sibz.ListElement
             }
         }
 
-        private void ApplyOptions()
-        {
-            if (!EnableDeletions)
-            {
-                Controls.HeaderSection.AddToClassList("hide-remove-buttons");
-                Controls.ItemsSection.AddToClassList("hide-remove-buttons");
-            }
-
-            if (!EnableReordering)
-            {
-                Controls.ItemsSection.AddToClassList("hide-reorder-buttons");
-            }
-        }
-
         #endregion
 
         #region Reset
@@ -392,7 +309,14 @@ namespace Sibz.ListElement
                 return;
             }
 
+            if (!property.isArray)
+            {
+                Debug.LogWarning("Bound property is not an array type");
+                return;
+            }
+
             serializedProperty = property;
+
             if (!IsInitialised)
             {
                 Initialise();
@@ -405,7 +329,13 @@ namespace Sibz.ListElement
         {
             DisableClearListButtonIfRequired();
 
-            PopulateList();
+            Controls.ItemsSection.Clear();
+
+            for (int i = 0; i < serializedProperty.arraySize; i++)
+            {
+                Controls.ItemsSection.Add(rowGenerator.NewRow(i, serializedProperty));
+                rowGenerator.PostInsert(Controls.Row[i], i, serializedProperty.arraySize);
+            }
 
             OnReset?.Invoke();
         }
@@ -419,59 +349,6 @@ namespace Sibz.ListElement
             else if (!Controls.ClearList.enabledSelf)
             {
                 Controls.ClearList.SetEnabled(true);
-            }
-        }
-
-        private void PopulateList()
-        {
-            if (!serializedProperty.isArray)
-            {
-                Debug.LogWarning("Bound property is not an array type");
-                return;
-            }
-
-            Controls.ItemsSection.Clear();
-
-            for (int i = 0; i < serializedProperty.arraySize; i++)
-            {
-                VisualElement itemRow = CreateItemRow(i);
-
-                Controls.ItemsSection.Add(itemRow);
-
-                DisableReorderButtonIfRequired(i, serializedProperty.arraySize);
-
-                HidePropertyLabelIfRequired(i);
-            }
-        }
-
-        private void HidePropertyLabelIfRequired(int i)
-        {
-            if (HidePropertyLabel)
-            {
-                Controls.Row[i].PropertyField.AddToClassList(ListElementOptionsInternal.HidePropertyLabelClassName);
-            }
-        }
-
-        private VisualElement CreateItemRow(int index)
-        {
-            ListRowElement itemRow = new ListRowElement(index);
-            itemTemplate.CloneTree(itemRow);
-
-            itemRow.Q<PropertyField>().BindProperty(serializedProperty.GetArrayElementAtIndex(index));
-
-            return itemRow;
-        }
-
-        private void DisableReorderButtonIfRequired(int index, int arraySize)
-        {
-            if (index == 0)
-            {
-                Controls.Row[index].MoveUp?.SetEnabled(false);
-            }
-
-            if (index == arraySize - 1 || arraySize <= 1)
-            {
-                Controls.Row[index].MoveDown?.SetEnabled(false);
             }
         }
 

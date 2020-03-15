@@ -9,7 +9,7 @@
     display: none;
 }
 
-.hide-field-label > TextField > Label {
+.items.hide-field-label TextField > Label {
     display: none;
 }
 
@@ -35,5 +35,9 @@
 }
 
 .hide-field-label .unity-object-field__label {
+    display: none;
+}
+
+.items.hide-field-label PropertyField .unity-object-field__label {
     display: none;
 }

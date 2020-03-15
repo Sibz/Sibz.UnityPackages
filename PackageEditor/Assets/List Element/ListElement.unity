@@ -391,9 +391,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MyList:
-  - 5
-  - 7
-  - 7
+  - 1
+  - 2
+  - s
+  - 4
   MyObjectList:
   - {fileID: 533557754}
   - {fileID: 1839769265}

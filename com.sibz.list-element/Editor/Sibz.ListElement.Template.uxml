@@ -9,12 +9,12 @@
             <ui:Button text="No" class="clear-list-cancel" />
         </ui:VisualElement>
     </ui:VisualElement>
-    <ui:VisualElement class="items">
+    <ui:VisualElement class="items hide-field-label">
         <Style src="Sibz.ListElement.Template.uss" />
     </ui:VisualElement>
     <ui:VisualElement class="add-section">
         <Style src="Sibz.ListElement.Template.uss" />
         <ui:Button text="Add New Item" class="add-button" />
-        <uie:ObjectField class="add-field" />
+        <uie:ObjectField class="add-field" style="display: none;&#10;" />
     </ui:VisualElement>
 </ui:UXML>

@@ -19,7 +19,11 @@
         private const string DefaultAddItemButtonClassName = "add-button";
         private const string DefaultAddItemObjectFieldClassName = "add-field";
 
-        public static string HidePropertyLabelClassName => "hide-field-label";
+        public IRowGenerator RowGenerator = null;
+
+        public string HidePropertyLabelClassName => "hide-field-label";
+        public string HideRemoveButtonsClassName => "hide-remove-buttons";
+        public string HideReorderButtonsClassName => "hide-reorder-buttons";
         public string TemplateName { get; internal set; } = DefaultTemplateName;
         public string ItemTemplateName { get; internal set; } = DefaultItemTemplateName;
         public string StyleSheetName { get; internal set; } = DefaultStyleSheetName;
