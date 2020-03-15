@@ -17,6 +17,8 @@ namespace Sibz.ListElement
         private StyleSheet styleSheet;
         private VisualTreeAsset template;
 
+        public Controls Controls;
+
         public readonly ListElementOptionsInternal Options;
         public bool IsInitialised { get; private set; }
         public Type ListItemType { get; private set; }
@@ -54,6 +56,8 @@ namespace Sibz.ListElement
         public ListElement(SerializedProperty property, ListElementOptions options,
             IListElementEventHandler evtHandler = null)
         {
+            Controls = new Controls(this);
+
             serializedProperty = property;
 
             Options = options ?? new ListElementOptionsInternal();
@@ -121,24 +125,29 @@ namespace Sibz.ListElement
 
         private void SetLabelText()
         {
-            Label label = this.Q<Label>(null, Constants.HeaderLabelClassName);
-            if (string.IsNullOrEmpty(Label) && !(serializedProperty is null))
+            if (Controls.HeaderLabel is null)
             {
-                label.text = ObjectNames.NicifyVariableName(serializedProperty.name);
+                return;
             }
-            else if (string.IsNullOrEmpty(Label) && serializedProperty is null)
+
+            if (string.IsNullOrEmpty(Options.Label) && !(serializedProperty is null))
             {
-                label.text = "<List Name>";
+                Controls.HeaderLabel.text = ObjectNames.NicifyVariableName(serializedProperty.name);
+            }
+            else if (string.IsNullOrEmpty(Options.Label) && serializedProperty is null)
+            {
+                Controls.HeaderLabel.text = "<List Name>";
             }
             else
             {
-                label.text = Label;
+                Controls.HeaderLabel.text = Label;
             }
         }
 
         private void SetObjectFieldLabelText()
         {
-            if (!(GetLabelInHierarchy() is Label label))
+            Label label = Controls.AddObjectFieldLabel;
+            if (label is null)
             {
                 return;
             }
@@ -148,29 +157,13 @@ namespace Sibz.ListElement
             label.parent.Add(new Label("Drop here to add new item") {pickingMode = PickingMode.Ignore});
         }
 
-        private VisualElement GetLabelInHierarchy()
-        {
-            try
-            {
-                return this.Q(null, Constants.AddItemObjectField)
-                    .hierarchy[0]
-                    .hierarchy[0]
-                    .hierarchy[1];
-            }
-            catch (NullReferenceException)
-            {
-            }
-
-            return null;
-        }
-
-
         private void AddHidePropertyStyleSheetIfRequired()
         {
             if (HidePropertyLabel)
             {
                 styleSheets.Add(
-                    SingleAssetLoader.SingleAssetLoader.Load<StyleSheet>(Constants.HidePropertyLabelStyleSheetName));
+                    SingleAssetLoader.SingleAssetLoader.Load<StyleSheet>(ListElementOptionsInternal
+                        .HidePropertyLabelStyleSheetName));
             }
         }
 
@@ -220,25 +213,21 @@ namespace Sibz.ListElement
 
         private void UseObjectFieldIfTypeIsUnityObject()
         {
-            VisualElement addItemSection = this.Q(null, Constants.AddItemSection);
-            if (addItemSection is null)
+            if (Controls.Add is null || Controls.AddObjectField == null)
             {
                 return;
             }
 
-            ObjectField objectField = addItemSection.Q<ObjectField>(null, Constants.AddItemObjectField);
-            Button addButton = addItemSection.Q<Button>(null, Constants.AddButtonClassName);
-
             if (DoNotUseObjectField || !ListItemType.IsSubclassOf(typeof(Object)))
             {
-                addButton.style.display = DisplayStyle.Flex;
-                objectField.style.display = DisplayStyle.None;
+                Controls.Add.style.display = DisplayStyle.Flex;
+                Controls.AddObjectField.style.display = DisplayStyle.None;
             }
             else
             {
-                addButton.style.display = DisplayStyle.None;
-                objectField.style.display = DisplayStyle.Flex;
-                objectField.objectType = ListItemType;
+                Controls.Add.style.display = DisplayStyle.None;
+                Controls.AddObjectField.style.display = DisplayStyle.Flex;
+                Controls.AddObjectField.objectType = ListItemType;
             }
         }
 
@@ -282,21 +271,21 @@ namespace Sibz.ListElement
             try
             {
                 RegisterButtonDelegatedCallback<AddItemEvent>(
-                    GetButton(Constants.AddButtonClassName),
+                    Controls.Add,
                     eventHandler.OnAddItem);
                 RegisterButtonDelegatedCallback<ClearListRequestedEvent>(
-                    GetButton(Constants.DeleteAllButtonClassName),
+                    Controls.ClearList,
                     eventHandler.OnClearListRequested);
                 RegisterButtonDelegatedCallback<ClearListEvent>(
-                    GetButton(Constants.DeleteConfirmButtonClassName),
+                    Controls.ClearListConfirm,
                     eventHandler.OnClearList);
                 RegisterButtonDelegatedCallback<ClearListCancelledEvent>(
-                    GetButton(Constants.DeleteCancelButtonClassName),
+                    Controls.ClearListCancel,
                     eventHandler.OnClearListCancelled);
             }
             catch (MissingFieldException e)
             {
-                if (TemplateName == Constants.DefaultTemplateName)
+                if (TemplateName == ListElementOptionsInternal.DefaultTemplateName)
                 {
                     Debug.LogWarningFormat("Default template is missing field: {0}", e.Message);
                 }
@@ -308,16 +297,6 @@ namespace Sibz.ListElement
             RegisterCallback<ClickEvent>(OnItemButtonClicked);
 
             RegisterAddObjectFieldCallback();
-        }
-
-        private Button GetButton(string className)
-        {
-            if (!(this.Q(null, className) is Button button))
-            {
-                throw new MissingFieldException(nameof(Button), className);
-            }
-
-            return button;
         }
 
         private void RegisterButtonDelegatedCallback<T2>(Button button, EventCallback<T2> endAction,
@@ -354,8 +333,7 @@ namespace Sibz.ListElement
                 SendEvent(new AddItemEvent {target = this, Item = e.newValue});
             }
 
-            this.Q<ObjectField>(null, Constants.AddItemObjectField)?
-                .RegisterCallback<ChangeEvent<Object>>(SendObjectAddEvent);
+            Controls.AddObjectField?.RegisterCallback<ChangeEvent<Object>>(SendObjectAddEvent);
         }
 
         private void OnItemButtonClicked(ClickEvent evt)
@@ -366,14 +344,14 @@ namespace Sibz.ListElement
                 return;
             }
 
-            if (button.ClassListContains(Constants.DeleteItemButtonClassName))
+            if (button.ClassListContains(Options.RemoveItemButtonClassName))
             {
                 SendEvent(new RemoveItemEvent
                 {
                     target = this, Index = element.Index
                 });
             }
-            else if (button.ClassListContains(Constants.MoveUpButtonClassName))
+            else if (button.ClassListContains(Options.MoveItemUpButtonClassName))
             {
                 SendEvent(new MoveItemEvent
                 {
@@ -382,7 +360,7 @@ namespace Sibz.ListElement
                     Direction = MoveItemEvent.MoveDirection.Up
                 });
             }
-            else if (button.ClassListContains(Constants.MoveDownButtonClassName))
+            else if (button.ClassListContains(Options.MoveItemDownButtonClassName))
             {
                 SendEvent(new MoveItemEvent
                 {
@@ -428,14 +406,13 @@ namespace Sibz.ListElement
 
         private void DisableClearListButtonIfRequired()
         {
-            Button button = this.Q<Button>(null, Constants.DeleteAllButtonClassName);
             if (serializedProperty.arraySize == 0)
             {
-                button?.SetEnabled(false);
+                Controls.ClearList?.SetEnabled(false);
             }
-            else if (!(button is null || button.enabledSelf))
+            else if (!Controls.ClearList.enabledSelf)
             {
-                button.SetEnabled(true);
+                Controls.ClearList.SetEnabled(true);
             }
         }
 
@@ -447,16 +424,15 @@ namespace Sibz.ListElement
                 return;
             }
 
-            VisualElement listContainer = this.Q<VisualElement>(null, Constants.ItemSectionClassName);
-            listContainer.Clear();
+            Controls.ItemsSection.Clear();
 
             for (int i = 0; i < serializedProperty.arraySize; i++)
             {
                 VisualElement itemRow = CreateItemRow(i);
 
-                DisableReorderButtonIfRequired(itemRow, i, serializedProperty.arraySize);
+                Controls.ItemsSection.Add(itemRow);
 
-                listContainer.Add(itemRow);
+                DisableReorderButtonIfRequired(i, serializedProperty.arraySize);
             }
         }
 
@@ -470,16 +446,16 @@ namespace Sibz.ListElement
             return itemRow;
         }
 
-        private static void DisableReorderButtonIfRequired(VisualElement itemRow, int index, int arraySize)
+        private void DisableReorderButtonIfRequired(int index, int arraySize)
         {
             if (index == 0)
             {
-                itemRow.Q<Button>(null, Constants.MoveUpButtonClassName)?.SetEnabled(false);
+                Controls.Row[index].MoveUp?.SetEnabled(false);
             }
 
             if (index == arraySize - 1 || arraySize <= 1)
             {
-                itemRow.Q<Button>(null, Constants.MoveDownButtonClassName)?.SetEnabled(false);
+                Controls.Row[index].MoveDown?.SetEnabled(false);
             }
         }
 

@@ -72,17 +72,19 @@ namespace Sibz.ListElement.Tests
         public void ShouldContainDefaultTemplateItems()
         {
             ListElement.BindProperty(TestSerializedGameObject.FindProperty(nameof(MyTestObject.myList)));
-            Assert.IsTrue(CheckForDefaultTemplateItems(ListElement));
+            Assert.IsTrue(CheckForDefaultTemplateItems());
         }
 
-        private static bool CheckForDefaultTemplateItems(VisualElement testElement)
+        private bool CheckForDefaultTemplateItems()
         {
             return
-                testElement.Q(null, Constants.HeaderSectionClassName) != null
+                ListElement.Controls.HeaderSection != null
                 &&
-                testElement.Q(null, Constants.DeleteConfirmSectionClassName) != null
+                ListElement.Controls.ClearListConfirmSection != null
                 &&
-                testElement.Q(null, Constants.ItemSectionClassName) != null
+                ListElement.Controls.ItemsSection != null
+                &&
+                ListElement.Controls.AddSection != null
                 ;
         }
 
@@ -90,24 +92,23 @@ namespace Sibz.ListElement.Tests
         public void ShouldNameLabelSameAsListWhenNoLabelProvided()
         {
             ListElement testElement = new ListElement(string.Empty, Property);
-            Label label = testElement.Q<Label>(null, Constants.HeaderLabelClassName);
-            Assert.AreEqual(ObjectNames.NicifyVariableName(nameof(MyTestObject.myList)), label.text);
+            Assert.AreEqual(
+                ObjectNames.NicifyVariableName(nameof(MyTestObject.myList)),
+                testElement.Controls.HeaderLabel.text);
         }
 
         [Test]
         public void ShouldNameLabelAsProvided()
         {
             ListElement testElement = new ListElement("Label", Property);
-            Label label = testElement.Q<Label>(null, Constants.HeaderLabelClassName);
-            Assert.AreEqual("Label", label.text);
+            Assert.AreEqual("Label", testElement.Controls.HeaderLabel.text);
         }
 
         [Test]
         public void ShouldNameLabelAsProvidedInConfig()
         {
             ListElement testElement = new ListElement(Property, new ListElementOptions {Label = "Label"});
-            Label label = testElement.Q<Label>(null, Constants.HeaderLabelClassName);
-            Assert.AreEqual("Label", label.text);
+            Assert.AreEqual("Label", testElement.Controls.HeaderLabel.text);
         }
 
         [Test]
@@ -134,9 +135,8 @@ namespace Sibz.ListElement.Tests
             vta.CloneTree(root);
             ListElement le = root.Q<ListElement>();
 
-            Label label = le.Q<Label>(null, Constants.HeaderLabelClassName);
-            Assert.IsNotNull(label);
-            Assert.AreEqual("TestLabel", label.text);
+            Assert.IsNotNull(le.Controls.HeaderLabel);
+            Assert.AreEqual("TestLabel", le.Controls.HeaderLabel.text);
         }
 
         [Test]
@@ -256,7 +256,8 @@ namespace Sibz.ListElement.Tests
             ListElement testElement = new ListElement(Property, new ListElementOptions {HidePropertyLabel = true});
 
             Assert.IsTrue(testElement.styleSheets.Contains(
-                SingleAssetLoader.SingleAssetLoader.Load<StyleSheet>(Constants.HidePropertyLabelStyleSheetName)));
+                SingleAssetLoader.SingleAssetLoader.Load<StyleSheet>(ListElementOptionsInternal
+                    .HidePropertyLabelStyleSheetName)));
         }
 
         [Test]
@@ -265,7 +266,8 @@ namespace Sibz.ListElement.Tests
             ListElement testElement = new ListElement(Property, new ListElementOptions {HidePropertyLabel = false});
 
             Assert.IsFalse(testElement.styleSheets.Contains(
-                SingleAssetLoader.SingleAssetLoader.Load<StyleSheet>(Constants.HidePropertyLabelStyleSheetName)));
+                SingleAssetLoader.SingleAssetLoader.Load<StyleSheet>(ListElementOptionsInternal
+                    .HidePropertyLabelStyleSheetName)));
         }
 
         [UnityTest]
@@ -292,10 +294,10 @@ namespace Sibz.ListElement.Tests
         {
             Assert.AreEqual(
                 DisplayStyle.Flex,
-                ListElement.Q(null, Constants.AddButtonClassName).style.display.value);
+                ListElement.Controls.Add.style.display.value);
             Assert.AreEqual(
                 DisplayStyle.None,
-                ListElement.Q(null, Constants.AddItemObjectField).style.display.value);
+                ListElement.Controls.AddObjectField.style.display.value);
         }
 
         [Test]
@@ -305,10 +307,10 @@ namespace Sibz.ListElement.Tests
                 new ListElement(TestSerializedGameObject.FindProperty(nameof(MyTestObject.myCustomList)));
             Assert.AreEqual(
                 DisplayStyle.None,
-                testElement.Q(null, Constants.AddButtonClassName).style.display.value);
+                testElement.Controls.Add.style.display.value);
             Assert.AreEqual(
                 DisplayStyle.Flex,
-                testElement.Q(null, Constants.AddItemObjectField).style.display.value);
+                testElement.Controls.AddObjectField.style.display.value);
         }
 
         [Test]
@@ -321,29 +323,29 @@ namespace Sibz.ListElement.Tests
 
             Assert.AreEqual(
                 DisplayStyle.Flex,
-                testElement.Q(null, Constants.AddButtonClassName).style.display.value);
+                testElement.Controls.Add.style.display.value);
             Assert.AreEqual(
                 DisplayStyle.None,
-                testElement.Q(null, Constants.AddItemObjectField).style.display.value);
+                testElement.Controls.AddObjectField.style.display.value);
         }
 
         [Test]
         public void ShouldDisableFirstMoveUpButton()
         {
-            Assert.IsFalse(ListElement.Q(null, Constants.MoveUpButtonClassName).enabledSelf);
+            Assert.IsFalse(ListElement.Controls.Row[0].MoveUp.enabledSelf);
         }
 
         [Test]
         public void ShouldDisableLastMoveDownButton()
         {
-            Assert.IsFalse(ListElement.Query(null, Constants.MoveDownButtonClassName).Build().Last().enabledSelf);
+            Assert.IsFalse(ListElement.Controls.Row[Property.arraySize - 1].MoveDown.enabledSelf);
         }
 
         [Test]
         public void ShouldDisableOnlyFirstMoveUpButton()
         {
             Assert.AreEqual(1,
-                ListElement.Query(null, Constants.MoveUpButtonClassName).Build().ToList()
+                ListElement.Query(null, ListElement.Options.MoveItemUpButtonClassName).Build().ToList()
                     .Count(x => x.enabledSelf == false));
         }
 
@@ -351,7 +353,7 @@ namespace Sibz.ListElement.Tests
         public void ShouldDisableOnlyLastMoveDownButton()
         {
             Assert.AreEqual(1,
-                ListElement.Query(null, Constants.MoveDownButtonClassName).Build().ToList()
+                ListElement.Query(null, ListElement.Options.MoveItemDownButtonClassName).Build().ToList()
                     .Count(x => x.enabledSelf == false));
         }
 
@@ -360,21 +362,21 @@ namespace Sibz.ListElement.Tests
         {
             ListElement.ClearListItems();
             ListElement.AddNewItemToList();
-            Assert.IsFalse(ListElement.Q(null, Constants.MoveUpButtonClassName).enabledSelf);
-            Assert.IsFalse(ListElement.Q(null, Constants.MoveDownButtonClassName).enabledSelf);
+            Assert.IsFalse(ListElement.Controls.Row[0].MoveUp.enabledSelf);
+            Assert.IsFalse(ListElement.Controls.Row[0].MoveDown.enabledSelf);
         }
 
         [Test]
         public void ShouldDisableClearListButtonWhenNoItems()
         {
             ListElement.ClearListItems();
-            Assert.IsFalse(ListElement.Q(null, Constants.DeleteAllButtonClassName).enabledSelf);
+            Assert.IsFalse(ListElement.Controls.ClearList.enabledSelf);
         }
 
         [Test]
-        public void ShouldNotDisableClearListButtonWhenNoItems()
+        public void ShouldNotDisableClearListButtonWhenThereIsItems()
         {
-            Assert.IsTrue(ListElement.Q(null, Constants.DeleteAllButtonClassName).enabledSelf);
+            Assert.IsTrue(ListElement.Controls.ClearList.enabledSelf);
         }
 
         [Serializable]

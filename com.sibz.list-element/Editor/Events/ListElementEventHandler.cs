@@ -1,13 +1,10 @@
-﻿using UnityEditor.UIElements;
-using UnityEngine.UIElements;
+﻿using UnityEngine.UIElements;
 
 namespace Sibz.ListElement.Events
 {
     public class ListElementEventHandler : IListElementEventHandler
     {
         private readonly ListElement listElement;
-
-        private ButtonBinder[] outerButtonBinders;
 
         public ListElementEventHandler(ListElement le)
         {
@@ -57,14 +54,20 @@ namespace Sibz.ListElement.Events
 
         private void ResetAddObjectFieldValueToNull()
         {
-            listElement.Q<ObjectField>(null, Constants.AddItemObjectField).SetValueWithoutNotify(null);
+            listElement.Controls.AddObjectField?.SetValueWithoutNotify(null);
         }
 
         private void ToggleConfirmDisplay(bool show = false)
         {
-            listElement.Q(null, Constants.DeleteConfirmSectionClassName).style.display =
+            if (listElement.Controls.ClearListConfirmSection == null ||
+                listElement.Controls.ClearList == null)
+            {
+                return;
+            }
+
+            listElement.Controls.ClearListConfirmSection.style.display =
                 show ? DisplayStyle.Flex : DisplayStyle.None;
-            listElement.Q(null, Constants.DeleteAllButtonClassName).style.display =
+            listElement.Controls.ClearList.style.display =
                 show ? DisplayStyle.None : DisplayStyle.Flex;
         }
     }

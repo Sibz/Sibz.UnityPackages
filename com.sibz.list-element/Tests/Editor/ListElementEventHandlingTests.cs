@@ -33,7 +33,7 @@ namespace Sibz.ListElement.Tests.EventHandling
         public void ClearListRequestedViaButton()
         {
             ListElement.SendEvent(new ClickEvent
-                {target = ListElement.Q<Button>(null, Constants.DeleteAllButtonClassName)});
+                {target = ListElement.Controls.ClearList});
             Assert.IsTrue(eventHandler.OnClearListRequestedCalled);
         }
 
@@ -48,7 +48,7 @@ namespace Sibz.ListElement.Tests.EventHandling
         public void ClearListViaButton()
         {
             ListElement.SendEvent(new ClickEvent
-                {target = ListElement.Q<Button>(null, Constants.DeleteConfirmButtonClassName)});
+                {target = ListElement.Controls.ClearListConfirm});
             Assert.IsTrue(eventHandler.OnClearListCalled);
         }
 
@@ -70,7 +70,7 @@ namespace Sibz.ListElement.Tests.EventHandling
         public void ClearListCancelledViaButton()
         {
             ListElement.SendEvent(new ClickEvent
-                {target = ListElement.Q<Button>(null, Constants.DeleteCancelButtonClassName)});
+                {target = ListElement.Controls.ClearListCancel});
             Assert.IsTrue(eventHandler.OnClearListCancelledCalled);
         }
 
@@ -84,7 +84,7 @@ namespace Sibz.ListElement.Tests.EventHandling
         [Test]
         public void AddNewItemViaButton()
         {
-            ListElement.SendEvent(new ClickEvent {target = ListElement.Q<Button>(null, Constants.AddButtonClassName)});
+            ListElement.SendEvent(new ClickEvent {target = ListElement.Controls.Add});
             Assert.IsTrue(eventHandler.OnAddItemCalled);
         }
 
@@ -107,7 +107,7 @@ namespace Sibz.ListElement.Tests.EventHandling
         public void RemoveItemViaButton()
         {
             ListElement
-                .SendEvent(new ClickEvent {target = ListElement.Q<Button>(null, Constants.DeleteItemButtonClassName)});
+                .SendEvent(new ClickEvent {target = ListElement.Controls.Row[0].RemoveItem});
             Assert.IsTrue(eventHandler.OnRemoveItemCalled);
         }
 
@@ -129,7 +129,7 @@ namespace Sibz.ListElement.Tests.EventHandling
         public void MoveItemViaButtonUp()
         {
             ListElement.SendEvent(
-                new ClickEvent {target = ListElement.Q<Button>(null, Constants.MoveUpButtonClassName)});
+                new ClickEvent {target = ListElement.Controls.Row[0].MoveUp});
             Assert.IsTrue(eventHandler.OnMoveItemRequestedCalled);
         }
 
@@ -137,7 +137,7 @@ namespace Sibz.ListElement.Tests.EventHandling
         public void MoveItemViaButtonDown()
         {
             ListElement.SendEvent(new ClickEvent
-                {target = ListElement.Q<Button>(null, Constants.MoveDownButtonClassName)});
+                {target = ListElement.Controls.Row[0].MoveDown});
             Assert.IsTrue(eventHandler.OnMoveItemRequestedCalled);
         }
 

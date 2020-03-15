@@ -2,7 +2,7 @@
 {
     public class ListElementOptionsInternal
     {
-        private const string DefaultTemplateName = "Sibz.ListElement.Template";
+        internal const string DefaultTemplateName = "Sibz.ListElement.Template";
         private const string DefaultItemTemplateName = "Sibz.ListElement.ItemTemplate";
         private const string DefaultStyleSheetName = "Sibz.ListElement.Template";
         public const string HidePropertyLabelStyleSheetName = "Sibz.ListElement.Hide-Property-Label";
