@@ -41,3 +41,24 @@
 .items.hide-field-label PropertyField .unity-object-field__label {
     display: none;
 }
+
+.add-field .unity-object-field-display {
+    align-items: center;
+    justify-content: center;
+}
+
+.add-field .unity-object-field-display__label {
+    display: none;
+}
+
+.add-section.use-object-field .add-field {
+    display: flex;
+}
+
+.add-section.use-object-field .add-button {
+    display: none;
+}
+
+.hide-object-field ObjectField {
+    display: none;
+}

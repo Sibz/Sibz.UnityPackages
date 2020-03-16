@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Sibz.ListElement.Internal;
 using Object = UnityEngine.Object;
 
 namespace Sibz.ListElement
@@ -158,7 +159,7 @@ namespace Sibz.ListElement
 
             rowGenerator = Options.RowGenerator ?? new RowGenerator(Options.ItemTemplateName);
 
-            OptionApplicator.ApplyAll(this);
+            OptionApplicator.ApplyOptions(this);
 
             AddArraySizeField();
 
