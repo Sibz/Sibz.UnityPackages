@@ -1,6 +1,6 @@
-﻿namespace Sibz.ListElement
+﻿namespace Sibz.ListElement.Internal
 {
-    public class ListElementOptionsInternal
+    public class ListElementOptions
     {
         internal const string DefaultTemplateName = "Sibz.ListElement.Template";
         private const string DefaultItemTemplateName = "Sibz.ListElement.ItemTemplate";

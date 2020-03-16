@@ -20,7 +20,7 @@ namespace Sibz.ListElement
 
         public Controls Controls;
 
-        public readonly ListElementOptionsInternal Options;
+        public readonly Internal.ListElementOptions Options;
         public bool IsInitialised { get; private set; }
         public Type ListItemType { get; private set; }
 
@@ -67,7 +67,7 @@ namespace Sibz.ListElement
         {
             serializedProperty = property;
 
-            Options = options ?? new ListElementOptionsInternal();
+            Options = options ?? new Internal.ListElementOptions();
 
             eventHandler = evtHandler ?? new ListElementEventHandler(this);
 
@@ -199,7 +199,7 @@ namespace Sibz.ListElement
             }
             catch (MissingFieldException e)
             {
-                if (TemplateName == ListElementOptionsInternal.DefaultTemplateName)
+                if (TemplateName == Internal.ListElementOptions.DefaultTemplateName)
                 {
                     Debug.LogWarningFormat("Default template is missing field: {0}", e.Message);
                 }
@@ -408,7 +408,7 @@ namespace Sibz.ListElement
 
             public UxmlTraits()
             {
-                ListElementOptionsInternal defaults = new ListElementOptionsInternal();
+                Internal.ListElementOptions defaults = new Internal.ListElementOptions();
                 label = new UxmlStringAttributeDescription {name = "label", defaultValue = defaults.Label};
                 itemTemplateName = new UxmlStringAttributeDescription
                     {name = "item-template-name", defaultValue = defaults.ItemTemplateName};

@@ -3,7 +3,7 @@
 namespace Sibz.ListElement
 {
     [SuppressMessage("ReSharper", "UnusedMember.Global")]
-    public class ListElementOptions : ListElementOptionsInternal
+    public class ListElementOptions : Internal.ListElementOptions
     {
         public new string TemplateName
         {

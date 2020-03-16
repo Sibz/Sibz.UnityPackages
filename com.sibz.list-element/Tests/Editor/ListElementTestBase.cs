@@ -17,7 +17,7 @@ namespace Sibz.ListElement.Tests
         private GameObject testGameObject;
         protected SerializedObject TestSerializedGameObject;
 
-        protected ListElementOptionsInternal options => ListElement.Options;
+        protected Internal.ListElementOptions options => ListElement.Options;
 
         public class MyTestObject : MonoBehaviour
         {

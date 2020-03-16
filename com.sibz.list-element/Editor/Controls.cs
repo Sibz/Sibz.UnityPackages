@@ -7,7 +7,7 @@ namespace Sibz.ListElement
     public class Controls
     {
         private readonly VisualElement root;
-        private readonly ListElementOptionsInternal options;
+        private readonly Internal.ListElementOptions options;
 
         public readonly RowElements Row;
 
@@ -77,7 +77,7 @@ namespace Sibz.ListElement
             return element;
         }
 
-        public Controls(VisualElement rootElement, ListElementOptionsInternal options)
+        public Controls(VisualElement rootElement, Internal.ListElementOptions options)
         {
             root = rootElement;
             this.options = options;
@@ -86,10 +86,10 @@ namespace Sibz.ListElement
 
         public class RowElements
         {
-            private readonly ListElementOptionsInternal options;
+            private readonly Internal.ListElementOptions options;
             private readonly VisualElement root;
 
-            public RowElements(VisualElement rootElement, ListElementOptionsInternal options)
+            public RowElements(VisualElement rootElement, Internal.ListElementOptions options)
             {
                 root = rootElement;
                 this.options = options;
@@ -100,7 +100,7 @@ namespace Sibz.ListElement
             public class RowElementsSet
             {
                 private readonly VisualElement root;
-                private readonly ListElementOptionsInternal options;
+                private readonly Internal.ListElementOptions options;
                 private readonly VisualElement listElement;
 
                 public Button MoveUp =>
@@ -129,7 +129,7 @@ namespace Sibz.ListElement
                     }
                 }
 
-                public RowElementsSet(VisualElement listElement, ListElementOptionsInternal options, int index)
+                public RowElementsSet(VisualElement listElement, Internal.ListElementOptions options, int index)
                 {
                     this.listElement = listElement;
                     this.options = options;
