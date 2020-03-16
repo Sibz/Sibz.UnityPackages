@@ -17,12 +17,43 @@ namespace Sibz.ListElement
         private StyleSheet styleSheet;
         private VisualTreeAsset template;
         private IRowGenerator rowGenerator;
+        private Type listItemType;
 
         public Controls Controls;
 
         public readonly Internal.ListElementOptions Options;
         public bool IsInitialised { get; private set; }
-        public Type ListItemType { get; private set; }
+
+        public Type ListItemType
+        {
+            get
+            {
+                if (listItemType != null)
+                {
+                    return listItemType;
+                }
+
+                var propertyPath = serializedProperty.propertyPath.Split('.');
+                object baseObject = serializedProperty.serializedObject.targetObject;
+
+                foreach (string fieldName in propertyPath)
+                {
+                    baseObject = baseObject.GetType().GetField(fieldName)?.GetValue(baseObject);
+                    if (baseObject != null)
+                    {
+                        continue;
+                    }
+
+                    Debug.LogWarning($"Unable to get item type. Field {fieldName} does not exist on object");
+                    return null;
+                }
+
+                Type baseType = baseObject.GetType();
+                return listItemType = baseType.IsGenericType
+                    ? baseType.GetGenericArguments()[0]
+                    : baseType;
+            }
+        }
 
         public string ListName => serializedProperty == null ? "" : serializedProperty.displayName;
         public event Action OnReset;
@@ -123,8 +154,6 @@ namespace Sibz.ListElement
 
             Controls = new Controls(this, Options);
 
-            ListItemType = GetItemType(serializedProperty);
-
             eventHandler.Handler = new PropertyModificationHandler(serializedProperty, Reset);
 
             rowGenerator = Options.RowGenerator ?? new RowGenerator(Options.ItemTemplateName);
@@ -136,28 +165,6 @@ namespace Sibz.ListElement
             RegisterCallbacks();
 
             IsInitialised = true;
-        }
-
-        private static Type GetItemType(SerializedProperty property)
-        {
-            var propertyPath = property.propertyPath.Split('.');
-            object baseObject = property.serializedObject.targetObject;
-
-            foreach (string fieldName in propertyPath)
-            {
-                baseObject = baseObject.GetType().GetField(fieldName)?.GetValue(baseObject);
-                if (baseObject != null)
-                {
-                    continue;
-                }
-
-                Debug.LogWarning($"Unable to get item type. Field {fieldName} does not exist on object");
-                return null;
-            }
-
-            return baseObject.GetType().IsGenericType
-                ? baseObject.GetType().GetGenericArguments()[0]
-                : baseObject.GetType();
         }
 
         private void AddArraySizeField()
@@ -318,8 +325,6 @@ namespace Sibz.ListElement
 
         private void Reset()
         {
-            DisableClearListButtonIfRequired();
-
             Controls.ItemsSection.Clear();
 
             for (int i = 0; i < serializedProperty.arraySize; i++)
@@ -329,18 +334,6 @@ namespace Sibz.ListElement
             }
 
             OnReset?.Invoke();
-        }
-
-        private void DisableClearListButtonIfRequired()
-        {
-            if (serializedProperty.arraySize == 0)
-            {
-                Controls.ClearList?.SetEnabled(false);
-            }
-            else if (!Controls.ClearList.enabledSelf)
-            {
-                Controls.ClearList.SetEnabled(true);
-            }
         }
 
         #endregion

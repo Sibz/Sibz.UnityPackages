@@ -1,7 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Reflection;
-using UnityEngine;
+using UnityEditor.UIElements;
 using UnityEngine.UIElements;
+using Object = UnityEngine.Object;
 
 namespace Sibz.ListElement
 {
@@ -81,6 +83,30 @@ namespace Sibz.ListElement
                 listElement.styleSheets.Add(
                     SingleAssetLoader.SingleAssetLoader.Load<StyleSheet>(listElement.Options.StyleSheetName));
             }
+        }
+
+        public static void ApplyTypeToObjectField(ListElement listElement)
+        {
+            SetTypeOnObjectField(listElement.Controls.AddObjectField, listElement.ListItemType);
+        }
+
+        public static void SetTypeOnObjectField(ObjectField field, Type type)
+        {
+            if (field is null)
+            {
+                return;
+            }
+            field.objectType = type;
+        }
+        
+        public static void ApplyClearListEnabler(ListElement listElement)
+        {
+            listElement.OnReset += ()=>DisableButtonWhenCountIsNonZero(listElement.Controls.ClearList, listElement.Controls.ItemsSection.childCount);
+        }
+        
+        public static void DisableButtonWhenCountIsNonZero(Button button, int itemCount)
+        {
+            button?.SetEnabled(itemCount != 0);
         }
     }
 }

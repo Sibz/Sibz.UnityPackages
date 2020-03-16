@@ -397,7 +397,6 @@ MonoBehaviour:
   - 4
   MyObjectList:
   - {fileID: 533557754}
-  - {fileID: 1839769265}
   - {fileID: 533557754}
 --- !u!4 &1839769267
 Transform:

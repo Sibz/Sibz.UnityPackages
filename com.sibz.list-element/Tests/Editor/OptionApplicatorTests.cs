@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using NUnit.Framework;
+using UnityEditor.UIElements;
 using UnityEngine.TestTools;
 using UnityEngine.UIElements;
 
@@ -227,6 +228,52 @@ namespace Sibz.ListElement.Tests
             OptionApplicator.ApplyCustomStyleSheet(ListElement);
             Assert.IsFalse(ListElement.styleSheets.Contains(
                 SingleAssetLoader.SingleAssetLoader.Load<StyleSheet>(options.StyleSheetName)));
+        }
+
+        [UnityTest]
+        public IEnumerator ShouldSetObjectFieldTypeToTypeOfListItem()
+        {
+            ListElement testElement = new ListElement(ObjectProperty, options);
+            OptionApplicator.ApplyTypeToObjectField(testElement);
+            yield return null;
+            Assert.AreEqual(
+                typeof(CustomObject),
+                testElement.Controls.AddObjectField.objectType);
+        }
+
+        [Test]
+        public void ShouldDisableButtonWhenCountIs0()
+        {
+            Button button = new Button();
+            OptionApplicator.DisableButtonWhenCountIsNonZero(button, 0);
+            Assert.IsFalse(button.enabledSelf);
+            
+            
+        }
+        
+        [Test]
+        public void ShouldEnableButtonWhenCountIsNotZero()
+        {
+            Button button = new Button();
+            OptionApplicator.DisableButtonWhenCountIsNonZero(button, 1);
+            Assert.IsTrue(button.enabledSelf);
+        }
+
+        [Test]
+        public void ShouldNotErrorTryingToSetTypeOnNullObjectField()
+        {
+            ObjectField nullField = null;
+            OptionApplicator.SetTypeOnObjectField(null, typeof(CustomObject));
+        }
+        
+        [Test]
+        public void ShouldSetTypeOnObjectField()
+        {
+            ObjectField field = new ObjectField();
+            OptionApplicator.SetTypeOnObjectField(field, typeof(CustomObject));
+            Assert.AreSame(
+                typeof(CustomObject),
+                field.objectType);
         }
     }
 }
