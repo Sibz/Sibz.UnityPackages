@@ -23,8 +23,13 @@ namespace Sibz.ListElement
 
         public void PostInsert(Controls.RowElements.RowElementsSet rowElementsSet, int index, int arraySize)
         {
-            rowElementsSet?.MoveUp?.SetEnabled(index != 0);
-            rowElementsSet?.MoveDown?.SetEnabled(index < arraySize - 1);
+            AdjustReorderButtonsState(rowElementsSet?.MoveUp, rowElementsSet?.MoveDown, index, arraySize);
+        }
+
+        public static void AdjustReorderButtonsState(Button moveUp, Button moveDown, int index, int arraySize)
+        {
+            moveUp?.SetEnabled(index != 0);
+            moveDown?.SetEnabled(index < arraySize - 1);
         }
     }
 }

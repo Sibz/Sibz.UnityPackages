@@ -8,7 +8,6 @@ namespace Sibz.ListElement.Tests
 {
     public class RowGeneratorTests
     {
-        private ListElement listElement;
         private RowGenerator rowGen;
         private SerializedProperty property;
         private GameObject testGameObject;
@@ -27,8 +26,7 @@ namespace Sibz.ListElement.Tests
             testSerializedGameObject =
                 new SerializedObject(testGameObject.GetComponent<ListElementTestBase.MyTestObject>());
             property = testSerializedGameObject.FindProperty(nameof(ListElementTestBase.MyTestObject.myList));
-            listElement = new ListElement(property);
-            rowGen = new RowGenerator("TestItemTemplate");
+            rowGen = new RowGenerator(new ListElementOptions().ItemTemplateName);
         }
 
         [TearDown]
@@ -52,11 +50,11 @@ namespace Sibz.ListElement.Tests
         }
 
         [Test]
-        public void ShouldContainTestElement()
+        public void ShouldContainPropertyField()
         {
             Assert.IsNotNull(
                 rowGen.NewRow(0, property)
-                    .Q("TestItemTemplateCheck"));
+                    .Q<PropertyField>());
         }
 
         [Test]
@@ -69,33 +67,33 @@ namespace Sibz.ListElement.Tests
         }
 
         [Test]
-        public void ShouldDisableFirstMoveUpButton()
+        public void ShouldDisableOnlyFirstMoveUpButton([Values(0, 1, 2)] int row)
         {
-            const int row = 0;
-            rowGen.PostInsert(listElement.Controls.Row[row], row, 3);
-            Assert.False(listElement.Controls.Row[row].MoveUp.enabledSelf);
-        }
-
-        [Test]
-        public void ShouldDisableOnlyFirstMoveUpButton([Values(1, 2)] int row)
-        {
-            rowGen.PostInsert(listElement.Controls.Row[row], row, 3);
-            Assert.IsTrue(listElement.Controls.Row[row].MoveUp.enabledSelf);
-        }
-
-        [Test]
-        public void ShouldDisableLastMoveDownButton()
-        {
-            const int row = 2;
-            rowGen.PostInsert(listElement.Controls.Row[row], row, 3);
-            Assert.False(listElement.Controls.Row[row].MoveDown.enabledSelf);
+            Button moveUp = new Button();
+            RowGenerator.AdjustReorderButtonsState(moveUp, null, row, 3);
+            if (row == 0)
+            {
+                Assert.IsFalse(moveUp.enabledSelf);
+            }
+            else
+            {
+                Assert.IsTrue(moveUp.enabledSelf);
+            }
         }
 
         [Test]
         public void ShouldDisableOnlyLastMoveDownButton([Values(0, 1)] int row)
         {
-            rowGen.PostInsert(listElement.Controls.Row[row], row, 3);
-            Assert.IsTrue(listElement.Controls.Row[row].MoveDown.enabledSelf);
+            Button moveDown = new Button();
+            RowGenerator.AdjustReorderButtonsState(null, moveDown, row, 3);
+            if (row == 2)
+            {
+                Assert.IsFalse(moveDown.enabledSelf);
+            }
+            else
+            {
+                Assert.IsTrue(moveDown.enabledSelf);
+            }
         }
     }
 }
