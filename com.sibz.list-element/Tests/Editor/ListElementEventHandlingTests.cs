@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using Sibz.ListElement.Events;
+using Sibz.ListElement.Tests.Integration;
 using UnityEngine.UIElements;
 
 namespace Sibz.ListElement.Tests

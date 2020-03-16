@@ -7,7 +7,7 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Sibz.ListElement.Tests
+namespace Sibz.ListElement.Tests.Unit
 {
     public class ControlsTests
     {

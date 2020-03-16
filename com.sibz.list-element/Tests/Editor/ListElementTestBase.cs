@@ -4,7 +4,7 @@ using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
 
-namespace Sibz.ListElement.Tests
+namespace Sibz.ListElement.Tests.Integration
 {
     [SuppressMessage("ReSharper", "HeapView.BoxingAllocation")]
     public class ListElementTestBase

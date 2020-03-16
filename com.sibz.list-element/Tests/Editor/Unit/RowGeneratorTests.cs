@@ -4,7 +4,7 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Sibz.ListElement.Tests
+namespace Sibz.ListElement.Tests.Unit
 {
     public class RowGeneratorTests
     {
@@ -22,17 +22,17 @@ namespace Sibz.ListElement.Tests
         [SetUp]
         public void TestSetup()
         {
-            testGameObject.AddComponent<ListElementTestBase.MyTestObject>();
+            testGameObject.AddComponent<TestHelpers.TestComponent>();
             testSerializedGameObject =
-                new SerializedObject(testGameObject.GetComponent<ListElementTestBase.MyTestObject>());
-            property = testSerializedGameObject.FindProperty(nameof(ListElementTestBase.MyTestObject.myList));
+                new SerializedObject(testGameObject.GetComponent<TestHelpers.TestComponent>());
+            property = testSerializedGameObject.FindProperty(nameof(TestHelpers.TestComponent.myList));
             rowGen = new RowGenerator(new ListElementOptions().ItemTemplateName);
         }
 
         [TearDown]
         public void TearDown()
         {
-            Object.DestroyImmediate(testGameObject.GetComponent<ListElementTestBase.MyTestObject>());
+            Object.DestroyImmediate(testGameObject.GetComponent<TestHelpers.TestComponent>());
             testSerializedGameObject = null;
             property = null;
         }

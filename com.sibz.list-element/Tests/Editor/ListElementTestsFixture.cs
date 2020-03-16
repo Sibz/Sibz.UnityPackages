@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Sibz.ListElement.Tests
+namespace Sibz.ListElement.Tests.Integration
 {
     [SetUpFixture]
     public class ListElementTestsFixture
