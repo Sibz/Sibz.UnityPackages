@@ -12,20 +12,20 @@ namespace Sibz.ListElement.Tests
     public class OptionApplicatorTests : ListElementTestBase
     {
         private new ListElementOptions options;
-        private ListElement m_ListElement;
-        private Controls controls => ListElement.Controls;
+        private ListElement listElement;
+        private Controls Controls => ListElement.Controls;
 
         private new ListElement ListElement
         {
             get
             {
-                if (m_ListElement is null)
+                if (listElement is null)
                 {
-                    m_ListElement = new ListElement(Property, options);
-                    TestWindow.rootVisualElement.Add(m_ListElement);
+                    listElement = new ListElement(Property, options);
+                    TestWindow.rootVisualElement.Add(listElement);
                 }
 
-                return m_ListElement;
+                return listElement;
             }
         }
 
@@ -38,13 +38,13 @@ namespace Sibz.ListElement.Tests
         [TearDown]
         public void OptionApplicatorTearDown()
         {
-            if (m_ListElement is null)
+            if (listElement is null)
             {
                 return;
             }
 
-            TestWindow.rootVisualElement.Remove(m_ListElement);
-            m_ListElement = null;
+            TestWindow.rootVisualElement.Remove(listElement);
+            listElement = null;
         }
 
         [UnityTest]
@@ -55,7 +55,7 @@ namespace Sibz.ListElement.Tests
             yield return null;
             Assert.AreEqual(
                 DisplayStyle.None,
-                controls.ClearList.resolvedStyle.display);
+                Controls.ClearList.resolvedStyle.display);
         }
 
         [UnityTest]
@@ -65,7 +65,7 @@ namespace Sibz.ListElement.Tests
             yield return null;
             Assert.AreEqual(
                 DisplayStyle.Flex,
-                controls.ClearList.resolvedStyle.display);
+                Controls.ClearList.resolvedStyle.display);
         }
 
         [UnityTest]
@@ -76,7 +76,7 @@ namespace Sibz.ListElement.Tests
             yield return null;
             Assert.AreEqual(
                 DisplayStyle.None,
-                controls.Row[row].RemoveItem.resolvedStyle.display);
+                Controls.Row[row].RemoveItem.resolvedStyle.display);
         }
 
         [UnityTest]
@@ -86,7 +86,7 @@ namespace Sibz.ListElement.Tests
             yield return null;
             Assert.AreEqual(
                 DisplayStyle.Flex,
-                controls.Row[row].RemoveItem.resolvedStyle.display);
+                Controls.Row[row].RemoveItem.resolvedStyle.display);
         }
 
         [UnityTest]
@@ -97,10 +97,10 @@ namespace Sibz.ListElement.Tests
             yield return null;
             Assert.AreEqual(
                 DisplayStyle.None,
-                controls.Row[row].MoveDown.resolvedStyle.display);
+                Controls.Row[row].MoveDown.resolvedStyle.display);
             Assert.AreEqual(
                 DisplayStyle.None,
-                controls.Row[row].MoveUp.resolvedStyle.display);
+                Controls.Row[row].MoveUp.resolvedStyle.display);
         }
 
         [UnityTest]
@@ -110,10 +110,10 @@ namespace Sibz.ListElement.Tests
             yield return null;
             Assert.AreEqual(
                 DisplayStyle.Flex,
-                controls.Row[row].MoveDown.resolvedStyle.display);
+                Controls.Row[row].MoveDown.resolvedStyle.display);
             Assert.AreEqual(
                 DisplayStyle.Flex,
-                controls.Row[row].MoveUp.resolvedStyle.display);
+                Controls.Row[row].MoveUp.resolvedStyle.display);
         }
 
         [UnityTest]
@@ -262,7 +262,6 @@ namespace Sibz.ListElement.Tests
         [Test]
         public void ShouldNotErrorTryingToSetTypeOnNullObjectField()
         {
-            ObjectField nullField = null;
             OptionApplicator.SetTypeOnObjectField(null, typeof(CustomObject));
         }
         
