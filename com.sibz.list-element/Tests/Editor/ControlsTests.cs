@@ -1,14 +1,22 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
+using UnityEditor;
 using UnityEditor.UIElements;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Sibz.ListElement.Tests
 {
-    public class ControlsTests : ListElementTestBase
+    public class ControlsTests
     {
         private Controls controls;
+        private Controls controlsForObjectList;
+        private GameObject gameObject;
+        private ListElementOptions options;
+        private VisualElement element;
+        private VisualElement elementForObjectList;
 
         private class IsElementWithClassName<T> : Constraint
             where T : VisualElement
@@ -42,10 +50,44 @@ namespace Sibz.ListElement.Tests
             public override string Description { get; protected set; }
         }
 
+        [OneTimeSetUp]
+        public void OneTime()
+        {
+            gameObject = Object.Instantiate(new GameObject());
+            gameObject.AddComponent<ControlsMono>();
+        }
+        
         [SetUp]
         public void ControlSetup()
         {
-            controls = new Controls(ListElement, ListElement.Options);
+            options = new ListElementOptions();
+            element = new VisualElement();
+            elementForObjectList = new VisualElement();
+            SingleAssetLoader.SingleAssetLoader.Load<VisualTreeAsset>(options.TemplateName).CloneTree(element);
+            SingleAssetLoader.SingleAssetLoader.Load<VisualTreeAsset>(options.TemplateName).CloneTree(elementForObjectList);
+            controls = new Controls(element, options);
+            controlsForObjectList = new Controls(elementForObjectList, options);
+            SerializedObject serializedObject = new SerializedObject(gameObject.GetComponent<ControlsMono>());
+            AddItemRows(element, serializedObject);
+            AddItemRows(elementForObjectList, serializedObject);
+        }
+
+        private void AddItemRows(VisualElement root, SerializedObject serializedObject)
+        {
+            SerializedProperty serializedProperty = serializedObject.FindProperty(nameof(ControlsMono.stringList));
+            RowGenerator rowGenerator = new RowGenerator(options.ItemTemplateName);
+            for (int i = 0; i < gameObject.GetComponent<ControlsMono>().stringList.Count; i++)
+            {
+                root.Q<VisualElement>(null, options.ItemsSectionClassName).Add(
+                    rowGenerator.NewRow(i, serializedProperty)
+                );
+            }
+        }
+
+        [System.Serializable]
+        public class ControlsMono : MonoBehaviour
+        {
+            public List<string> stringList = new List<string> { "1", "2", "3"};
         }
 
         [Test]
@@ -175,6 +217,16 @@ namespace Sibz.ListElement.Tests
             Assert.IsNotNull(controls.Row[0].PropertyFieldLabel);
             Assert.IsNotNull(
                 controls.Row[0].PropertyFieldLabel.GetFirstAncestorOfType<ListRowElement>());
+        }
+        
+        [Test]
+        public void ShouldGetRowPropertyFieldLabelForObjectList()
+        {
+            Assert.IsNotNull(controlsForObjectList.Row[0].PropertyFieldLabel);
+            Assert.IsNull(
+                controlsForObjectList.Row[0].PropertyFieldLabel.GetFirstAncestorOfType<ObjectField>());
+            Assert.IsNotNull(
+                controlsForObjectList.Row[0].PropertyFieldLabel.GetFirstAncestorOfType<ListRowElement>());
         }
 
         [Test]
