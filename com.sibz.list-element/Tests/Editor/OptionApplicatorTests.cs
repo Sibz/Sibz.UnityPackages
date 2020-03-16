@@ -11,11 +11,8 @@ namespace Sibz.ListElement.Tests
     public class OptionApplicatorTests : ListElementTestBase
     {
         private new ListElementOptions options;
-
         private ListElement m_ListElement;
-        //private OptionApplicator optionApplicator;
-
-        public Controls controls => ListElement.Controls;
+        private Controls controls => ListElement.Controls;
 
         private new ListElement ListElement
         {
@@ -30,7 +27,6 @@ namespace Sibz.ListElement.Tests
                 return m_ListElement;
             }
         }
-
 
         [SetUp]
         public void OptionApplicatorSetUp()
@@ -212,6 +208,25 @@ namespace Sibz.ListElement.Tests
             Assert.AreEqual(
                 4,
                 ListElement.Controls.AddObjectFieldLabel.parent.childCount);
+        }
+
+        [Test]
+        public void ShouldApplyStyleSheetWhenSpecifiedIsDifferentFromTemplateName()
+        {
+            options.StyleSheetName = "TestTemplate";
+            OptionApplicator.ApplyCustomStyleSheet(ListElement);
+            Assert.IsTrue(ListElement.styleSheets.Contains(
+                SingleAssetLoader.SingleAssetLoader.Load<StyleSheet>(options.StyleSheetName)));
+        }
+
+        [Test]
+        public void ShouldNotApplyStyleSheetWhenSpecifiedIsSameFromTemplateName()
+        {
+            options.TemplateName = "TestTemplate";
+            options.StyleSheetName = "TestTemplate";
+            OptionApplicator.ApplyCustomStyleSheet(ListElement);
+            Assert.IsFalse(ListElement.styleSheets.Contains(
+                SingleAssetLoader.SingleAssetLoader.Load<StyleSheet>(options.StyleSheetName)));
         }
     }
 }

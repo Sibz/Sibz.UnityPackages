@@ -54,6 +54,7 @@ namespace Sibz.ListElement
         {
         }
 
+        // ReSharper disable once MemberCanBePrivate.Global
         public ListElement(string label, SerializedProperty property, IListElementEventHandler evtHandler = null) :
             this(property,
                 new ListElementOptions {Label = label}, evtHandler)
@@ -95,8 +96,6 @@ namespace Sibz.ListElement
 
             LoadAndCloneTemplate();
 
-            ImportStyleSheetIfCustom();
-
             InitialiseWithSerializedProperty();
         }
 
@@ -112,14 +111,6 @@ namespace Sibz.ListElement
                     "Unable to load template ('{0}') to clone into ListElement: {1}",
                     TemplateName,
                     e.Message);
-            }
-        }
-
-        private void ImportStyleSheetIfCustom()
-        {
-            if (StyleSheetName != TemplateName)
-            {
-                styleSheets.Add(SingleAssetLoader.SingleAssetLoader.Load<StyleSheet>(StyleSheetName));
             }
         }
 

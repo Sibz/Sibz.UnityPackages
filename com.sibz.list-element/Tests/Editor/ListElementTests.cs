@@ -112,16 +112,6 @@ namespace Sibz.ListElement.Tests
         }
 
         [Test]
-        public void ShouldApplyCustomStylesheet()
-        {
-            ListElement testElement =
-                new ListElement(Property, new ListElementOptions {StyleSheetName = "TestTemplate"});
-            Assert.IsTrue(
-                testElement.styleSheets.Contains(
-                    SingleAssetLoader.SingleAssetLoader.Load<StyleSheet>("TestTemplate")));
-        }
-
-        [Test]
         public void ShouldApplyCustomTemplate()
         {
             ListElement testElement =

@@ -10,7 +10,7 @@ namespace Sibz.ListElement
         public static void ApplyAll(ListElement listElement)
         {
             foreach (MethodInfo methodInfo in typeof(OptionApplicator).GetMethods().Where(x =>
-                x.Name != nameof(ApplyAll) && x.IsStatic && x.GetParameters().Count() == 1 &&
+                x.Name != nameof(ApplyAll) && x.IsStatic && x.GetParameters().Length == 1 &&
                 x.GetParameters()[0].ParameterType == typeof(ListElement)))
             {
                 methodInfo.Invoke(null, new object[] {listElement});
@@ -72,6 +72,15 @@ namespace Sibz.ListElement
             label.parent.style.justifyContent = Justify.Center;
             label.style.display = DisplayStyle.None;
             label.parent.Add(new Label("Drop here to add new item") {pickingMode = PickingMode.Ignore});
+        }
+
+        public static void ApplyCustomStyleSheet(ListElement listElement)
+        {
+            if (listElement.Options.StyleSheetName != listElement.Options.TemplateName)
+            {
+                listElement.styleSheets.Add(
+                    SingleAssetLoader.SingleAssetLoader.Load<StyleSheet>(listElement.Options.StyleSheetName));
+            }
         }
     }
 }
