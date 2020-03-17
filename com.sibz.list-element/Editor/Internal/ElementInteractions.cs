@@ -119,7 +119,7 @@ namespace Sibz.ListElement.Internal
             field?.SetValueWithoutNotify(null);
         }
 
-        public static void SetConfirmVisibility(Button clearListButton, VisualElement clearListSection, bool show)
+        public static void SetConfirmSectionVisibility(Button clearListButton, VisualElement clearListSection, bool show)
         {
             if (clearListSection == null ||
                 clearListButton == null)

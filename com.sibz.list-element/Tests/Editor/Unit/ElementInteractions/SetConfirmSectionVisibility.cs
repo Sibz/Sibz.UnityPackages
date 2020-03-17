@@ -6,7 +6,7 @@ using Handler = Sibz.ListElement.Internal.ElementInteractions;
 
 namespace Sibz.ListElement.Tests.Unit.ElementInteractions
 {
-    public class SetConfirmVisibility
+    public class SetConfirmSectionVisibility
     {
         private class ElementPair
         {
@@ -35,7 +35,7 @@ namespace Sibz.ListElement.Tests.Unit.ElementInteractions
         [Test]
         public void WhenElementsAreNull_ShouldFailSilently()
         {
-            Handler.SetConfirmVisibility(null, null, false);
+            Handler.SetConfirmSectionVisibility(null, null, false);
         }
         
         [Test]
@@ -43,8 +43,8 @@ namespace Sibz.ListElement.Tests.Unit.ElementInteractions
         {
             ElementPair elements = new ElementPair();
 
-            Handler.SetConfirmVisibility(elements.Button, null, true);
-            Handler.SetConfirmVisibility(null, elements.Section, true);
+            Handler.SetConfirmSectionVisibility(elements.Button, null, true);
+            Handler.SetConfirmSectionVisibility(null, elements.Section, true);
 
             elements.AssertDisplayState();
         }
@@ -54,7 +54,7 @@ namespace Sibz.ListElement.Tests.Unit.ElementInteractions
         {
             ElementPair elements = new ElementPair();
 
-            Handler.SetConfirmVisibility(elements.Button, elements.Section, false);
+            Handler.SetConfirmSectionVisibility(elements.Button, elements.Section, false);
 
             elements.AssertDisplayState();
         }
@@ -64,7 +64,7 @@ namespace Sibz.ListElement.Tests.Unit.ElementInteractions
         {
             ElementPair elements = new ElementPair();
 
-            Handler.SetConfirmVisibility(elements.Button, elements.Section, true);
+            Handler.SetConfirmSectionVisibility(elements.Button, elements.Section, true);
 
             elements.AssertDisplayState(true);
         }
@@ -74,7 +74,7 @@ namespace Sibz.ListElement.Tests.Unit.ElementInteractions
         {
             ElementPair elements = new ElementPair(true);
 
-            Handler.SetConfirmVisibility(elements.Button, elements.Section, false);
+            Handler.SetConfirmSectionVisibility(elements.Button, elements.Section, false);
 
             elements.AssertDisplayState();
         }

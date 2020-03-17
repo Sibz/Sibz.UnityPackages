@@ -31,18 +31,18 @@ namespace Sibz.ListElement.Events
 
         public void OnClearListRequested(ClearListRequestedEvent evt)
         {
-            ElementInteractions.SetConfirmVisibility(outerControls.ClearList, outerControls.ClearListConfirmSection, true);
+            ElementInteractions.SetConfirmSectionVisibility(outerControls.ClearList, outerControls.ClearListConfirmSection, true);
         }
 
         public void OnClearList(ClearListEvent evt)
         {
-            ElementInteractions.SetConfirmVisibility(outerControls.ClearList, outerControls.ClearListConfirmSection, false);
+            ElementInteractions.SetConfirmSectionVisibility(outerControls.ClearList, outerControls.ClearListConfirmSection, false);
             Handler?.Clear();
         }
 
         public void OnClearListCancelled(ClearListCancelledEvent evt)
         {
-            ElementInteractions.SetConfirmVisibility(outerControls.ClearList, outerControls.ClearListConfirmSection, false);
+            ElementInteractions.SetConfirmSectionVisibility(outerControls.ClearList, outerControls.ClearListConfirmSection, false);
         }
 
         public void OnRemoveItem(RemoveItemEvent evt)
