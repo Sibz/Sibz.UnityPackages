@@ -1,9 +1,5 @@
-﻿using System.Linq;
-using NUnit.Framework;
-using NUnit.Framework.Constraints;
-using UnityEditor;
+﻿using NUnit.Framework;
 using UnityEditor.UIElements;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Sibz.ListElement.Tests.Unit.Controls
