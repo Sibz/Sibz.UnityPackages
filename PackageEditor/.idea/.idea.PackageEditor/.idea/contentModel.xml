@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ContentModelStore">
     <e p="C:\Users\steve\.Rider2019.2\system\extResources" t="IncludeRecursive" />
@@ -18,6 +18,9 @@
     </e>
     <e p="C:\Users\steve\Documents\UnityProjects\Sibz.UnityPackages\com.sibz.editorlist\Runtime" t="Include">
       <e p="EditorList.cs" t="Include" />
+    </e>
+    <e p="C:\Users\steve\Documents\UnityProjects\Sibz.UnityPackages\com.sibz.single-asset-loader\Editor" t="Include">
+      <e p="SingleAssetLoader.cs" t="Include" />
     </e>
     <e p="C:\Users\steve\Documents\UnityProjects\Sibz.UnityPackages\com.sibz.uxml-list\Editor" t="Include">
       <e p="Base" t="Include">
@@ -48,6 +51,7 @@
       <e p="Sibz.Child-Subset.Runtime.csproj" t="IncludeRecursive" />
       <e p="Sibz.ChildSubset.Tests.csproj" t="IncludeRecursive" />
       <e p="Sibz.EditorList.Runtime.csproj" t="IncludeRecursive" />
+      <e p="Sibz.SingleAssetLoader.Editor.csproj" t="IncludeRecursive" />
       <e p="Sibz.UXML-List.Editor.csproj" t="IncludeRecursive" />
       <e p="Temp\bin" t="ExcludeRecursive" />
       <e p="UXMLList.csproj" t="IncludeRecursive" />

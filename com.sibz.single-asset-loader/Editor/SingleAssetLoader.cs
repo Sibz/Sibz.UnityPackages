@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace Sibz.SingleAssetLoader
+namespace Sibz
 {
     public static class SingleAssetLoader
     {
