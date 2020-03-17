@@ -1,24 +1,17 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using Sibz.ListElement.Events;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Sibz.ListElement.Internal;
-using UnityEditor.Graphs;
-using UnityEngine.AI;
-using Object = UnityEngine.Object;
 
 namespace Sibz.ListElement
 {
     public class ListElement : BindableElement
     {
         private IListElementEventHandler eventHandler;
-        private VisualTreeAsset itemTemplate;
         private SerializedProperty serializedProperty;
-        private StyleSheet styleSheet;
-        private VisualTreeAsset template;
         private IRowGenerator rowGenerator;
         private Type listItemType;
 
@@ -83,6 +76,7 @@ namespace Sibz.ListElement
         {
         }
 
+        // ReSharper disable once UnusedParameter.Local
         private ListElement(bool empty)
         {
         }
