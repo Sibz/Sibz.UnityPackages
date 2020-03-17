@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
 using UnityEditor;
@@ -9,14 +8,14 @@ using UnityEngine.UIElements;
 
 namespace Sibz.ListElement.Tests.Unit
 {
-    public class ControlsTests
+    public class Controls
     {
-        private Controls controls;
-        private Controls controlsForObjectList;
-        private GameObject gameObject;
-        private ListElementOptions options;
+        private Internal.Controls controls;
+        private Internal.Controls controlsForObjectList;
         private VisualElement element;
         private VisualElement elementForObjectList;
+        private VisualTreeAsset template;
+        private ListElementOptions options;
 
         private class IsElementWithClassName<T> : Constraint
             where T : VisualElement
@@ -53,41 +52,36 @@ namespace Sibz.ListElement.Tests.Unit
         [OneTimeSetUp]
         public void OneTime()
         {
-            gameObject = Object.Instantiate(new GameObject());
-            gameObject.AddComponent<ControlsMono>();
+            options = new ListElementOptions();
+            template = SingleAssetLoader.SingleAssetLoader.Load<VisualTreeAsset>(options.TemplateName);
+            
         }
         
         [SetUp]
         public void ControlSetup()
         {
-            options = new ListElementOptions();
             element = new VisualElement();
             elementForObjectList = new VisualElement();
-            SingleAssetLoader.SingleAssetLoader.Load<VisualTreeAsset>(options.TemplateName).CloneTree(element);
-            SingleAssetLoader.SingleAssetLoader.Load<VisualTreeAsset>(options.TemplateName).CloneTree(elementForObjectList);
-            controls = new Controls(element, options);
-            controlsForObjectList = new Controls(elementForObjectList, options);
-            SerializedObject serializedObject = new SerializedObject(gameObject.GetComponent<ControlsMono>());
-            AddItemRows(element, serializedObject);
-            AddItemRows(elementForObjectList, serializedObject);
+            template.CloneTree(element);
+            template.CloneTree(elementForObjectList);
+            controls = new Internal.Controls(element, options);
+            controlsForObjectList = new Internal.Controls(elementForObjectList, options);
+            SerializedObject serializedObject = new SerializedObject(new GameObject().AddComponent<TestHelpers.TestComponent>());
+            
+            AddItemRows(element, serializedObject, nameof(TestHelpers.TestComponent.myList));
+            AddItemRows(elementForObjectList, serializedObject, nameof(TestHelpers.TestComponent.myCustomList));
         }
 
-        private void AddItemRows(VisualElement root, SerializedObject serializedObject)
+        private void AddItemRows(VisualElement root, SerializedObject serializedObject, string propertyName)
         {
-            SerializedProperty serializedProperty = serializedObject.FindProperty(nameof(ControlsMono.stringList));
+            SerializedProperty serializedProperty = serializedObject.FindProperty(propertyName);
             RowGenerator rowGenerator = new RowGenerator(options.ItemTemplateName);
-            for (int i = 0; i < gameObject.GetComponent<ControlsMono>().stringList.Count; i++)
+            for (int i = 0; i < serializedProperty.arraySize; i++)
             {
                 root.Q<VisualElement>(null, options.ItemsSectionClassName).Add(
                     rowGenerator.NewRow(i, serializedProperty)
                 );
             }
-        }
-
-        [System.Serializable]
-        public class ControlsMono : MonoBehaviour
-        {
-            public List<string> stringList = new List<string> { "1", "2", "3"};
         }
 
         [Test]
@@ -210,6 +204,14 @@ namespace Sibz.ListElement.Tests.Unit
             Assert.IsNotNull(
                 controls.Row[0].PropertyField.GetFirstAncestorOfType<ListRowElement>());
         }
+        
+        [Test]
+        public void ShouldGetRowPropertyFieldForObjectList()
+        {
+            Assert.IsNotNull(controlsForObjectList.Row[0].PropertyField);
+            Assert.IsNotNull(
+                controlsForObjectList.Row[0].PropertyField.GetFirstAncestorOfType<ListRowElement>());
+        }
 
         [Test]
         public void ShouldGetRowPropertyFieldLabel()
@@ -222,9 +224,8 @@ namespace Sibz.ListElement.Tests.Unit
         [Test]
         public void ShouldGetRowPropertyFieldLabelForObjectList()
         {
+            Assert.IsNotNull(controlsForObjectList.Row[0].PropertyField);
             Assert.IsNotNull(controlsForObjectList.Row[0].PropertyFieldLabel);
-            Assert.IsNull(
-                controlsForObjectList.Row[0].PropertyFieldLabel.GetFirstAncestorOfType<ObjectField>());
             Assert.IsNotNull(
                 controlsForObjectList.Row[0].PropertyFieldLabel.GetFirstAncestorOfType<ListRowElement>());
         }

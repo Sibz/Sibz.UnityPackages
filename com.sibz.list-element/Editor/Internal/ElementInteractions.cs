@@ -5,7 +5,7 @@ using UnityEngine.UIElements;
 
 namespace Sibz.ListElement.Internal
 {
-    public static class OptionApplicator
+    public static class ElementInteractions
     {
         public static void ApplyOptions(ListElement le)
         {
@@ -112,6 +112,25 @@ namespace Sibz.ListElement.Internal
         public static void DisableButtonWhenCountIsZero(Button button, int itemCount)
         {
             button?.SetEnabled(itemCount != 0);
+        }
+        
+        public static void SetAddObjectFieldValueToNull(ObjectField field)
+        {
+            field?.SetValueWithoutNotify(null);
+        }
+
+        public static void SetConfirmVisibility(Button clearListButton, VisualElement clearListSection, bool show)
+        {
+            if (clearListSection == null ||
+                clearListButton == null)
+            {
+                return;
+            }
+
+            clearListSection.style.display =
+                show ? DisplayStyle.Flex : DisplayStyle.None;
+            clearListButton.style.display =
+                show ? DisplayStyle.None : DisplayStyle.Flex;
         }
     }
 }

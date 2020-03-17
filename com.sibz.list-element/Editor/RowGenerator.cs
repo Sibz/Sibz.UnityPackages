@@ -21,9 +21,9 @@ namespace Sibz.ListElement
             return row;
         }
 
-        public void PostInsert(Controls.RowElements.RowElementsSet rowElementsSet, int index, int arraySize)
+        public void PostInsert(IRowButtons rowButtonsElementsSet, int index, int arraySize)
         {
-            AdjustReorderButtonsState(rowElementsSet?.MoveUp, rowElementsSet?.MoveDown, index, arraySize);
+            AdjustReorderButtonsState(rowButtonsElementsSet?.MoveUp, rowButtonsElementsSet?.MoveDown, index, arraySize);
         }
 
         public static void AdjustReorderButtonsState(Button moveUp, Button moveDown, int index, int arraySize)

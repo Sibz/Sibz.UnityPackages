@@ -1,14 +1,25 @@
-﻿using UnityEngine.UIElements;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Sibz.ListElement.Internal;
+using UnityEditor.UIElements;
+using UnityEngine.UIElements;
+using Object = UnityEngine.Object;
 
 namespace Sibz.ListElement.Events
 {
     public class ListElementEventHandler : IListElementEventHandler
     {
-        private readonly ListElement listElement;
+        private readonly IOuterControls outerControls;
+        private readonly IEnumerable<EventRaiserDefinition> outerEventRaisers;
+        private readonly EventRaiserDefinition addObjectFieldDropRaiser;
+        private readonly List<EventRaiserDefinition> rowEventRaisers = new List<EventRaiserDefinition>();
 
-        public ListElementEventHandler(ListElement le)
+        public ListElementEventHandler(IOuterControls outerControls)
         {
-            listElement = le;
+            outerEventRaisers = CreateRaiserDefinitions(outerControls);
+            addObjectFieldDropRaiser = outerEventRaisers.Single(x=>x.Control.ClassListContains(new ListElementOptions().AddItemObjectFieldClassName));
+            this.outerControls = outerControls;
         }
 
         public PropertyModificationHandler Handler { get; set; }
@@ -16,23 +27,23 @@ namespace Sibz.ListElement.Events
         public void OnAddItem(AddItemEvent evt)
         {
             Handler?.Add(evt.Item);
-            ResetAddObjectFieldValueToNull();
+            ElementInteractions.SetAddObjectFieldValueToNull(outerControls.AddObjectField);
         }
 
         public void OnClearListRequested(ClearListRequestedEvent evt)
         {
-            ToggleConfirmDisplay(true);
+            ElementInteractions.SetConfirmVisibility(outerControls.ClearList, outerControls.ClearListConfirmSection, true);
         }
 
         public void OnClearList(ClearListEvent evt)
         {
-            ToggleConfirmDisplay();
+            ElementInteractions.SetConfirmVisibility(outerControls.ClearList, outerControls.ClearListConfirmSection, false);
             Handler?.Clear();
         }
 
         public void OnClearListCancelled(ClearListCancelledEvent evt)
         {
-            ToggleConfirmDisplay();
+            ElementInteractions.SetConfirmVisibility(outerControls.ClearList, outerControls.ClearListConfirmSection, false);
         }
 
         public void OnRemoveItem(RemoveItemEvent evt)
@@ -52,23 +63,117 @@ namespace Sibz.ListElement.Events
             }
         }
 
-        private void ResetAddObjectFieldValueToNull()
+        public void OnClicked(ClickEvent evt)
         {
-            listElement.Controls.AddObjectField?.SetValueWithoutNotify(null);
+            RaiseEventBaseOnEvtTarget(evt.target, outerEventRaisers);
+            RaiseEventBaseOnEvtTarget(evt.target, rowEventRaisers);
         }
 
-        private void ToggleConfirmDisplay(bool show = false)
+        public void OnChanged(ChangeEvent<Object> evt)
         {
-            if (listElement.Controls.ClearListConfirmSection == null ||
-                listElement.Controls.ClearList == null)
+            if (evt.target == addObjectFieldDropRaiser.Control)
             {
-                return;
+                addObjectFieldDropRaiser.RaiseEvent();
+            }
+        }
+
+        public void OnAddRow(IRowButtons buttons, int index)
+        {
+            rowEventRaisers.AddRange(CreateRaiserDefinitionsForRow(buttons, index));
+        }
+
+        public void OnReset()
+        {
+            rowEventRaisers.Clear();
+        }
+
+        public static IEnumerable<EventRaiserDefinition> CreateRaiserDefinitions(IOuterControls controls)
+        {
+            void SetExtraEventData(EventBase obj)
+            {
+                if (!(obj is AddItemEvent evt))
+                {
+                    throw new ArgumentException($"Expected type: {typeof(AddItemEvent)}");
+                }
+
+                evt.Item = controls.AddObjectField.value;
+            }
+            return new List<EventRaiserDefinition>
+            {
+                EventRaiserDefinition.Create<ClearListRequestedEvent>(controls.ClearList),
+                EventRaiserDefinition.Create<ClearListEvent>(controls.ClearListConfirm),
+                EventRaiserDefinition.Create<ClearListCancelledEvent>(controls.ClearListCancel),
+                EventRaiserDefinition.Create<AddItemEvent>(controls.Add),
+                EventRaiserDefinition.Create<AddItemEvent>(controls.AddObjectField, SetExtraEventData)
+            };
+        }
+
+        public static IEnumerable<EventRaiserDefinition> CreateRaiserDefinitionsForRow(IRowButtons rowButtons,
+            int index)
+        {
+            void SetMoveUpEventData(EventBase @event)
+            {
+                SetMoveEventData(@event as MoveItemEvent, MoveItemEvent.MoveDirection.Up);
             }
 
-            listElement.Controls.ClearListConfirmSection.style.display =
-                show ? DisplayStyle.Flex : DisplayStyle.None;
-            listElement.Controls.ClearList.style.display =
-                show ? DisplayStyle.None : DisplayStyle.Flex;
+            void SetMoveDownEventData(EventBase @event)
+            {
+                SetMoveEventData(@event as MoveItemEvent, MoveItemEvent.MoveDirection.Down);
+            }
+
+            void SetRemoveEventData(EventBase @event)
+            {
+                SetItemEventData<RemoveItemEvent>(@event as RemoveItemEvent);
+            }
+
+            void SetMoveEventData(MoveItemEvent @event, MoveItemEvent.MoveDirection direction)
+            {
+                SetItemEventData<MoveItemEvent>(@event);
+                @event.Direction = direction;
+            }
+
+            void SetItemEventData<T>(ItemEventBase<T> @event) where T : ItemEventBase<T>, new()
+            {
+                if (@event is null)
+                {
+                    throw new ArgumentException(nameof(@event), $"Expected type: {typeof(T)}");
+                }
+
+                @event.Index = index;
+            }
+
+            return new List<EventRaiserDefinition>
+            {
+                EventRaiserDefinition.Create<MoveItemEvent>(rowButtons.MoveUp,
+                    SetMoveUpEventData),
+                EventRaiserDefinition.Create<MoveItemEvent>(rowButtons.MoveDown,
+                    SetMoveDownEventData),
+                EventRaiserDefinition.Create<RemoveItemEvent>(rowButtons.RemoveItem,
+                    SetRemoveEventData)
+            };
+        }
+
+        // TODO Integration Test
+        public static void RaiseEventBaseOnEvtTarget(IEventHandler target,
+            IEnumerable<EventRaiserDefinition> eventRaisers)
+        {
+            var eventRaiserDefinitions = eventRaisers as EventRaiserDefinition[] ?? eventRaisers.ToArray();
+            if (target is VisualElement element && eventRaiserDefinitions.Any(x => x.Control == element))
+            {
+                eventRaiserDefinitions.Single(x => x.Control == element).RaiseEvent();
+            }
+        }
+        
+        public static void RegisterCallbacks(VisualElement element, IListElementEventHandler handler)
+        {
+            element.RegisterCallback<ClearListRequestedEvent>(handler.OnClearListRequested);
+            element.RegisterCallback<ClearListEvent>(handler.OnClearList);
+            element.RegisterCallback<ClearListCancelledEvent>(handler.OnClearListCancelled);
+            element.RegisterCallback<MoveItemEvent>(handler.OnMoveItem);
+            element.RegisterCallback<RemoveItemEvent>(handler.OnRemoveItem);
+            element.RegisterCallback<AddItemEvent>(handler.OnAddItem);
+            element.RegisterCallback<ClickEvent>(handler.OnClicked);
+            element.RegisterCallback<ChangeEvent<Object>>(handler.OnChanged);
         }
     }
 }

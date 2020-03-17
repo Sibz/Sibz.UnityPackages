@@ -393,11 +393,14 @@ MonoBehaviour:
   MyList:
   - 1
   - 2
-  - s
+  - 3
   - 4
+  - 5
+  - 5
   MyObjectList:
   - {fileID: 533557754}
-  - {fileID: 533557754}
+  - {fileID: 1839769265}
+  - {fileID: 1839769265}
 --- !u!4 &1839769267
 Transform:
   m_ObjectHideFlags: 0

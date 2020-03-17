@@ -6,6 +6,7 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.TestTools;
 using UnityEngine.UIElements;
+using Handler = Sibz.ListElement.Internal.ElementInteractions;
 
 namespace Sibz.ListElement.Tests.Unit
 {
@@ -20,7 +21,7 @@ namespace Sibz.ListElement.Tests.Unit
         {
             VisualElement itemSection = new VisualElement();
             itemSection.AddToClassList(UxmlClassNames.HidePropertyLabel);
-            OptionApplicator.SetPropertyLabelVisibility(itemSection, true);
+            Handler.SetPropertyLabelVisibility(itemSection, true);
             Assert.IsTrue(itemSection.ClassListContains(UxmlClassNames.HidePropertyLabel));
         }    
         
@@ -29,7 +30,7 @@ namespace Sibz.ListElement.Tests.Unit
         {
             VisualElement itemSection = new VisualElement();
             itemSection.AddToClassList(UxmlClassNames.HidePropertyLabel);
-            OptionApplicator.SetPropertyLabelVisibility(itemSection, false);
+            Handler.SetPropertyLabelVisibility(itemSection, false);
             Assert.IsFalse(itemSection.ClassListContains(UxmlClassNames.HidePropertyLabel));
         }
      
@@ -37,7 +38,7 @@ namespace Sibz.ListElement.Tests.Unit
         public void WhenSettingDeletionButtonVisibilityWithOptionTrue_ShouldNotAddClass()
         {
             VisualElement listElement = new VisualElement();
-            OptionApplicator.SetDeletionButtonVisibility(listElement, true);
+            Handler.SetDeletionButtonVisibility(listElement, true);
             Assert.IsFalse(listElement.ClassListContains(UxmlClassNames.HideRemoveButtons));
         }    
         
@@ -45,7 +46,7 @@ namespace Sibz.ListElement.Tests.Unit
         public void WhenSettingDeletionButtonVisibilityWithOptionFalse_ShouldAddClass()
         {
             VisualElement listElement = new VisualElement();
-            OptionApplicator.SetDeletionButtonVisibility(listElement, false);
+            Handler.SetDeletionButtonVisibility(listElement, false);
             Assert.IsTrue(listElement.ClassListContains(UxmlClassNames.HideRemoveButtons));
         }
 
@@ -53,7 +54,7 @@ namespace Sibz.ListElement.Tests.Unit
         public void WhenSettingReorderButtonVisibilityWithOptionTrue_ShouldNotAddClass()
         {
             VisualElement itemSection = new VisualElement();
-            OptionApplicator.SetReorderButtonVisibility(itemSection, true);
+            Handler.SetReorderButtonVisibility(itemSection, true);
             Assert.IsFalse(itemSection.ClassListContains(UxmlClassNames.HideReorderButtons));
         }    
         
@@ -61,7 +62,7 @@ namespace Sibz.ListElement.Tests.Unit
         public void WhenSettingReorderButtonVisibilityWithOptionFalse_ShouldAddClass()
         {
             VisualElement itemSection = new VisualElement();
-            OptionApplicator.SetReorderButtonVisibility(itemSection, false);
+            Handler.SetReorderButtonVisibility(itemSection, false);
             Assert.IsTrue(itemSection.ClassListContains(UxmlClassNames.HideReorderButtons));
         }
 
@@ -69,7 +70,7 @@ namespace Sibz.ListElement.Tests.Unit
         public void WhenSettingAddObjectFieldVisibilityWithObjectAsType_ShouldAddClass()
         {
             VisualElement itemSection = new VisualElement();
-            OptionApplicator.SetAddFieldVisibility(itemSection, typeof(TestHelpers.TestObject), false);
+            Handler.SetAddFieldVisibility(itemSection, typeof(TestHelpers.TestObject), false);
             Assert.IsTrue(itemSection.ClassListContains(UxmlClassNames.UseObjectField));
         }
         
@@ -77,7 +78,7 @@ namespace Sibz.ListElement.Tests.Unit
         public void WhenSettingAddObjectFieldVisibilityWithObjectAsTypeAndOptionSet_ShouldNotAddClass()
         {
             VisualElement itemSection = new VisualElement();
-            OptionApplicator.SetAddFieldVisibility(itemSection, typeof(TestHelpers.TestObject), true);
+            Handler.SetAddFieldVisibility(itemSection, typeof(TestHelpers.TestObject), true);
             Assert.IsFalse(itemSection.ClassListContains(UxmlClassNames.UseObjectField));
         }
         
@@ -85,20 +86,20 @@ namespace Sibz.ListElement.Tests.Unit
         public void WhenSettingAddObjectFieldVisibilityWithStringsType_ShouldNotAddClass()
         {
             VisualElement itemSection = new VisualElement();
-            OptionApplicator.SetAddFieldVisibility(itemSection, typeof(string), false);
+            Handler.SetAddFieldVisibility(itemSection, typeof(string), false);
             Assert.IsFalse(itemSection.ClassListContains(UxmlClassNames.UseObjectField));
         }
           
         [Test]
         public void WhenSettingAddObjectFieldVisibilityWithNullElement_ShouldNotThrowError()
         {
-            OptionApplicator.SetAddFieldVisibility(null, typeof(string), false);
+            Handler.SetAddFieldVisibility(null, typeof(string), false);
         }
 
         [Test]
         public void WhenReplacingObjectFieldLabelAndFieldIsNull_ShouldNotThrowError()
         {
-            OptionApplicator.InsertLabelInObjectField(null, "Test");
+            Handler.InsertLabelInObjectField(null, "Test");
         }
         
         [Test]
@@ -106,14 +107,14 @@ namespace Sibz.ListElement.Tests.Unit
         {
             ObjectField objectField = new ObjectField();
             objectField.hierarchy.RemoveAt(0);
-            OptionApplicator.InsertLabelInObjectField(objectField, "Test");
+            Handler.InsertLabelInObjectField(objectField, "Test");
         }
         
         [Test]
         public void WhenSettingObjectFieldLabel_ShouldHaveAdditionalLabelWithText()
         {
             ObjectField objectField = new ObjectField();
-            OptionApplicator.InsertLabelInObjectField(objectField, "Test");
+            Handler.InsertLabelInObjectField(objectField, "Test");
             Assert.AreEqual("Test",
                 (objectField.hierarchy[0].hierarchy[0].hierarchy[2] as Label)?.text);
         }
@@ -123,7 +124,7 @@ namespace Sibz.ListElement.Tests.Unit
         {
             const string optionsLabel = "Test";
             Label label = new Label();
-            OptionApplicator.SetHeaderLabelText(label, null, optionsLabel);
+            Handler.SetHeaderLabelText(label, null, optionsLabel);
             Assert.AreEqual(
                 optionsLabel,
                 label.text);
@@ -134,7 +135,7 @@ namespace Sibz.ListElement.Tests.Unit
         {
             const string listName = "Test";
             Label label = new Label();
-            OptionApplicator.SetHeaderLabelText(label, listName, null);
+            Handler.SetHeaderLabelText(label, listName, null);
             Assert.AreEqual(
                 listName,
                 label.text);
@@ -143,14 +144,14 @@ namespace Sibz.ListElement.Tests.Unit
         [Test]
         public void WhenSettingLabelAndLabelIsNull_ShouldNotThrowError()
         {
-             OptionApplicator.SetHeaderLabelText(null, null, null);
+            Handler.SetHeaderLabelText(null, null, null);
         }
 
         [Test]
         public void WhenCustomStyleSheetNameProvided_ShouldLoadAndAddStyleSheet()
         {
             VisualElement element = new VisualElement();
-            OptionApplicator.LoadAndAddStyleSheet(element, "TestTemplate", options.TemplateName);
+            Handler.LoadAndAddStyleSheet(element, "TestTemplate", options.TemplateName);
             Assert.AreEqual(1, element.styleSheets.count);
         }
 
@@ -158,7 +159,7 @@ namespace Sibz.ListElement.Tests.Unit
         public void WhenStyleSheetNameIsEqualToTemplateName_ShouldNotAddStyleSheet()
         {
             VisualElement element = new VisualElement();
-            OptionApplicator.LoadAndAddStyleSheet(element, options.StyleSheetName, options.TemplateName);
+            Handler.LoadAndAddStyleSheet(element, options.StyleSheetName, options.TemplateName);
             Assert.AreEqual(0, element.styleSheets.count);
         }
         
@@ -166,7 +167,7 @@ namespace Sibz.ListElement.Tests.Unit
         public void WhenCustomStyleSheetNameProvidedAndDoesNotExist_ShouldShowWarning()
         {
             VisualElement element = new VisualElement();
-            OptionApplicator.LoadAndAddStyleSheet(element, "TEST43325416436231", options.TemplateName);
+            Handler.LoadAndAddStyleSheet(element, "TEST43325416436231", options.TemplateName);
             
             LogAssert.Expect(LogType.Warning, new Regex(".*\n*.*\n*.*\n*.*\n*.*\n*.*\n*.*\n*.*\n*.*"));
         }
@@ -174,14 +175,14 @@ namespace Sibz.ListElement.Tests.Unit
         [Test]
         public void WhenSettingTypeOnNull_ShouldNotError()
         {
-            OptionApplicator.SetTypeOnObjectField(null, typeof(TestHelpers.TestObject));
+            Handler.SetTypeOnObjectField(null, typeof(TestHelpers.TestObject));
         }
         
         [Test]
         public void WhenSettingTypeOnObjectField_ShouldSetTypeToTypeProvided()
         {
             ObjectField field = new ObjectField();
-            OptionApplicator.SetTypeOnObjectField(field, typeof(TestHelpers.TestObject));
+            Handler.SetTypeOnObjectField(field, typeof(TestHelpers.TestObject));
             Assert.AreSame(
                 typeof(TestHelpers.TestObject),
                 field.objectType);
@@ -191,7 +192,7 @@ namespace Sibz.ListElement.Tests.Unit
         public void WhenCountIsNotZero_ShouldEnableButton()
         {
             Button button = new Button();
-            OptionApplicator.DisableButtonWhenCountIsZero(button, 1);
+            Handler.DisableButtonWhenCountIsZero(button, 1);
             Assert.IsTrue(button.enabledSelf);
         }
       
@@ -199,15 +200,15 @@ namespace Sibz.ListElement.Tests.Unit
         public void ShouldDisableButtonWhenCountIsZero()
         {
             Button button = new Button();
-            OptionApplicator.DisableButtonWhenCountIsZero(button, 0);
+            Handler.DisableButtonWhenCountIsZero(button, 0);
             Assert.IsFalse(button.enabledSelf);
         }
         
         [Test]
         public void WhenSettingButtonStateWithNullAsButton_ShouldFailSilently()
         {
-            OptionApplicator.DisableButtonWhenCountIsZero(null, 0);
-            OptionApplicator.DisableButtonWhenCountIsZero(null, 1);
+            Handler.DisableButtonWhenCountIsZero(null, 0);
+            Handler.DisableButtonWhenCountIsZero(null, 1);
         }
     }
 }

@@ -2,12 +2,12 @@
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 
-namespace Sibz.ListElement
+namespace Sibz.ListElement.Internal
 {
-    public class Controls
+    public class Controls : IOuterControls
     {
         private readonly VisualElement root;
-        private readonly Internal.ListElementOptions options;
+        private readonly ListElementOptions options;
 
         public readonly RowElements Row;
 
@@ -31,22 +31,7 @@ namespace Sibz.ListElement
         public ObjectField AddObjectField =>
             GetElementByClassNameCached<ObjectField>(root, options.AddItemObjectFieldClassName);
 
-        public Label AddObjectFieldLabel
-        {
-            get
-            {
-                if (AddObjectField is null ||
-                    AddObjectField.childCount == 0 ||
-                    AddObjectField.hierarchy.childCount == 0 ||
-                    AddObjectField.hierarchy[0].hierarchy.childCount < 2
-                )
-                {
-                    return null;
-                }
-
-                return AddObjectField.hierarchy[0].hierarchy[0].hierarchy[1] as Label;
-            }
-        }
+        public Label AddObjectFieldLabel => GetLabelOfObjectField(AddObjectField);
 
         public VisualElement HeaderSection =>
             GetElementByClassNameCached<VisualElement>(root, options.HeaderSectionClassName);
@@ -77,7 +62,21 @@ namespace Sibz.ListElement
             return element;
         }
 
-        public Controls(VisualElement rootElement, Internal.ListElementOptions options)
+        private static Label GetLabelOfObjectField(VisualElement field)
+        {
+            if (field is null ||
+                field.childCount == 0 ||
+                field.hierarchy.childCount == 0 ||
+                field.hierarchy[0].hierarchy.childCount < 2
+            )
+            {
+                return null;
+            }
+
+            return field.hierarchy[0].hierarchy[0].hierarchy[1] as Label;
+        }
+
+        public Controls(VisualElement rootElement, ListElementOptions options)
         {
             root = rootElement;
             this.options = options;
@@ -86,22 +85,21 @@ namespace Sibz.ListElement
 
         public class RowElements
         {
-            private readonly Internal.ListElementOptions options;
+            private readonly ListElementOptions options;
             private readonly VisualElement root;
 
-            public RowElements(VisualElement rootElement, Internal.ListElementOptions options)
+            public RowElements(VisualElement rootElement, ListElementOptions options)
             {
                 root = rootElement;
                 this.options = options;
             }
 
-            public RowElementsSet this[int index] => new RowElementsSet(root, options, index);
+            public RowButtonsElementsSet this[int index] => new RowButtonsElementsSet(root, options, index);
 
-            public class RowElementsSet
+            public class RowButtonsElementsSet : IRowButtons
             {
                 private readonly VisualElement root;
-                private readonly Internal.ListElementOptions options;
-                private readonly VisualElement listElement;
+                private readonly ListElementOptions options;
 
                 public Button MoveUp =>
                     root.Q<Button>(null, options.MoveItemUpButtonClassName);
@@ -119,19 +117,23 @@ namespace Sibz.ListElement
                 {
                     get
                     {
-                        if (PropertyField is null || PropertyField.childCount == 0 ||
-                            PropertyField.hierarchy.childCount == 0)
+                        if (PropertyField is null || PropertyField.hierarchy.childCount == 0 ||
+                            PropertyField.hierarchy[0].hierarchy.childCount == 0)
                         {
                             return null;
                         }
 
-                        return PropertyField.hierarchy[0].hierarchy[0] as Label;
+                        if (!(PropertyField.hierarchy[0] is ObjectField objectField))
+                        {
+                            return PropertyField.hierarchy[0].hierarchy[0] as Label;
+                        }
+
+                        return objectField.hierarchy[0] as Label; //.hierarchy[1] as Label;
                     }
                 }
 
-                public RowElementsSet(VisualElement listElement, Internal.ListElementOptions options, int index)
+                public RowButtonsElementsSet(VisualElement listElement, ListElementOptions options, int index)
                 {
-                    this.listElement = listElement;
                     this.options = options;
                     root = listElement.Q(null, options.ItemsSectionClassName)[index];
                 }

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace Sibz.ListElement.Tests.Unit
+namespace Sibz.ListElement.Tests
 {
     public class TestHelpers
     {

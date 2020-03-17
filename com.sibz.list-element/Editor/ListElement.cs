@@ -12,7 +12,7 @@ namespace Sibz.ListElement
 {
     public class ListElement : BindableElement
     {
-        private readonly IListElementEventHandler eventHandler;
+        private IListElementEventHandler eventHandler;
         private VisualTreeAsset itemTemplate;
         private SerializedProperty serializedProperty;
         private StyleSheet styleSheet;
@@ -81,6 +81,13 @@ namespace Sibz.ListElement
         {
         }
 
+        private ListElement(bool empty)
+        {
+            
+        }
+
+        public static ListElement CreateEmpty() => new ListElement(true);
+
         public ListElement(SerializedProperty property) : this(
             string.Empty, property)
         {
@@ -100,8 +107,6 @@ namespace Sibz.ListElement
             serializedProperty = property;
 
             Options = options ?? new Internal.ListElementOptions();
-
-            eventHandler = evtHandler ?? new ListElementEventHandler(this);
 
             InitialiseAndBindIfPropertyIsDefined();
         }
@@ -155,16 +160,17 @@ namespace Sibz.ListElement
 
             Controls = new Controls(this, Options);
 
+            eventHandler = eventHandler ?? new ListElementEventHandler(Controls);
+            ListElementEventHandler.RegisterCallbacks(this, eventHandler);
+            
             eventHandler.Handler = new PropertyModificationHandler(serializedProperty, Reset);
 
             rowGenerator = Options.RowGenerator ?? new RowGenerator(Options.ItemTemplateName);
 
-            OptionApplicator.ApplyOptions(this);
+            ElementInteractions.ApplyOptions(this);
 
             AddArraySizeField();
-
-            RegisterCallbacks();
-
+            
             IsInitialised = true;
         }
 
@@ -185,112 +191,6 @@ namespace Sibz.ListElement
             integerField.RegisterCallback<ChangeEvent<int>>(DoReset);
 
             Add(integerField);
-        }
-
-        [SuppressMessage("ReSharper", "HeapView.DelegateAllocation")]
-        private void RegisterCallbacks()
-        {
-            try
-            {
-                RegisterButtonDelegatedCallback<AddItemEvent>(
-                    Controls.Add,
-                    eventHandler.OnAddItem);
-                RegisterButtonDelegatedCallback<ClearListRequestedEvent>(
-                    Controls.ClearList,
-                    eventHandler.OnClearListRequested);
-                RegisterButtonDelegatedCallback<ClearListEvent>(
-                    Controls.ClearListConfirm,
-                    eventHandler.OnClearList);
-                RegisterButtonDelegatedCallback<ClearListCancelledEvent>(
-                    Controls.ClearListCancel,
-                    eventHandler.OnClearListCancelled);
-            }
-            catch (MissingFieldException e)
-            {
-                if (TemplateName == Internal.ListElementOptions.DefaultTemplateName)
-                {
-                    Debug.LogWarningFormat("Default template is missing field: {0}", e.Message);
-                }
-            }
-
-            RegisterCallback<MoveItemEvent>(eventHandler.OnMoveItem);
-            RegisterCallback<RemoveItemEvent>(eventHandler.OnRemoveItem);
-
-            RegisterCallback<ClickEvent>(OnItemButtonClicked);
-
-            RegisterAddObjectFieldCallback();
-        }
-
-        private void RegisterButtonDelegatedCallback<T2>(Button button, EventCallback<T2> endAction,
-            Func<T2> eventCreator = null)
-            where T2 : EventBase<T2>, new()
-        {
-            if (button is null)
-            {
-                throw new ArgumentNullException(nameof(button));
-            }
-
-            void DoSendEvent(ClickEvent evt)
-            {
-                if (eventCreator is null)
-                {
-                    SendEvent(new T2 {target = this});
-                }
-                else
-                {
-                    T2 e = eventCreator();
-                    e.target = this;
-                    SendEvent(e);
-                }
-            }
-
-            button.RegisterCallback<ClickEvent>(DoSendEvent);
-            RegisterCallback(endAction);
-        }
-
-        private void RegisterAddObjectFieldCallback()
-        {
-            void SendObjectAddEvent(ChangeEvent<Object> e)
-            {
-                SendEvent(new AddItemEvent {target = this, Item = e.newValue});
-            }
-
-            Controls.AddObjectField?.RegisterCallback<ChangeEvent<Object>>(SendObjectAddEvent);
-        }
-
-        private void OnItemButtonClicked(ClickEvent evt)
-        {
-            ListRowElement element;
-            if (!(evt.target is Button button) || (element = button.GetFirstAncestorOfType<ListRowElement>()) is null)
-            {
-                return;
-            }
-
-            if (button.ClassListContains(Options.RemoveItemButtonClassName))
-            {
-                SendEvent(new RemoveItemEvent
-                {
-                    target = this, Index = element.Index
-                });
-            }
-            else if (button.ClassListContains(Options.MoveItemUpButtonClassName))
-            {
-                SendEvent(new MoveItemEvent
-                {
-                    target = this,
-                    Index = element.Index,
-                    Direction = MoveItemEvent.MoveDirection.Up
-                });
-            }
-            else if (button.ClassListContains(Options.MoveItemDownButtonClassName))
-            {
-                SendEvent(new MoveItemEvent
-                {
-                    target = this,
-                    Index = element.Index,
-                    Direction = MoveItemEvent.MoveDirection.Down
-                });
-            }
         }
 
         #endregion
@@ -332,6 +232,7 @@ namespace Sibz.ListElement
             {
                 Controls.ItemsSection.Add(rowGenerator.NewRow(i, serializedProperty));
                 rowGenerator.PostInsert(Controls.Row[i], i, serializedProperty.arraySize);
+                eventHandler.OnAddRow(Controls.Row[i], i);
             }
 
             OnReset?.Invoke();

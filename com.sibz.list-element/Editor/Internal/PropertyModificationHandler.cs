@@ -2,7 +2,7 @@
 using UnityEditor;
 using Object = UnityEngine.Object;
 
-namespace Sibz.ListElement
+namespace Sibz.ListElement.Internal
 {
     public class PropertyModificationHandler
     {
