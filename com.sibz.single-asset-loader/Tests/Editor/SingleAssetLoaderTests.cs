@@ -4,7 +4,8 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Sibz.SingleAssetLoader.Tests
+
+namespace Sibz.Tests
 {
     public class SingleAssetLoaderTests
     {
