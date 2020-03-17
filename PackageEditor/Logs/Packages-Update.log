@@ -56,3 +56,28 @@ The following packages were updated:
   com.unity.test-framework from version 1.0.13 to 1.1.5
 The following packages were removed:
   com.unity.package-manager-ui@2.2.0
+
+=== Tue Dec 31 05:42:59 2019
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were updated:
+  com.unity.textmeshpro from version 2.0.1 to 3.0.0-preview.1
+
+=== Sun Mar  8 14:54:23 2020
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were updated:
+  com.unity.render-pipelines.universal from version 7.1.6 to 7.1.7
+  com.unity.test-framework from version 1.1.5 to 1.1.11
+
+=== Sat Mar 14 00:29:16 2020
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were updated:
+  com.unity.render-pipelines.universal from version 7.1.7 to 8.0.1
