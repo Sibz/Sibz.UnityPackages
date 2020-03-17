@@ -21,7 +21,7 @@ namespace Sibz.ListElement.Tests.Unit.ListElementEventHandler
         [SetUp]
         public void SetUp()
         {
-            ListElement listElement = ListElement.CreateEmpty();
+            ListElement listElement = new ListElement(true);
             listElement.Add(buttons.MoveUp);
             listElement.Add(buttons.MoveDown);
             listElement.Add(buttons.RemoveItem);

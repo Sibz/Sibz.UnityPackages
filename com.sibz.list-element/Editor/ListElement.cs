@@ -17,7 +17,7 @@ namespace Sibz.ListElement
 
         public Controls Controls;
 
-        public readonly Internal.ListElementOptions Options;
+        public readonly Internal.ListElementOptions Options = new ListElementOptions();
         public bool IsInitialised { get; private set; }
 
         public Type ListItemType
@@ -64,7 +64,6 @@ namespace Sibz.ListElement
         private bool HidePropertyLabel => Options.HidePropertyLabel;
         private bool DoNotUseObjectField => Options.DoNotUseObjectField;
         private bool EnableReordering => Options.EnableReordering;
-
         private bool EnableDeletions => Options.EnableDeletions;
         // ReSharper restore UnusedMember.Local
 
@@ -72,38 +71,36 @@ namespace Sibz.ListElement
 
         #region Construction
 
-        public ListElement() : this(null)
+        // TODO Test that is created not empty
+        public ListElement() : this(false)
         {
         }
 
-        // ReSharper disable once UnusedParameter.Local
-        private ListElement(bool empty)
+        // TODO Test is created empty when true
+        public ListElement(bool empty)
         {
+            if (!empty)
+            {
+                LoadAndCloneTemplate();
+            }
         }
 
-        public static ListElement CreateEmpty() => new ListElement(true);
-
-        public ListElement(SerializedProperty property) : this(
-            string.Empty, property)
-        {
-        }
-
-        // ReSharper disable once MemberCanBePrivate.Global
-        public ListElement(string label, SerializedProperty property, IListElementEventHandler evtHandler = null) :
+        // TODO Test is created with label option set
+        // ReSharper disable once UnusedMember.Global
+        public ListElement(SerializedProperty property, string label) :
             this(property,
-                new ListElementOptions {Label = label}, evtHandler)
+                new ListElementOptions {Label = label})
         {
         }
+        
+        // TODO Test is created with template loaded
 
         // ReSharper disable once SuggestBaseTypeForParameter
-        public ListElement(SerializedProperty property, ListElementOptions options,
-            IListElementEventHandler evtHandler = null)
+        public ListElement(SerializedProperty property, ListElementOptions options = null)
         {
             serializedProperty = property;
 
-            Options = options ?? new Internal.ListElementOptions();
-
-            Clear();
+            Options = options ?? Options;
 
             LoadAndCloneTemplate();
 
@@ -117,6 +114,7 @@ namespace Sibz.ListElement
 
         #region Initialisation
 
+        // Todo should fail 
         private void LoadAndCloneTemplate()
         {
             try

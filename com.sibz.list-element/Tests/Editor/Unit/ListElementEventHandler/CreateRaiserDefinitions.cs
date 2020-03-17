@@ -26,7 +26,7 @@ namespace Sibz.ListElement.Tests.Unit.ListElementEventHandler
         [SetUp]
         public void SetUp()
         {
-            ListElement listElement = ListElement.CreateEmpty();
+            ListElement listElement = new ListElement(true);
             listElement.Add(controls.Add);
             listElement.Add(controls.ClearList);
             listElement.Add(controls.ClearListConfirm);
