@@ -6,6 +6,8 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Sibz.ListElement.Internal;
+using UnityEditor.Graphs;
+using UnityEngine.AI;
 using Object = UnityEngine.Object;
 
 namespace Sibz.ListElement
@@ -83,7 +85,6 @@ namespace Sibz.ListElement
 
         private ListElement(bool empty)
         {
-            
         }
 
         public static ListElement CreateEmpty() => new ListElement(true);
@@ -108,33 +109,19 @@ namespace Sibz.ListElement
 
             Options = options ?? new Internal.ListElementOptions();
 
-            InitialiseAndBindIfPropertyIsDefined();
-        }
+            Clear();
 
-        private void InitialiseAndBindIfPropertyIsDefined()
-        {
-            if (serializedProperty is null)
+            LoadAndCloneTemplate();
+
+            if (!(serializedProperty is null))
             {
-                return;
+                this.BindProperty(serializedProperty);
             }
-
-            Initialise();
-
-            this.BindProperty(serializedProperty);
         }
 
         #endregion
 
         #region Initialisation
-
-        private void Initialise()
-        {
-            Clear();
-
-            LoadAndCloneTemplate();
-
-            InitialiseWithSerializedProperty();
-        }
 
         private void LoadAndCloneTemplate()
         {
@@ -151,18 +138,22 @@ namespace Sibz.ListElement
             }
         }
 
-        private void InitialiseWithSerializedProperty()
+        private void Initialise()
         {
             if (IsInitialised || serializedProperty is null)
             {
                 return;
             }
 
+            Clear();
+
+            LoadAndCloneTemplate();
+
             Controls = new Controls(this, Options);
 
             eventHandler = eventHandler ?? new ListElementEventHandler(Controls);
             ListElementEventHandler.RegisterCallbacks(this, eventHandler);
-            
+
             eventHandler.Handler = new PropertyModificationHandler(serializedProperty, Reset);
 
             rowGenerator = Options.RowGenerator ?? new RowGenerator(Options.ItemTemplateName);
@@ -170,7 +161,7 @@ namespace Sibz.ListElement
             ElementInteractions.ApplyOptions(this);
 
             AddArraySizeField();
-            
+
             IsInitialised = true;
         }
 
@@ -216,10 +207,7 @@ namespace Sibz.ListElement
 
             serializedProperty = property;
 
-            if (!IsInitialised)
-            {
-                Initialise();
-            }
+            Initialise();
 
             Reset();
         }
@@ -354,8 +342,6 @@ namespace Sibz.ListElement
                 {
                     le.Options.TemplateName = tn;
                 }
-
-                le.Initialise();
             }
         }
 
