@@ -76,9 +76,11 @@ namespace Sibz.ListElement.Events
             }
         }
 
-        public void OnAddRow(IRowButtons buttons, int index)
+        public void OnRowInserted(RowInsertedEvent evt)
         {
-            rowEventRaisers.AddRange(CreateRaiserDefinitionsForRow(buttons, index));
+            rowEventRaisers.AddRange(CreateRaiserDefinitionsForRow(evt.Buttons, evt.Index));
+            ElementInteractions.SetButtonStateBasedOnZeroIndex(evt.Buttons.MoveUp, evt.Index);
+            ElementInteractions.SetButtonStateBasedOnBeingLastPositionInArray(evt.Buttons.MoveDown, evt.Index, evt.ListLength);
         }
 
         public void OnReset()
@@ -173,6 +175,7 @@ namespace Sibz.ListElement.Events
             element.RegisterCallback<AddItemEvent>(handler.OnAddItem);
             element.RegisterCallback<ClickEvent>(handler.OnClicked);
             element.RegisterCallback<ChangeEvent<Object>>(handler.OnChanged);
+            element.RegisterCallback<RowInsertedEvent>(handler.OnRowInserted);
         }
     }
 }

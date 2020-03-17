@@ -72,7 +72,7 @@ namespace Sibz.ListElement.Tests.Unit.Controls
         private void AddItemRows(VisualElement root, SerializedObject serializedObject, string propertyName)
         {
             SerializedProperty serializedProperty = serializedObject.FindProperty(propertyName);
-            RowGenerator rowGenerator = new RowGenerator(Options.ItemTemplateName);
+            Sibz.ListElement.RowGenerator rowGenerator = new Sibz.ListElement.RowGenerator(Options.ItemTemplateName);
             for (int i = 0; i < serializedProperty.arraySize; i++)
             {
                 root.Q<VisualElement>(null, Options.ItemsSectionClassName).Add(

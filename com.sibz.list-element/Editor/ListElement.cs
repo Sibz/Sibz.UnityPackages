@@ -20,6 +20,12 @@ namespace Sibz.ListElement
         public readonly Internal.ListElementOptions Options = new ListElementOptions();
         public bool IsInitialised { get; private set; }
 
+        public virtual IRowGenerator RowGenerator
+        {
+            get => rowGenerator;
+            set => rowGenerator = value;
+        }
+
         public Type ListItemType
         {
             get
@@ -138,21 +144,16 @@ namespace Sibz.ListElement
             }
 
             Clear();
-
             LoadAndCloneTemplate();
+            AddArraySizeField();
 
             Controls = new Controls(this, Options);
-
             eventHandler = eventHandler ?? new ListElementEventHandler(Controls);
-            ListElementEventHandler.RegisterCallbacks(this, eventHandler);
-
             eventHandler.Handler = new PropertyModificationHandler(serializedProperty, Reset);
+            rowGenerator = new RowGenerator(Options.ItemTemplateName);
 
-            rowGenerator = Options.RowGenerator ?? new RowGenerator(Options.ItemTemplateName);
-
+            ListElementEventHandler.RegisterCallbacks(this, eventHandler);
             ElementInteractions.ApplyOptions(this);
-
-            AddArraySizeField();
 
             IsInitialised = true;
         }
@@ -210,9 +211,14 @@ namespace Sibz.ListElement
 
             for (int i = 0; i < serializedProperty.arraySize; i++)
             {
-                Controls.ItemsSection.Add(rowGenerator.NewRow(i, serializedProperty));
-                rowGenerator.PostInsert(Controls.Row[i], i, serializedProperty.arraySize);
-                eventHandler.OnAddRow(Controls.Row[i], i);
+                Controls.ItemsSection.Add(RowGenerator.NewRow(i, serializedProperty));
+                SendEvent(new RowInsertedEvent
+                {
+                    target = this,
+                    Buttons = Controls.Row[i],
+                    Index = i,
+                    ListLength = serializedProperty.arraySize
+                });
             }
 
             OnReset?.Invoke();

@@ -18,7 +18,8 @@ namespace Sibz.ListElement.Tests.Integration.ListElementEventHandler
             nameof(RemoveItemEvent),
             nameof(AddItemEvent),
             nameof(ClickEvent),
-            typeof(ChangeEvent<Object>).Name
+            typeof(ChangeEvent<Object>).Name,
+            nameof(RowInsertedEvent)
         };
 
         public Handler Handler { get; set; }
@@ -63,12 +64,12 @@ namespace Sibz.ListElement.Tests.Integration.ListElementEventHandler
             throw new System.NotImplementedException();
         }
 
-        public void OnAddRow(IRowButtons buttons, int index)
+        public void OnChanged(ChangeEvent<Object> evt)
         {
-            throw new System.NotImplementedException();
+            EventNames.Remove(evt.GetType().Name);
         }
 
-        public void OnChanged(ChangeEvent<Object> evt)
+        public void OnRowInserted(RowInsertedEvent evt)
         {
             EventNames.Remove(evt.GetType().Name);
         }

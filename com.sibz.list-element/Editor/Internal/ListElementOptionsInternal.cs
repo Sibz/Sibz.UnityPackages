@@ -18,8 +18,6 @@
         private const string DefaultAddItemSectionClassName = "add-section";
         private const string DefaultAddItemButtonClassName = "add-button";
         private const string DefaultAddItemObjectFieldClassName = "add-field";
-
-        public IRowGenerator RowGenerator = null;
         
         public string TemplateName { get; internal set; } = DefaultTemplateName;
         public string ItemTemplateName { get; internal set; } = DefaultItemTemplateName;

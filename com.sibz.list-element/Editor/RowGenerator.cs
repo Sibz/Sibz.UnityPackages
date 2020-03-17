@@ -4,6 +4,7 @@ using UnityEngine.UIElements;
 
 namespace Sibz.ListElement
 {
+    // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
     public class RowGenerator : IRowGenerator
     {
         private readonly VisualTreeAsset template;
@@ -13,23 +14,12 @@ namespace Sibz.ListElement
             template = SingleAssetLoader.SingleAssetLoader.Load<VisualTreeAsset>(itemTemplateName);
         }
 
-        public ListRowElement NewRow(int index, SerializedProperty property)
+        public virtual ListRowElement NewRow(int index, SerializedProperty property)
         {
             ListRowElement row = new ListRowElement(index);
             template.CloneTree(row);
             row.Q<PropertyField>()?.BindProperty(property.GetArrayElementAtIndex(index));
             return row;
-        }
-
-        public void PostInsert(IRowButtons rowButtonsElementsSet, int index, int arraySize)
-        {
-            AdjustReorderButtonsState(rowButtonsElementsSet?.MoveUp, rowButtonsElementsSet?.MoveDown, index, arraySize);
-        }
-
-        public static void AdjustReorderButtonsState(Button moveUp, Button moveDown, int index, int arraySize)
-        {
-            moveUp?.SetEnabled(index != 0);
-            moveDown?.SetEnabled(index < arraySize - 1);
         }
     }
 }

@@ -132,5 +132,15 @@ namespace Sibz.ListElement.Internal
             clearListButton.style.display =
                 show ? DisplayStyle.None : DisplayStyle.Flex;
         }
+        
+        public static void SetButtonStateBasedOnZeroIndex(Button button, int index)
+        {
+            button?.SetEnabled(index != 0);
+        }
+        
+        public static void SetButtonStateBasedOnBeingLastPositionInArray(Button button, int index, int arraySize)
+        {
+            button?.SetEnabled(index < arraySize - 1);
+        }
     }
 }

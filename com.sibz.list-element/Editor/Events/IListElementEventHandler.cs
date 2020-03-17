@@ -15,7 +15,7 @@ namespace Sibz.ListElement.Events
         void OnMoveItem(MoveItemEvent evt);
         void OnClicked(ClickEvent evt);
         void OnReset();
-        void OnAddRow(IRowButtons buttons, int index);
         void OnChanged(ChangeEvent<Object> evt);
+        void OnRowInserted(RowInsertedEvent evt);
     }
 }
