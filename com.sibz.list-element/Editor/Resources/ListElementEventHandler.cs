@@ -69,8 +69,13 @@ namespace Sibz.ListElement.Events
 
         public void OnClicked(ClickEvent evt)
         {
-            RaiseEventBaseOnEvtTarget(evt.target, outerEventRaisers);
-            RaiseEventBaseOnEvtTarget(evt.target, rowEventRaisers);
+            if (!(evt.target is VisualElement element))
+            {
+                return;
+            }
+
+            RaiseEventBaseOnEvtTarget(element, outerEventRaisers);
+            RaiseEventBaseOnEvtTarget(element, rowEventRaisers);
         }
 
         public void OnChanged(ChangeEvent<Object> evt)
@@ -204,13 +209,18 @@ namespace Sibz.ListElement.Events
         }
 
         // TODO Integration Test
-        public static void RaiseEventBaseOnEvtTarget(IEventHandler target,
+        public static void RaiseEventBaseOnEvtTarget(VisualElement target,
             IEnumerable<EventRaiserDefinition> eventRaisers)
         {
-            var eventRaiserDefinitions = eventRaisers as EventRaiserDefinition[] ?? eventRaisers.ToArray();
-            if (target is VisualElement element && eventRaiserDefinitions.Any(x => x.Control == element))
+            if (eventRaisers is null || target is null)
             {
-                eventRaiserDefinitions.Single(x => x.Control == element).RaiseEvent();
+                throw new ArgumentNullException(eventRaisers is null?nameof(target):nameof(eventRaisers));
+            }
+
+            var eventRaiserDefinitions = eventRaisers as EventRaiserDefinition[] ?? eventRaisers.ToArray();
+            if (eventRaiserDefinitions.Any(x => x.Control == target))
+            {
+                eventRaiserDefinitions.Single(x => x.Control == target).RaiseEvent();
             }
         }
 

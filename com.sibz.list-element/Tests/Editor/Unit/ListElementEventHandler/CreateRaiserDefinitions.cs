@@ -7,7 +7,7 @@ using Handler = Sibz.ListElement.Events.ListElementEventHandler;
 
 // ReSharper disable HeapView.BoxingAllocation
 
-namespace Sibz.ListElement.Tests.Unit.ListElementEventHandler
+namespace Sibz.ListElement.Tests.Unit.ListElementEventHandlerTests
 {
     public class CreateRaiserDefinitions
     {

@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine.UIElements;
 using Handler = Sibz.ListElement.Events.ListElementEventHandler;
 
-namespace Sibz.ListElement.Tests.Unit.ListElementEventHandler
+namespace Sibz.ListElement.Tests.Unit.ListElementEventHandlerTests
 {
     public class PopulateList
     {
