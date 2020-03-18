@@ -18,8 +18,11 @@ namespace Sibz.ListElement.Tests.Integration.ListElementEventHandler
             nameof(RemoveItemEvent),
             nameof(AddItemEvent),
             nameof(ClickEvent),
-            typeof(ChangeEvent<Object>).Name,
-            nameof(RowInsertedEvent)
+            typeof(ChangeEvent<Object>).FullName,
+            nameof(RowInsertedEvent),
+            typeof(ChangeEvent<int>).FullName,
+            nameof(ListResetEvent),
+            nameof(AttachToPanelEvent)
         };
 
         public Handler Handler { get; set; }
@@ -59,17 +62,27 @@ namespace Sibz.ListElement.Tests.Integration.ListElementEventHandler
             EventNames.Remove(evt.GetType().Name);
         }
 
-        public void OnReset()
+        public void OnChanged(ChangeEvent<Object> evt)
         {
-            throw new System.NotImplementedException();
+            EventNames.Remove(evt.GetType().FullName);
         }
 
-        public void OnChanged(ChangeEvent<Object> evt)
+        public void OnRowInserted(RowInsertedEvent evt)
         {
             EventNames.Remove(evt.GetType().Name);
         }
 
-        public void OnRowInserted(RowInsertedEvent evt)
+        public void OnListLengthChanged(ChangeEvent<int> evt)
+        {
+            EventNames.Remove(evt.GetType().FullName);
+        }
+
+        public void OnReset(ListResetEvent evt)
+        {
+            EventNames.Remove(evt.GetType().Name);
+        }
+
+        public void OnAttachToPanel(AttachToPanelEvent evt)
         {
             EventNames.Remove(evt.GetType().Name);
         }

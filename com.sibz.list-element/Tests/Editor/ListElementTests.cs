@@ -39,11 +39,10 @@ namespace Sibz.ListElement.Tests
         [Test]
         public void ShouldCallResetWhenSerializedPropertyIsRebound()
         {
-            bool hasReset = false;
-            ListElement.OnReset += () => hasReset = true;
+            //bool hasReset = false;
             ListElement.Unbind();
             ListElement.BindProperty(Property);
-            Assert.IsTrue(hasReset);
+            Assert.IsTrue(false);
         }
 
         [Test]

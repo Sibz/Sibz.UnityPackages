@@ -8,18 +8,14 @@ namespace Sibz.ListElement.Internal
     {
         private readonly SerializedProperty property;
 
-        private readonly Action onModify;
-
-        public PropertyModificationHandler(SerializedProperty property, Action onModify = null)
+        public PropertyModificationHandler(SerializedProperty property)
         {
             this.property = property;
-            this.onModify = onModify;
         }
 
         private void ApplyModification()
         {
             property.serializedObject.ApplyModifiedProperties();
-            onModify?.Invoke();
         }
 
         public void Add(Object obj = null)

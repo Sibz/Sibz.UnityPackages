@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+
 // ReSharper disable HeapView.BoxingAllocation
 
 namespace Sibz.ListElement.Tests.Unit.PropertyModificationHandler

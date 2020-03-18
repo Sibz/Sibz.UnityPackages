@@ -1,8 +1,7 @@
 ﻿using NUnit.Framework;
-using Sibz.ListElement.Tests.Unit;
-using UnityEditor;
 using UnityEngine;
 using Handler = Sibz.ListElement.Internal.PropertyModificationHandler;
+
 // ReSharper disable HeapView.BoxingAllocation
 
 namespace Sibz.ListElement.Tests.Unit.PropertyModificationHandler

@@ -81,7 +81,7 @@ namespace Sibz.ListElement.Tests.Unit.ListElementTests
             listElement = new ListElement(property);
             Assert.IsNotNull(listElement.Controls);
         }
-        
+
         [Test]
         public void WhenPropertyIsSet_ShouldNotBeEmpty()
         {
@@ -92,10 +92,10 @@ namespace Sibz.ListElement.Tests.Unit.ListElementTests
         [Test]
         public void WhenPropertySet_ShouldBindProperty()
         {
-             listElement = new ListElement(property);
-             Assert.AreEqual(property.propertyPath, listElement.bindingPath);
+            listElement = new ListElement(property);
+            Assert.AreEqual(property.propertyPath, listElement.bindingPath);
         }
-        
+
         [Test]
         public void WhenPropertyBoundAfter_ShouldInitialise()
         {

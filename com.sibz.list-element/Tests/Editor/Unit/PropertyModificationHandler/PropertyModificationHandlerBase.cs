@@ -11,12 +11,11 @@ namespace Sibz.ListElement.Tests.Unit.PropertyModificationHandler
         protected SerializedProperty ObjectProperty;
         protected Handler Handler;
         protected Handler ObjectHandler;
-        
+
         [SetUp]
         public void SetUp()
         {
-            GameObject go = new GameObject();
-            TestHelpers.TestComponent component = go.AddComponent<TestHelpers.TestComponent>();
+            TestHelpers.TestComponent component = new GameObject().AddComponent<TestHelpers.TestComponent>();
             SerializedObject so = new SerializedObject(component);
             Property = so.FindProperty(nameof(TestHelpers.TestComponent.myList));
             ObjectProperty = so.FindProperty(nameof(TestHelpers.TestComponent.myCustomList));

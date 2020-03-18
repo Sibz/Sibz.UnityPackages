@@ -12,32 +12,32 @@ namespace Sibz.ListElement.Tests.Unit.ElementInteractions
         {
             public readonly Button Button;
             public readonly VisualElement Section;
-            
+
             public ElementPair(bool sectionShown = false)
             {
                 Button = new Button();
                 Section = new VisualElement();
 
-                Button.style.display = sectionShown ?  DisplayStyle.None : DisplayStyle.Flex;
-                Section.style.display = sectionShown ?  DisplayStyle.Flex :DisplayStyle.None;
+                Button.style.display = sectionShown ? DisplayStyle.None : DisplayStyle.Flex;
+                Section.style.display = sectionShown ? DisplayStyle.Flex : DisplayStyle.None;
             }
-            
+
             public void AssertDisplayState(bool sectionShown = false)
             {
-                Assert.AreEqual(sectionShown ?  DisplayStyle.None : DisplayStyle.Flex,
+                Assert.AreEqual(sectionShown ? DisplayStyle.None : DisplayStyle.Flex,
                     Button.style.display.value);
 
-                Assert.AreEqual(sectionShown ?  DisplayStyle.Flex :DisplayStyle.None,
+                Assert.AreEqual(sectionShown ? DisplayStyle.Flex : DisplayStyle.None,
                     Section.style.display.value);
             }
         }
-        
+
         [Test]
         public void WhenElementsAreNull_ShouldFailSilently()
         {
             Handler.SetConfirmSectionVisibility(null, null, false);
         }
-        
+
         [Test]
         public void WhenOneElementIsNull_ShouldFailSilentlyAndNotChangeElement()
         {

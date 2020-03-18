@@ -4,8 +4,8 @@ using System.Diagnostics.CodeAnalysis;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
-using Object = UnityEngine.Object;
 using Handler = Sibz.ListElement.Internal.PropertyModificationHandler;
+using Object = UnityEngine.Object;
 
 namespace Sibz.ListElement.Tests.PropertyModificationHandler
 {
@@ -35,7 +35,5 @@ namespace Sibz.ListElement.Tests.PropertyModificationHandler
             property = testSerializedGameObject.FindProperty(nameof(TestObject.myList));
             handler = new Handler(property);
         }
-
-
     }
 }

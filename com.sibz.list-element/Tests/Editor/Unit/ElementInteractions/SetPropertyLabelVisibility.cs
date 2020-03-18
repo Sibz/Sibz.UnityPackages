@@ -14,8 +14,8 @@ namespace Sibz.ListElement.Tests.Unit.ElementInteractions
             itemSection.AddToClassList(UxmlClassNames.HidePropertyLabel);
             Handler.SetPropertyLabelVisibility(itemSection, true);
             Assert.IsTrue(itemSection.ClassListContains(UxmlClassNames.HidePropertyLabel));
-        }    
-        
+        }
+
         [Test]
         public void WhenSettingPropertyLabelVisibilityWithOptionFalse_ShouldRemoveClass()
         {

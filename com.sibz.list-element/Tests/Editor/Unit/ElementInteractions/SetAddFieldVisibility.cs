@@ -14,7 +14,7 @@ namespace Sibz.ListElement.Tests.Unit.ElementInteractions
             Handler.SetAddFieldVisibility(itemSection, typeof(TestHelpers.TestObject), false);
             Assert.IsTrue(itemSection.ClassListContains(UxmlClassNames.UseObjectField));
         }
-        
+
         [Test]
         public void WhenTypeIsObjectAndOptionSet_ShouldNotAddClass()
         {
@@ -22,7 +22,7 @@ namespace Sibz.ListElement.Tests.Unit.ElementInteractions
             Handler.SetAddFieldVisibility(itemSection, typeof(TestHelpers.TestObject), true);
             Assert.IsFalse(itemSection.ClassListContains(UxmlClassNames.UseObjectField));
         }
-        
+
         [Test]
         public void WhenTypeIsString_ShouldNotAddClass()
         {
@@ -30,7 +30,7 @@ namespace Sibz.ListElement.Tests.Unit.ElementInteractions
             Handler.SetAddFieldVisibility(itemSection, typeof(string), false);
             Assert.IsFalse(itemSection.ClassListContains(UxmlClassNames.UseObjectField));
         }
-          
+
         [Test]
         public void WhenElementIsNull_ShouldNotThrowError()
         {

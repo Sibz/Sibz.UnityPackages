@@ -1,6 +1,5 @@
 ﻿using System;
 using NUnit.Framework;
-using Sibz.ListElement.Events;
 using UnityEngine.UIElements;
 
 namespace Sibz.ListElement.Tests.Unit.EventRaiserDefinition
@@ -19,6 +18,7 @@ namespace Sibz.ListElement.Tests.Unit.EventRaiserDefinition
                 Assert.AreEqual("control", e.ParamName);
                 return;
             }
+
             Assert.Fail("ArgumentNullException not thrown");
         }
 
@@ -34,6 +34,7 @@ namespace Sibz.ListElement.Tests.Unit.EventRaiserDefinition
                 Assert.AreEqual("target", e.ParamName);
                 return;
             }
+
             Assert.Fail("ArgumentException not thrown");
         }
 
@@ -42,11 +43,12 @@ namespace Sibz.ListElement.Tests.Unit.EventRaiserDefinition
         {
             Events.EventRaiserDefinition.Create<TestEvent>(new VisualElement(), null, new VisualElement());
         }
-        
+
         [Test]
         public void ShouldSetControl()
         {
-            Events.EventRaiserDefinition def = Events.EventRaiserDefinition.Create<TestEvent>(new VisualElement(), null, new VisualElement());
+            Events.EventRaiserDefinition def =
+                Events.EventRaiserDefinition.Create<TestEvent>(new VisualElement(), null, new VisualElement());
             Assert.IsNotNull(def.Control);
         }
     }

@@ -1,6 +1,8 @@
-﻿using UnityEditor.UIElements;
+﻿using System;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Object = UnityEngine.Object;
 
 namespace Sibz.ListElement.Internal
 {
@@ -10,7 +12,7 @@ namespace Sibz.ListElement.Internal
         {
             Controls ctl = le.Controls;
             ListElementOptions opts = le.Options;
-            
+
             SetPropertyLabelVisibility(ctl.ItemsSection, opts.HidePropertyLabel);
             SetRemoveButtonVisibility(le, opts.EnableDeletions);
             SetReorderButtonVisibility(ctl.ItemsSection, opts.EnableReordering);
@@ -19,11 +21,8 @@ namespace Sibz.ListElement.Internal
             SetHeaderLabelText(ctl.HeaderLabel, le.ListName, opts.Label);
             LoadAndAddStyleSheet(le, opts.StyleSheetName, opts.TemplateName);
             SetTypeOnObjectField(ctl.AddObjectField, le.ListItemType);
-            
-            void OnReset() => SetButtonStateBasedOnZeroIndex(le.Controls.ClearList, le.Controls.ItemsSection.childCount);
-            le.OnReset += OnReset;
         }
-        
+
         public static void SetPropertyLabelVisibility(VisualElement itemSection, bool hidePropertyLabelOption)
         {
             if (!hidePropertyLabelOption)
@@ -31,7 +30,7 @@ namespace Sibz.ListElement.Internal
                 itemSection.RemoveFromClassList(UxmlClassNames.HidePropertyLabel);
             }
         }
-        
+
         public static void SetRemoveButtonVisibility(VisualElement listElement, bool enableDeletionsOption)
         {
             if (!enableDeletionsOption)
@@ -49,7 +48,7 @@ namespace Sibz.ListElement.Internal
         }
 
         public static void SetAddFieldVisibility(
-            VisualElement itemSection, System.Type type, bool doNotUseObjectFieldOption)
+            VisualElement itemSection, Type type, bool doNotUseObjectFieldOption)
         {
             if (doNotUseObjectFieldOption)
             {
@@ -68,6 +67,7 @@ namespace Sibz.ListElement.Internal
             {
                 return;
             }
+
             objectField.hierarchy[0].hierarchy[0].Add(new Label(text) {pickingMode = PickingMode.Ignore});
         }
 
@@ -77,7 +77,8 @@ namespace Sibz.ListElement.Internal
             {
                 return;
             }
-            label.text = string.IsNullOrEmpty(optionsLabel) ? listName : optionsLabel; 
+
+            label.text = string.IsNullOrEmpty(optionsLabel) ? listName : optionsLabel;
         }
 
         public static void LoadAndAddStyleSheet(VisualElement element, string stylesheetName, string templateName)
@@ -92,29 +93,30 @@ namespace Sibz.ListElement.Internal
                 element.styleSheets.Add(
                     SingleAssetLoader.Load<StyleSheet>(stylesheetName));
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
                 Debug.LogWarningFormat("Could not load custom style sheet:\n{0}", e.Message);
             }
         }
 
-        public static void SetTypeOnObjectField(ObjectField field, System.Type type)
+        public static void SetTypeOnObjectField(ObjectField field, Type type)
         {
             if (field is null)
             {
                 return;
             }
-            
+
             field.objectType = type;
         }
 
-        
+
         public static void SetAddObjectFieldValueToNull(ObjectField field)
         {
             field?.SetValueWithoutNotify(null);
         }
 
-        public static void SetConfirmSectionVisibility(Button clearListButton, VisualElement clearListSection, bool show)
+        public static void SetConfirmSectionVisibility(Button clearListButton, VisualElement clearListSection,
+            bool show)
         {
             if (clearListSection == null ||
                 clearListButton == null)
@@ -127,15 +129,27 @@ namespace Sibz.ListElement.Internal
             clearListButton.style.display =
                 show ? DisplayStyle.None : DisplayStyle.Flex;
         }
-        
+
         public static void SetButtonStateBasedOnZeroIndex(Button button, int index)
         {
             button?.SetEnabled(index != 0);
         }
-        
+
         public static void SetButtonStateBasedOnBeingLastPositionInArray(Button button, int index, int arraySize)
         {
             button?.SetEnabled(index < arraySize - 1);
+        }
+
+        public static void InsertHiddenIntFieldWithPropertyPathSet(VisualElement root, string path)
+        {
+            IntegerField integerField = new IntegerField
+            {
+                bindingPath = path
+            };
+
+            integerField.style.display = DisplayStyle.None;
+
+            root.Add(integerField);
         }
     }
 }

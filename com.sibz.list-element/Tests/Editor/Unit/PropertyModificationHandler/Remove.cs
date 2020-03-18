@@ -1,5 +1,6 @@
 ﻿using System;
 using NUnit.Framework;
+
 // ReSharper disable HeapView.BoxingAllocation
 
 namespace Sibz.ListElement.Tests.Unit.PropertyModificationHandler
@@ -24,7 +25,6 @@ namespace Sibz.ListElement.Tests.Unit.PropertyModificationHandler
         [Test]
         public void WhenIndexOutOfRange_ShouldThrowIndexOutOfRangeException()
         {
-            
             try
             {
                 Handler.Remove(10);
@@ -33,6 +33,7 @@ namespace Sibz.ListElement.Tests.Unit.PropertyModificationHandler
             {
                 Assert.Pass();
             }
+
             Assert.Fail($"{typeof(IndexOutOfRangeException)} not thrown");
         }
     }

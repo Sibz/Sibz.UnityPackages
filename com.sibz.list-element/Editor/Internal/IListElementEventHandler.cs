@@ -14,8 +14,10 @@ namespace Sibz.ListElement.Internal
         void OnRemoveItem(RemoveItemEvent evt);
         void OnMoveItem(MoveItemEvent evt);
         void OnClicked(ClickEvent evt);
-        void OnReset();
         void OnChanged(ChangeEvent<Object> evt);
         void OnRowInserted(RowInsertedEvent evt);
+        void OnListLengthChanged(ChangeEvent<int> evt);
+        void OnReset(ListResetEvent evt);
+        void OnAttachToPanel(AttachToPanelEvent evt);
     }
 }

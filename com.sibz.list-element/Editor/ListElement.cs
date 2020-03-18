@@ -1,22 +1,22 @@
 ﻿using System;
 using Sibz.ListElement.Events;
+using Sibz.ListElement.Internal;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
-using Sibz.ListElement.Internal;
 
 namespace Sibz.ListElement
 {
     public class ListElement : BindableElement
     {
         private IListElementEventHandler eventHandler;
-        private SerializedProperty serializedProperty;
         private IRowGenerator rowGenerator;
         private Type listItemType;
 
         public Controls Controls;
 
+        internal SerializedProperty SerializedProperty { get; private set; }
         public readonly Internal.ListElementOptions Options = new ListElementOptions();
         public bool IsInitialised { get; private set; }
 
@@ -35,8 +35,8 @@ namespace Sibz.ListElement
                     return listItemType;
                 }
 
-                var propertyPath = serializedProperty.propertyPath.Split('.');
-                object baseObject = serializedProperty.serializedObject.targetObject;
+                var propertyPath = SerializedProperty.propertyPath.Split('.');
+                object baseObject = SerializedProperty.serializedObject.targetObject;
 
                 foreach (string fieldName in propertyPath)
                 {
@@ -57,8 +57,7 @@ namespace Sibz.ListElement
             }
         }
 
-        public string ListName => serializedProperty == null ? "" : serializedProperty.displayName;
-        public event Action OnReset;
+        public string ListName => SerializedProperty == null ? "" : SerializedProperty.displayName;
 
         #region Attribute Properties
 
@@ -70,6 +69,7 @@ namespace Sibz.ListElement
         private bool HidePropertyLabel => Options.HidePropertyLabel;
         private bool DoNotUseObjectField => Options.DoNotUseObjectField;
         private bool EnableReordering => Options.EnableReordering;
+
         private bool EnableDeletions => Options.EnableDeletions;
         // ReSharper restore UnusedMember.Local
 
@@ -77,104 +77,63 @@ namespace Sibz.ListElement
 
         #region Construction
 
-        // TODO Test that is created not empty
         public ListElement() : this(false)
         {
         }
 
-        // TODO Test is created empty when true
         public ListElement(bool empty)
         {
             if (!empty)
             {
-                LoadAndCloneTemplate();
+                SingleAssetLoader.Load<VisualTreeAsset>(TemplateName)
+                    .CloneTree(this);
             }
         }
 
-        // TODO Test is created with label option set
         // ReSharper disable once UnusedMember.Global
         public ListElement(SerializedProperty property, string label) :
             this(property,
                 new ListElementOptions {Label = label})
         {
         }
-        
-        // TODO Test is created with template loaded
 
         // ReSharper disable once SuggestBaseTypeForParameter
         public ListElement(SerializedProperty property, ListElementOptions options = null)
         {
-            serializedProperty = property;
+            SerializedProperty = property ?? throw new ArgumentNullException(nameof(property));
 
             Options = options ?? Options;
 
-            LoadAndCloneTemplate();
-
-            if (!(serializedProperty is null))
-            {
-                this.BindProperty(serializedProperty);
-            }
+            this.BindProperty(SerializedProperty);
         }
 
         #endregion
 
         #region Initialisation
 
-        // Todo should fail 
-        private void LoadAndCloneTemplate()
-        {
-            try
-            {
-                SingleAssetLoader.Load<VisualTreeAsset>(TemplateName).CloneTree(this);
-            }
-            catch (Exception e)
-            {
-                Debug.LogErrorFormat(
-                    "Unable to load template ('{0}') to clone into ListElement: {1}",
-                    TemplateName,
-                    e.Message);
-            }
-        }
-
         private void Initialise()
         {
-            if (IsInitialised || serializedProperty is null)
+            if (IsInitialised || SerializedProperty is null)
             {
                 return;
             }
 
             Clear();
-            LoadAndCloneTemplate();
-            AddArraySizeField();
+
+            SingleAssetLoader.Load<VisualTreeAsset>(TemplateName)
+                .CloneTree(this);
 
             Controls = new Controls(this, Options);
             eventHandler = eventHandler ?? new ListElementEventHandler(Controls);
-            eventHandler.Handler = new PropertyModificationHandler(serializedProperty, Reset);
+            eventHandler.Handler = new PropertyModificationHandler(SerializedProperty);
             rowGenerator = new RowGenerator(Options.ItemTemplateName);
 
+            ElementInteractions.InsertHiddenIntFieldWithPropertyPathSet(this,
+                SerializedProperty.FindPropertyRelative("Array.size").propertyPath);
             ListElementEventHandler.RegisterCallbacks(this, eventHandler);
             ElementInteractions.ApplyOptions(this);
 
             IsInitialised = true;
-        }
-
-        private void AddArraySizeField()
-        {
-            IntegerField integerField = new IntegerField
-            {
-                bindingPath = serializedProperty.FindPropertyRelative("Array.size").propertyPath
-            };
-
-            integerField.style.display = DisplayStyle.None;
-
-            void DoReset(ChangeEvent<int> evt)
-            {
-                Reset();
-            }
-
-            integerField.RegisterCallback<ChangeEvent<int>>(DoReset);
-
-            Add(integerField);
         }
 
         #endregion
@@ -198,30 +157,16 @@ namespace Sibz.ListElement
                 return;
             }
 
-            serializedProperty = property;
+            SerializedProperty = property;
 
-            Initialise();
-
-            Reset();
-        }
-
-        private void Reset()
-        {
-            Controls.ItemsSection.Clear();
-
-            for (int i = 0; i < serializedProperty.arraySize; i++)
+            if (IsInitialised)
             {
-                Controls.ItemsSection.Add(RowGenerator.NewRow(i, serializedProperty));
-                SendEvent(new RowInsertedEvent
-                {
-                    target = this,
-                    Buttons = Controls.Row[i],
-                    Index = i,
-                    ListLength = serializedProperty.arraySize
-                });
+                SendEvent(new ListResetEvent {target = this});
             }
-
-            OnReset?.Invoke();
+            else
+            {
+                Initialise();
+            }
         }
 
         #endregion

@@ -1,5 +1,4 @@
-﻿using Sibz.ListElement.Internal;
-using UnityEditor;
+﻿using UnityEditor;
 
 namespace Sibz.ListElement
 {

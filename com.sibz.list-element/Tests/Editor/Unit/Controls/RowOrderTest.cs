@@ -7,7 +7,6 @@ namespace Sibz.ListElement.Tests.Unit.Controls
 {
     public class RowProperties : ControlsTestBase
     {
-        
         [Test]
         public void MoveUpBuuton()
         {
@@ -39,7 +38,7 @@ namespace Sibz.ListElement.Tests.Unit.Controls
             Assert.IsNotNull(
                 Controls.Row[0].PropertyField.GetFirstAncestorOfType<Row>());
         }
-        
+
         [Test]
         public void PropertyFieldForObjectList()
         {
@@ -55,7 +54,7 @@ namespace Sibz.ListElement.Tests.Unit.Controls
             Assert.IsNotNull(
                 Controls.Row[0].PropertyFieldLabel.GetFirstAncestorOfType<Row>());
         }
-        
+
         [Test]
         public void PropertyFieldLabelForObjectList()
         {
@@ -64,7 +63,7 @@ namespace Sibz.ListElement.Tests.Unit.Controls
             Assert.IsNotNull(
                 ControlsForObjectList.Row[0].PropertyFieldLabel.GetFirstAncestorOfType<Row>());
         }
-        
+
         [Test]
         public void RowFieldsBelongToCorrectRow([Values(0, 1, 2)] int row)
         {

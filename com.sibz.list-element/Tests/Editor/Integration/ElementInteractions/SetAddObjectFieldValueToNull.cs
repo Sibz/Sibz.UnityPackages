@@ -23,7 +23,7 @@ namespace Sibz.ListElement.Tests.Integration.ElementInteractions
             objectField.value = new Object();
 
             objectField.RegisterCallback<ChangeEvent<Object>>(TestCallBack);
-            
+
             WindowFixture.Window.rootVisualElement.Add(objectField);
 
             Internal.ElementInteractions.SetAddObjectFieldValueToNull(objectField);

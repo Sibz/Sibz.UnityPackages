@@ -20,7 +20,7 @@ namespace Sibz.ListElement.Tests.Unit.PropertyModificationHandler
         }
 
         [Test]
-        public void WhenIndexIsOutOfRange_ShouldThrowIndexOutOfRangeException([Values(-1,10)] int index)
+        public void WhenIndexIsOutOfRange_ShouldThrowIndexOutOfRangeException([Values(-1, 10)] int index)
         {
             try
             {
@@ -30,7 +30,8 @@ namespace Sibz.ListElement.Tests.Unit.PropertyModificationHandler
             {
                 Assert.Pass();
             }
+
             Assert.Fail($"{typeof(IndexOutOfRangeException)} not thrown");
-        } 
+        }
     }
 }

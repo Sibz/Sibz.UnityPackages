@@ -11,8 +11,8 @@ namespace Sibz.ListElement.Tests.Integration
         {
         }
 
-        public static EditorWindow Window;
-        
+        public static TestWindow Window;
+
         [OneTimeSetUp]
         public void SetUp()
         {

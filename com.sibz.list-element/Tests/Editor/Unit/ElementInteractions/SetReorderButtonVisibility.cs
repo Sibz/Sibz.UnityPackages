@@ -13,8 +13,8 @@ namespace Sibz.ListElement.Tests.Unit.ElementInteractions
             VisualElement itemSection = new VisualElement();
             Handler.SetReorderButtonVisibility(itemSection, true);
             Assert.IsFalse(itemSection.ClassListContains(UxmlClassNames.HideReorderButtons));
-        }    
-        
+        }
+
         [Test]
         public void WhenOptionFalse_ShouldAddClass()
         {

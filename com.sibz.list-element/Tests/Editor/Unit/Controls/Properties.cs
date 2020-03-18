@@ -4,9 +4,8 @@ using UnityEngine.UIElements;
 
 namespace Sibz.ListElement.Tests.Unit.Controls
 {
-    public class Properties  : ControlsTestBase
+    public class Properties : ControlsTestBase
     {
-       
         [Test]
         public void HeaderLabel()
         {
@@ -95,6 +94,5 @@ namespace Sibz.ListElement.Tests.Unit.Controls
                 Controls.ItemsSection,
                 new IsElementWithClassName<VisualElement>(Options.ItemsSectionClassName));
         }
-
     }
 }

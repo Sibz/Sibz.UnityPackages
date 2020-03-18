@@ -11,7 +11,7 @@ namespace Sibz.ListElement.Tests.Unit.EventRaiserDefinition
         {
             try
             {
-                Events.EventRaiserDefinition.CreateRaiseEvent(null, new VisualElement(), (e) => { });
+                Events.EventRaiserDefinition.CreateRaiseEvent(null, new VisualElement(), e => { });
             }
             catch (ArgumentException e)
             {
@@ -27,7 +27,7 @@ namespace Sibz.ListElement.Tests.Unit.EventRaiserDefinition
         {
             try
             {
-                Events.EventRaiserDefinition.CreateRaiseEvent(typeof(string), new VisualElement(), (e) => { });
+                Events.EventRaiserDefinition.CreateRaiseEvent(typeof(string), new VisualElement(), e => { });
             }
             catch (ArgumentException e)
             {
@@ -43,7 +43,7 @@ namespace Sibz.ListElement.Tests.Unit.EventRaiserDefinition
         {
             try
             {
-                Events.EventRaiserDefinition.CreateRaiseEvent(typeof(TestEvent), null, (e) => { });
+                Events.EventRaiserDefinition.CreateRaiseEvent(typeof(TestEvent), null, e => { });
             }
             catch (ArgumentException e)
             {
@@ -58,7 +58,7 @@ namespace Sibz.ListElement.Tests.Unit.EventRaiserDefinition
         public void ShouldSetTarget()
         {
             EventBase raiseEvent =
-                Events.EventRaiserDefinition.CreateRaiseEvent(typeof(TestEvent), new VisualElement(), (e) => { });
+                Events.EventRaiserDefinition.CreateRaiseEvent(typeof(TestEvent), new VisualElement(), e => { });
             Assert.IsNotNull(raiseEvent.target);
         }
 
@@ -67,7 +67,7 @@ namespace Sibz.ListElement.Tests.Unit.EventRaiserDefinition
         {
             bool invoked = false;
             Events.EventRaiserDefinition.CreateRaiseEvent(typeof(TestEvent), new VisualElement(),
-                (e) => invoked = true);
+                e => invoked = true);
             Assert.IsTrue(invoked);
         }
     }

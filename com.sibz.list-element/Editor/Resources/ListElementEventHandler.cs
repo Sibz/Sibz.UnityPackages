@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Sibz.ListElement.Internal;
+using UnityEditor;
 using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 
@@ -17,7 +18,8 @@ namespace Sibz.ListElement.Events
         public ListElementEventHandler(IOuterControls outerControls)
         {
             outerEventRaisers = CreateRaiserDefinitions(outerControls);
-            addObjectFieldDropRaiser = outerEventRaisers.Single(x=>x.Control.ClassListContains(new ListElementOptions().AddItemObjectFieldClassName));
+            addObjectFieldDropRaiser = outerEventRaisers.Single(x =>
+                x.Control.ClassListContains(new ListElementOptions().AddItemObjectFieldClassName));
             this.outerControls = outerControls;
         }
 
@@ -31,18 +33,21 @@ namespace Sibz.ListElement.Events
 
         public void OnClearListRequested(ClearListRequestedEvent evt)
         {
-            ElementInteractions.SetConfirmSectionVisibility(outerControls.ClearList, outerControls.ClearListConfirmSection, true);
+            ElementInteractions.SetConfirmSectionVisibility(outerControls.ClearList,
+                outerControls.ClearListConfirmSection, true);
         }
 
         public void OnClearList(ClearListEvent evt)
         {
-            ElementInteractions.SetConfirmSectionVisibility(outerControls.ClearList, outerControls.ClearListConfirmSection, false);
+            ElementInteractions.SetConfirmSectionVisibility(outerControls.ClearList,
+                outerControls.ClearListConfirmSection, false);
             Handler?.Clear();
         }
 
         public void OnClearListCancelled(ClearListCancelledEvent evt)
         {
-            ElementInteractions.SetConfirmSectionVisibility(outerControls.ClearList, outerControls.ClearListConfirmSection, false);
+            ElementInteractions.SetConfirmSectionVisibility(outerControls.ClearList,
+                outerControls.ClearListConfirmSection, false);
         }
 
         public void OnRemoveItem(RemoveItemEvent evt)
@@ -80,12 +85,55 @@ namespace Sibz.ListElement.Events
         {
             rowEventRaisers.AddRange(CreateRaiserDefinitionsForRow(evt.Buttons, evt.Index));
             ElementInteractions.SetButtonStateBasedOnZeroIndex(evt.Buttons.MoveUp, evt.Index);
-            ElementInteractions.SetButtonStateBasedOnBeingLastPositionInArray(evt.Buttons.MoveDown, evt.Index, evt.ListLength);
+            ElementInteractions.SetButtonStateBasedOnBeingLastPositionInArray(evt.Buttons.MoveDown, evt.Index,
+                evt.ListLength);
         }
 
-        public void OnReset()
+        public void OnListLengthChanged(ChangeEvent<int> evt)
+        {
+            ListElement le;
+            if (evt.target is VisualElement ve && !((le = ve.GetFirstAncestorOfType<ListElement>()) is null))
+            {
+                le.SendEvent(new ListResetEvent {target = le});
+            }
+        }
+
+        public void OnReset(ListResetEvent evt)
         {
             rowEventRaisers.Clear();
+
+            if (evt.target is ListElement listElement)
+            {
+                PopulateList(listElement);
+                ElementInteractions.SetButtonStateBasedOnZeroIndex(
+                    listElement.Controls.ClearList, listElement.SerializedProperty.arraySize);
+            }
+        }
+
+        public void OnAttachToPanel(AttachToPanelEvent evt)
+        {
+            evt.target.SendEvent(new ListResetEvent {target = evt.target});
+        }
+
+        public static void PopulateList(ListElement listElement)
+        {
+            Controls controls = listElement.Controls;
+            SerializedProperty property = listElement.SerializedProperty;
+            IRowGenerator rowGenerator = listElement.RowGenerator;
+
+            controls.ItemsSection.Clear();
+
+            for (int i = 0; i < property.arraySize; i++)
+            {
+                controls.ItemsSection.Add(rowGenerator.NewRow(i, property));
+                listElement.SendEvent(new RowInsertedEvent
+                {
+                    target = listElement,
+                    Buttons = controls.Row[i],
+                    Index = i,
+                    ListLength = property.arraySize
+                });
+            }
         }
 
         public static IEnumerable<EventRaiserDefinition> CreateRaiserDefinitions(IOuterControls controls)
@@ -99,6 +147,7 @@ namespace Sibz.ListElement.Events
 
                 evt.Item = controls.AddObjectField.value;
             }
+
             return new List<EventRaiserDefinition>
             {
                 EventRaiserDefinition.Create<ClearListRequestedEvent>(controls.ClearList),
@@ -164,7 +213,7 @@ namespace Sibz.ListElement.Events
                 eventRaiserDefinitions.Single(x => x.Control == element).RaiseEvent();
             }
         }
-        
+
         public static void RegisterCallbacks(VisualElement element, IListElementEventHandler handler)
         {
             element.RegisterCallback<ClearListRequestedEvent>(handler.OnClearListRequested);
@@ -176,6 +225,9 @@ namespace Sibz.ListElement.Events
             element.RegisterCallback<ClickEvent>(handler.OnClicked);
             element.RegisterCallback<ChangeEvent<Object>>(handler.OnChanged);
             element.RegisterCallback<RowInsertedEvent>(handler.OnRowInserted);
+            element.RegisterCallback<ChangeEvent<int>>(handler.OnListLengthChanged);
+            element.RegisterCallback<ListResetEvent>(handler.OnReset);
+            element.RegisterCallback<AttachToPanelEvent>(handler.OnAttachToPanel);
         }
     }
 }

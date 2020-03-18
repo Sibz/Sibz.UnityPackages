@@ -13,8 +13,8 @@ namespace Sibz.ListElement.Tests.Unit.ElementInteractions
             VisualElement listElement = new VisualElement();
             Handler.SetRemoveButtonVisibility(listElement, true);
             Assert.IsFalse(listElement.ClassListContains(UxmlClassNames.HideRemoveButtons));
-        }    
-        
+        }
+
         [Test]
         public void WhenOptionFalse_ShouldAddClass()
         {

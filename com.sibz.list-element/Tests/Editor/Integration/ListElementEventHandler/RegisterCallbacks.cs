@@ -9,11 +9,10 @@ namespace Sibz.ListElement.Tests.Integration.ListElementEventHandler
 {
     public class RegisterCallbacks
     {
-
         [UnityTest]
         public IEnumerator ShouldRegisterAllCallbacks()
         {
-            VisualElement element = new VisualElement();
+            ListElement element = new ListElement(true);
 
             WindowFixture.Window.rootVisualElement.Add(element);
 
@@ -28,12 +27,16 @@ namespace Sibz.ListElement.Tests.Integration.ListElementEventHandler
             element.SendEvent(new RemoveItemEvent {target = element});
             element.SendEvent(new AddItemEvent {target = element});
             element.SendEvent(new ClickEvent {target = element});
-            element.SendEvent(new ChangeEvent<Object>() {target = element});
+            element.SendEvent(new ChangeEvent<Object> {target = element});
+            element.SendEvent(new ChangeEvent<int> {target = element});
+            element.SendEvent(new RowInsertedEvent {target = element});
+            element.SendEvent(new ListResetEvent {target = element});
+            element.SendEvent(new AttachToPanelEvent {target = element});
 
             yield return null;
-            
+
             WindowFixture.Window.rootVisualElement.Remove(element);
-                
+
             Assert.IsEmpty(handler.EventNames);
         }
     }

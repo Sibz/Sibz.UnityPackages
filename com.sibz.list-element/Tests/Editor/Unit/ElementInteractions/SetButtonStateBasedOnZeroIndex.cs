@@ -11,17 +11,17 @@ namespace Sibz.ListElement.Tests.Unit.ElementInteractions
         {
             Button moveUp = new Button();
             Handler.SetButtonStateBasedOnZeroIndex(moveUp, 0);
-            
+
             Assert.IsFalse(moveUp.enabledSelf);
         }
-        
+
         [Test]
         public void WhenIndexIsNotZero_ShouldSetEnabledTrue()
         {
             Button moveUp = new Button();
             moveUp.SetEnabled(false);
             Handler.SetButtonStateBasedOnZeroIndex(moveUp, 1);
-            
+
             Assert.IsTrue(moveUp.enabledSelf);
         }
 
@@ -29,7 +29,7 @@ namespace Sibz.ListElement.Tests.Unit.ElementInteractions
         public void WhenButtonIsNull_ShouldNotThrowError()
         {
             Handler.SetButtonStateBasedOnZeroIndex(null, 0);
-            
+
             Assert.Pass();
         }
     }

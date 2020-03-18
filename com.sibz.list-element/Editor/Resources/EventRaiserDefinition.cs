@@ -1,4 +1,5 @@
 ﻿using System;
+using Sibz.ListElement.UxmlHelpers;
 using UnityEngine.UIElements;
 
 namespace Sibz.ListElement.Events
@@ -11,12 +12,12 @@ namespace Sibz.ListElement.Events
 
         public VisualElement Control;
 
-        private VisualElement RootElement => UxmlHelpers.Util.GetRootElement(Control);
+        private VisualElement RootElement => Util.GetRootElement(Control);
 
         private EventRaiserDefinition()
         {
         }
-        
+
         public void RaiseEvent()
         {
             RootElement.SendEvent(CreateRaiseEvent(eventType, target, setExtraEventData));
@@ -33,17 +34,18 @@ namespace Sibz.ListElement.Events
                 throw new ArgumentNullException(nameof(control));
             }
 
-            target = target ?? control.GetFirstAncestorOfType<ListElement>();
-            if (target is null)
+            VisualElement t = target ?? control.GetFirstAncestorOfType<ListElement>();
+            if (t is null)
             {
-                throw new ArgumentException("target must be an element, or control must belong to a ListElement",
+                throw new ArgumentException(
+                    $"target must be an element, or control must belong to a ListElement\nControl was: {control + string.Join(" ", control.GetClasses())}",
                     nameof(target));
             }
 
-            return new EventRaiserDefinition()
+            return new EventRaiserDefinition
             {
                 Control = control,
-                target = target,
+                target = t,
                 eventType = typeof(T),
                 setExtraEventData = setExtraEventData
             };

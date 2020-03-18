@@ -7,14 +7,14 @@ namespace Sibz.ListElement.Internal
     {
         Button Add { get; }
 
-        Button ClearList  { get; }
+        Button ClearList { get; }
 
-        Button ClearListConfirm  { get; }
+        Button ClearListConfirm { get; }
 
-        Button ClearListCancel  { get; }
-        
+        Button ClearListCancel { get; }
+
         ObjectField AddObjectField { get; }
-        
+
         VisualElement ClearListConfirmSection { get; }
     }
 }

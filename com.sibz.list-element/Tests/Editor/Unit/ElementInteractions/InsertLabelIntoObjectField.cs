@@ -12,7 +12,7 @@ namespace Sibz.ListElement.Tests.Unit.ElementInteractions
         {
             Handler.InsertLabelInObjectField(null, "Test");
         }
-        
+
         [Test]
         public void WhenReplacingObjectFieldLabelAndFieldIsEmpty_ShouldNotThrowError()
         {
@@ -20,7 +20,7 @@ namespace Sibz.ListElement.Tests.Unit.ElementInteractions
             objectField.hierarchy.RemoveAt(0);
             Handler.InsertLabelInObjectField(objectField, "Test");
         }
-        
+
         [Test]
         public void WhenSettingObjectFieldLabel_ShouldHaveAdditionalLabelWithText()
         {

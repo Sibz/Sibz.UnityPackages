@@ -45,7 +45,7 @@ namespace Sibz.ListElement.Tests.Unit.ListElementEventHandler
             Assert.AreEqual(1, defs.Count(x => x.Control == controls.ClearListCancel));
             Assert.AreEqual(1, defs.Count(x => x.Control == controls.AddObjectField));
         }
-        
+
         [Test]
         public void ShouldNotCreateFailingRaiseEvents()
         {
