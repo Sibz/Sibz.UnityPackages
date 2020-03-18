@@ -69,9 +69,10 @@ namespace Sibz.ListElement.Tests.Integration.ListElementTests
         }
 
         [Test]
-        public void ShouldResetContents()
+        public void ShouldResetContentsOnBind()
         {
-            listElement = new ListElement(true);
+            listElement = new ListElement(property);
+            listElement.Controls.ItemsSection.Clear();
             TestWindow.rootVisualElement.Add(listElement);
             listElement.BindProperty(property);
             Assert.Greater(listElement.Controls.ItemsSection.childCount, 0);
