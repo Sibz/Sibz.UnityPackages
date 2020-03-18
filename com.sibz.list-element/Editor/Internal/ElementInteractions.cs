@@ -140,8 +140,13 @@ namespace Sibz.ListElement.Internal
             button?.SetEnabled(index < arraySize - 1);
         }
 
-        public static void InsertHiddenIntFieldWithPropertyPathSet(VisualElement root, string path)
+        public static void InsertHiddenIntFieldWithPropertyPathSet(VisualElement element, string path)
         {
+            if (element is null)
+            {
+                throw new ArgumentNullException(nameof(element));
+            }
+
             IntegerField integerField = new IntegerField
             {
                 bindingPath = path
@@ -149,7 +154,7 @@ namespace Sibz.ListElement.Internal
 
             integerField.style.display = DisplayStyle.None;
 
-            root.Add(integerField);
+            element.Add(integerField);
         }
     }
 }
