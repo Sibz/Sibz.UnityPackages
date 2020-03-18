@@ -1,7 +1,6 @@
 ﻿using NUnit.Framework;
 using UnityEditor;
 using UnityEditor.UIElements;
-using UnityEngine;
 using UnityEngine.UIElements;
 using RowGen = Sibz.ListElement.RowGenerator;
 
@@ -11,21 +10,17 @@ namespace Sibz.ListElement.Tests.Unit.RowGenerator
     {
         private RowGen rowGen;
         private SerializedProperty property;
-        private SerializedObject testSerializedGameObject;
 
         [SetUp]
         public void TestSetup()
         {
-            testSerializedGameObject =
-                new SerializedObject(new GameObject().AddComponent<TestHelpers.TestComponent>());
-            property = testSerializedGameObject.FindProperty(nameof(TestHelpers.TestComponent.myList));
+            property = TestHelpers.GetProperty();
             rowGen = new RowGen(new ListElementOptions().ItemTemplateName);
         }
 
         [TearDown]
         public void TearDown()
         {
-            testSerializedGameObject = null;
             property = null;
         }
 

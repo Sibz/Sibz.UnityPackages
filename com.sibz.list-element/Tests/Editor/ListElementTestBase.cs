@@ -34,36 +34,36 @@ namespace Sibz.ListElement.Tests.Integration
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            testGameObject = Object.Instantiate(new GameObject());
+            //testGameObject = Object.Instantiate(new GameObject());
         }
 
         [SetUp]
         public void TestSetup()
         {
-            testGameObject.AddComponent<MyTestObject>();
+            /*testGameObject.AddComponent<MyTestObject>();
             TestSerializedGameObject =
                 new SerializedObject(testGameObject.GetComponent<MyTestObject>());
             Property = TestSerializedGameObject.FindProperty(nameof(MyTestObject.myList));
             ObjectProperty = TestSerializedGameObject.FindProperty(nameof(MyTestObject.myCustomList));
             ListElement = new ListElement(Property);
 
-            TestWindow.rootVisualElement.Add(ListElement);
+            TestWindow.rootVisualElement.Add(ListElement);*/
         }
 
         [TearDown]
         public void TearDown()
         {
-            TestWindow.rootVisualElement.Remove(ListElement);
-            Object.DestroyImmediate(testGameObject.GetComponent<MyTestObject>());
-            TestSerializedGameObject = null;
-            Property = null;
-            ListElement = null;
+//            TestWindow.rootVisualElement.Remove(ListElement);
+//            Object.DestroyImmediate(testGameObject.GetComponent<MyTestObject>());
+//            TestSerializedGameObject = null;
+//            Property = null;
+//            ListElement = null;
         }
 
         [OneTimeTearDown]
         public void OneTimeTearDown()
         {
-            Object.DestroyImmediate(testGameObject);
+//            Object.DestroyImmediate(testGameObject);
         }
     }
 }

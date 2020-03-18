@@ -1,7 +1,6 @@
 ﻿using NUnit.Framework;
 using NUnit.Framework.Constraints;
 using UnityEditor;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Sibz.ListElement.Tests.Unit.Controls
@@ -62,21 +61,18 @@ namespace Sibz.ListElement.Tests.Unit.Controls
             template.CloneTree(elementForObjectList);
             Controls = new Internal.Controls(element, Options);
             ControlsForObjectList = new Internal.Controls(elementForObjectList, Options);
-            SerializedObject serializedObject =
-                new SerializedObject(new GameObject().AddComponent<TestHelpers.TestComponent>());
 
-            AddItemRows(element, serializedObject, nameof(TestHelpers.TestComponent.myList));
-            AddItemRows(elementForObjectList, serializedObject, nameof(TestHelpers.TestComponent.myCustomList));
+            AddItemRows(element, TestHelpers.GetProperty());
+            AddItemRows(elementForObjectList, TestHelpers.GetProperty(nameof(TestHelpers.TestComponent.myCustomList)));
         }
 
-        private void AddItemRows(VisualElement root, SerializedObject serializedObject, string propertyName)
+        private void AddItemRows(VisualElement root, SerializedProperty property)
         {
-            SerializedProperty serializedProperty = serializedObject.FindProperty(propertyName);
             Sibz.ListElement.RowGenerator rowGenerator = new Sibz.ListElement.RowGenerator(Options.ItemTemplateName);
-            for (int i = 0; i < serializedProperty.arraySize; i++)
+            for (int i = 0; i < property.arraySize; i++)
             {
                 root.Q<VisualElement>(null, Options.ItemsSectionClassName).Add(
-                    rowGenerator.NewRow(i, serializedProperty)
+                    rowGenerator.NewRow(i, property)
                 );
             }
         }

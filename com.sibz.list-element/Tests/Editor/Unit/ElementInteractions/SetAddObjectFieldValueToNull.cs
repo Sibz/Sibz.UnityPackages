@@ -16,7 +16,8 @@ namespace Sibz.ListElement.Tests.Unit.ElementInteractions
         [Test]
         public void ShouldSetToNull()
         {
-            ObjectField objectField = new ObjectField {value = new GameObject()};
+            ObjectField objectField = new ObjectField
+                {value = ScriptableObject.CreateInstance<TestHelpers.TestComponent>()};
 
             if (objectField is null)
             {

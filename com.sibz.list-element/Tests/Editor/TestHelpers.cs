@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Sibz.ListElement.Tests
 {
@@ -10,7 +12,8 @@ namespace Sibz.ListElement.Tests
         {
         }
 
-        public class TestComponent : MonoBehaviour
+        [Serializable]
+        public class TestComponent : ScriptableObject
         {
             public List<string> myList = new List<string> {"item1", "item2", "item3"};
 
@@ -20,7 +23,7 @@ namespace Sibz.ListElement.Tests
 
         public static SerializedProperty GetProperty(string name = nameof(TestComponent.myList))
         {
-            return new SerializedObject(new GameObject().AddComponent<TestComponent>()).FindProperty(name);
+            return new SerializedObject(ScriptableObject.CreateInstance<TestComponent>()).FindProperty(name);
         }
     }
 }

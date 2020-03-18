@@ -12,8 +12,6 @@ namespace Sibz.ListElement.Tests.PropertyModificationHandler
     [SuppressMessage("ReSharper", "HeapView.BoxingAllocation")]
     public class PropertyModificationHandlerTests
     {
-        private GameObject testGameObject;
-        private SerializedObject testSerializedGameObject;
         private SerializedProperty property;
         private Handler handler;
 
@@ -28,11 +26,7 @@ namespace Sibz.ListElement.Tests.PropertyModificationHandler
         [SetUp]
         public void SetUp()
         {
-            testGameObject = Object.Instantiate(new GameObject());
-            testGameObject = new GameObject();
-            testGameObject.AddComponent<TestObject>();
-            testSerializedGameObject = new SerializedObject(testGameObject.GetComponent<TestObject>());
-            property = testSerializedGameObject.FindProperty(nameof(TestObject.myList));
+            property = TestHelpers.GetProperty();
             handler = new Handler(property);
         }
     }

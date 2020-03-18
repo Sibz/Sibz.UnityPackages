@@ -1,6 +1,5 @@
 ﻿using NUnit.Framework;
 using UnityEditor;
-using UnityEngine;
 using Handler = Sibz.ListElement.Internal.PropertyModificationHandler;
 
 namespace Sibz.ListElement.Tests.Unit.PropertyModificationHandler
@@ -15,10 +14,8 @@ namespace Sibz.ListElement.Tests.Unit.PropertyModificationHandler
         [SetUp]
         public void SetUp()
         {
-            TestHelpers.TestComponent component = new GameObject().AddComponent<TestHelpers.TestComponent>();
-            SerializedObject so = new SerializedObject(component);
-            Property = so.FindProperty(nameof(TestHelpers.TestComponent.myList));
-            ObjectProperty = so.FindProperty(nameof(TestHelpers.TestComponent.myCustomList));
+            Property = TestHelpers.GetProperty();
+            ObjectProperty = TestHelpers.GetProperty(nameof(TestHelpers.TestComponent.myCustomList));
             Handler = new Handler(Property);
             ObjectHandler = new Handler(ObjectProperty);
         }
