@@ -17,7 +17,7 @@ namespace Sibz.ListElement
         public Controls Controls;
 
         internal SerializedProperty SerializedProperty { get; private set; }
-        public readonly Internal.ListElementOptions Options = new ListElementOptions();
+        public readonly ReadOnlyOptions Options = new ReadOnlyOptions(new ListOptions());
         public bool IsInitialised { get; private set; }
 
         public virtual IRowGenerator RowGenerator
@@ -93,16 +93,16 @@ namespace Sibz.ListElement
         // ReSharper disable once UnusedMember.Global
         public ListElement(SerializedProperty property, string label) :
             this(property,
-                new ListElementOptions {Label = label})
+                new ListOptions {Label = label})
         {
         }
 
         // ReSharper disable once SuggestBaseTypeForParameter
-        public ListElement(SerializedProperty property, ListElementOptions options = null)
+        public ListElement(SerializedProperty property, ListOptions options = null)
         {
             SerializedProperty = property ?? throw new ArgumentNullException(nameof(property));
 
-            Options = options ?? Options;
+            Options = options is null ? Options : new ReadOnlyOptions(options);
 
             this.BindProperty(SerializedProperty);
         }
@@ -123,7 +123,7 @@ namespace Sibz.ListElement
             SingleAssetLoader.Load<VisualTreeAsset>(TemplateName)
                 .CloneTree(this);
 
-            Controls = new Controls(this, Options);
+            Controls = new Controls(this);
             eventHandler = eventHandler ?? new ListElementEventHandler(Controls);
             eventHandler.Handler = new PropertyModificationHandler(SerializedProperty);
             rowGenerator = new RowGenerator(Options.ItemTemplateName);
@@ -234,7 +234,7 @@ namespace Sibz.ListElement
 
             public UxmlTraits()
             {
-                Internal.ListElementOptions defaults = new Internal.ListElementOptions();
+                ListOptions defaults = new ListOptions();
                 label = new UxmlStringAttributeDescription {name = "label", defaultValue = defaults.Label};
                 itemTemplateName = new UxmlStringAttributeDescription
                     {name = "item-template-name", defaultValue = defaults.ItemTemplateName};
@@ -261,11 +261,11 @@ namespace Sibz.ListElement
                     return;
                 }
 
-                le.Options.Label = label.GetValueFromBag(bag, cc);
-                le.Options.HidePropertyLabel = hidePropertyLabel.GetValueFromBag(bag, cc);
-                le.Options.DoNotUseObjectField = doNotUseObjectField.GetValueFromBag(bag, cc);
-                le.Options.EnableDeletions = enableDeletions.GetValueFromBag(bag, cc);
-                le.Options.EnableReordering = enableReordering.GetValueFromBag(bag, cc);
+                le.Options.BaseOptions.Label = label.GetValueFromBag(bag, cc);
+                le.Options.BaseOptions.HidePropertyLabel = hidePropertyLabel.GetValueFromBag(bag, cc);
+                le.Options.BaseOptions.DoNotUseObjectField = doNotUseObjectField.GetValueFromBag(bag, cc);
+                le.Options.BaseOptions.EnableDeletions = enableDeletions.GetValueFromBag(bag, cc);
+                le.Options.BaseOptions.EnableReordering = enableReordering.GetValueFromBag(bag, cc);
 
                 string itn = itemTemplateName.GetValueFromBag(bag, cc);
                 string ssn = styleSheetName.GetValueFromBag(bag, cc);
@@ -273,17 +273,17 @@ namespace Sibz.ListElement
 
                 if (!string.IsNullOrEmpty(itn))
                 {
-                    le.Options.ItemTemplateName = itn;
+                    le.Options.BaseOptions.ItemTemplateName = itn;
                 }
 
                 if (!string.IsNullOrEmpty(ssn))
                 {
-                    le.Options.StyleSheetName = ssn;
+                    le.Options.BaseOptions.StyleSheetName = ssn;
                 }
 
                 if (!string.IsNullOrEmpty(tn))
                 {
-                    le.Options.TemplateName = tn;
+                    le.Options.BaseOptions.TemplateName = tn;
                 }
             }
         }

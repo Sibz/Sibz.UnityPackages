@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using NUnit.Framework;
+using Sibz.ListElement.Internal;
 using UnityEngine.UIElements;
 using Row = Sibz.ListElement.ListRowElement;
 
@@ -12,7 +13,7 @@ namespace Sibz.ListElement.Tests.Unit.Controls
         {
             Assert.That(
                 Controls.Row[0].MoveUp,
-                new IsElementWithClassName<Button>(Options.MoveItemUpButtonClassName));
+                new IsElementWithClassName<Button>(UxmlClassNames.MoveItemUpButtonClassName));
         }
 
         [Test]
@@ -20,7 +21,7 @@ namespace Sibz.ListElement.Tests.Unit.Controls
         {
             Assert.That(
                 Controls.Row[0].MoveDown,
-                new IsElementWithClassName<Button>(Options.MoveItemDownButtonClassName));
+                new IsElementWithClassName<Button>(UxmlClassNames.MoveItemDownButtonClassName));
         }
 
         [Test]
@@ -28,7 +29,7 @@ namespace Sibz.ListElement.Tests.Unit.Controls
         {
             Assert.That(
                 Controls.Row[0].RemoveItem,
-                new IsElementWithClassName<Button>(Options.RemoveItemButtonClassName));
+                new IsElementWithClassName<Button>(UxmlClassNames.RemoveItemButtonClassName));
         }
 
         [Test]

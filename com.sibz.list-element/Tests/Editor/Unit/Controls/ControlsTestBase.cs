@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using NUnit.Framework.Constraints;
+using Sibz.ListElement.Internal;
 using UnityEditor;
 using UnityEngine.UIElements;
 
@@ -9,7 +10,7 @@ namespace Sibz.ListElement.Tests.Unit.Controls
     {
         protected Internal.Controls Controls;
         protected Internal.Controls ControlsForObjectList;
-        protected ListElementOptions Options;
+        protected ListOptions Options;
         private VisualElement element;
         private VisualElement elementForObjectList;
         private VisualTreeAsset template;
@@ -48,7 +49,7 @@ namespace Sibz.ListElement.Tests.Unit.Controls
         [OneTimeSetUp]
         public void OneTime()
         {
-            Options = new ListElementOptions();
+            Options = new ListOptions();
             template = SingleAssetLoader.Load<VisualTreeAsset>(Options.TemplateName);
         }
 
@@ -59,8 +60,8 @@ namespace Sibz.ListElement.Tests.Unit.Controls
             elementForObjectList = new VisualElement();
             template.CloneTree(element);
             template.CloneTree(elementForObjectList);
-            Controls = new Internal.Controls(element, Options);
-            ControlsForObjectList = new Internal.Controls(elementForObjectList, Options);
+            Controls = new Internal.Controls(element);
+            ControlsForObjectList = new Internal.Controls(elementForObjectList);
 
             AddItemRows(element, TestHelpers.GetProperty());
             AddItemRows(elementForObjectList, TestHelpers.GetProperty(nameof(TestHelpers.TestComponent.myCustomList)));
@@ -71,7 +72,7 @@ namespace Sibz.ListElement.Tests.Unit.Controls
             Sibz.ListElement.RowGenerator rowGenerator = new Sibz.ListElement.RowGenerator(Options.ItemTemplateName);
             for (int i = 0; i < property.arraySize; i++)
             {
-                root.Q<VisualElement>(null, Options.ItemsSectionClassName).Add(
+                root.Q<VisualElement>(null, UxmlClassNames.ItemsSectionClassName).Add(
                     rowGenerator.NewRow(i, property)
                 );
             }

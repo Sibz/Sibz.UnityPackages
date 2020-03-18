@@ -1,56 +1,20 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿// ReSharper disable UnusedAutoPropertyAccessor.Global
 
 namespace Sibz.ListElement
 {
-    [SuppressMessage("ReSharper", "UnusedMember.Global")]
-    public class ListElementOptions : Internal.ListElementOptions
+    public class ListOptions
     {
-        public new string TemplateName
-        {
-            get => base.TemplateName;
-            set => base.TemplateName = value;
-        }
+        public const string DefaultTemplateName = "Sibz.ListElement.Template";
+        public const string DefaultItemTemplateName = "Sibz.ListElement.ItemTemplate";
+        public const string DefaultStyleSheetName = "Sibz.ListElement.Template";
 
-        public new string ItemTemplateName
-        {
-            get => base.ItemTemplateName;
-            set => base.ItemTemplateName = value;
-        }
-
-        public new string StyleSheetName
-        {
-            get => base.StyleSheetName;
-            set => base.StyleSheetName = value;
-        }
-
-        public new string Label
-        {
-            get => base.Label;
-            set => base.Label = value;
-        }
-
-        public new bool HidePropertyLabel
-        {
-            get => base.HidePropertyLabel;
-            set => base.HidePropertyLabel = value;
-        }
-
-        public new bool DoNotUseObjectField
-        {
-            get => base.DoNotUseObjectField;
-            set => base.DoNotUseObjectField = value;
-        }
-
-        public new bool EnableReordering
-        {
-            get => base.EnableReordering;
-            set => base.EnableReordering = value;
-        }
-
-        public new bool EnableDeletions
-        {
-            get => base.EnableDeletions;
-            set => base.EnableDeletions = value;
-        }
+        public string TemplateName { get; set; } = DefaultTemplateName;
+        public string ItemTemplateName { get; set; } = DefaultItemTemplateName;
+        public string StyleSheetName { get; set; } = DefaultStyleSheetName;
+        public string Label { get; set; }
+        public bool HidePropertyLabel { get; set; } = true;
+        public bool DoNotUseObjectField { get; set; }
+        public bool EnableReordering { get; set; } = true;
+        public bool EnableDeletions { get; set; } = true;
     }
 }

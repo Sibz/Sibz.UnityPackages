@@ -71,7 +71,7 @@ namespace Sibz.ListElement.Tests.Unit.ListElementTests
         [Test]
         public void WhenOptionsIsNull_ShouldNotThrowError()
         {
-            ListElementOptions options = null;
+            ListOptions options = null;
             listElement = new ListElement(property, options);
         }
 

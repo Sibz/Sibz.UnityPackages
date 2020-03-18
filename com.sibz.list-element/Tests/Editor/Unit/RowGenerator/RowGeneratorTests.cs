@@ -15,7 +15,7 @@ namespace Sibz.ListElement.Tests.Unit.RowGenerator
         public void TestSetup()
         {
             property = TestHelpers.GetProperty();
-            rowGen = new RowGen(new ListElementOptions().ItemTemplateName);
+            rowGen = new RowGen(new ListOptions().ItemTemplateName);
         }
 
         [TearDown]

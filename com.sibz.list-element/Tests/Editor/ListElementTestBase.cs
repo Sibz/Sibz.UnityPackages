@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using NUnit.Framework;
+using Sibz.ListElement.Internal;
 using UnityEditor;
 using UnityEngine;
 
@@ -17,7 +18,7 @@ namespace Sibz.ListElement.Tests.Integration
         private GameObject testGameObject;
         protected SerializedObject TestSerializedGameObject;
 
-        protected Internal.ListElementOptions options => ListElement.Options;
+        protected ReadOnlyOptions options => ListElement.Options;
 
         public class MyTestObject : MonoBehaviour
         {

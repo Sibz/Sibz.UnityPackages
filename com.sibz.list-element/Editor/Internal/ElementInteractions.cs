@@ -11,7 +11,7 @@ namespace Sibz.ListElement.Internal
         public static void ApplyOptions(ListElement le)
         {
             Controls ctl = le.Controls;
-            ListElementOptions opts = le.Options;
+            ReadOnlyOptions opts = le.Options;
 
             SetPropertyLabelVisibility(ctl.ItemsSection, opts.HidePropertyLabel);
             SetRemoveButtonVisibility(le, opts.EnableDeletions);

@@ -7,43 +7,42 @@ namespace Sibz.ListElement.Internal
     public class Controls : IOuterControls
     {
         private readonly VisualElement root;
-        private readonly ListElementOptions options;
 
         public readonly RowElements Row;
 
         private readonly Dictionary<string, VisualElement> cache = new Dictionary<string, VisualElement>();
 
         public Label HeaderLabel =>
-            GetElementByClassNameCached<Label>(root, options.HeaderLabelClassName);
+            GetElementByClassNameCached<Label>(root, UxmlClassNames.HeaderLabelClassName);
 
         public Button Add =>
-            GetElementByClassNameCached<Button>(root, options.AddItemButtonClassName);
+            GetElementByClassNameCached<Button>(root, UxmlClassNames.AddItemButtonClassName);
 
         public Button ClearList =>
-            GetElementByClassNameCached<Button>(root, options.ClearListButtonClassName);
+            GetElementByClassNameCached<Button>(root, UxmlClassNames.ClearListButtonClassName);
 
         public Button ClearListConfirm =>
-            GetElementByClassNameCached<Button>(root, options.ClearListConfirmButtonClassName);
+            GetElementByClassNameCached<Button>(root, UxmlClassNames.ClearListConfirmButtonClassName);
 
         public Button ClearListCancel =>
-            GetElementByClassNameCached<Button>(root, options.ClearListCancelButtonClassName);
+            GetElementByClassNameCached<Button>(root, UxmlClassNames.ClearListCancelButtonClassName);
 
         public ObjectField AddObjectField =>
-            GetElementByClassNameCached<ObjectField>(root, options.AddItemObjectFieldClassName);
+            GetElementByClassNameCached<ObjectField>(root, UxmlClassNames.AddItemObjectFieldClassName);
 
         public Label AddObjectFieldLabel => GetLabelOfObjectField(AddObjectField);
 
         public VisualElement HeaderSection =>
-            GetElementByClassNameCached<VisualElement>(root, options.HeaderSectionClassName);
+            GetElementByClassNameCached<VisualElement>(root, UxmlClassNames.HeaderSectionClassName);
 
         public VisualElement ClearListConfirmSection =>
-            GetElementByClassNameCached<VisualElement>(root, options.ClearListConfirmSectionClassName);
+            GetElementByClassNameCached<VisualElement>(root, UxmlClassNames.ClearListConfirmSectionClassName);
 
         public VisualElement ItemsSection =>
-            GetElementByClassNameCached<VisualElement>(root, options.ItemsSectionClassName);
+            GetElementByClassNameCached<VisualElement>(root, UxmlClassNames.ItemsSectionClassName);
 
         public VisualElement AddSection =>
-            GetElementByClassNameCached<VisualElement>(root, options.AddItemSectionClassName);
+            GetElementByClassNameCached<VisualElement>(root, UxmlClassNames.AddItemSectionClassName);
 
         private T GetElementByClassNameCached<T>(VisualElement rootElement, string className)
             where T : VisualElement
@@ -76,39 +75,35 @@ namespace Sibz.ListElement.Internal
             return field.hierarchy[0].hierarchy[0].hierarchy[1] as Label;
         }
 
-        public Controls(VisualElement rootElement, ListElementOptions options)
+        public Controls(VisualElement rootElement)
         {
             root = rootElement;
-            this.options = options;
-            Row = new RowElements(root, options);
+            Row = new RowElements(root);
         }
 
         public class RowElements
         {
-            private readonly ListElementOptions options;
             private readonly VisualElement root;
 
-            public RowElements(VisualElement rootElement, ListElementOptions options)
+            public RowElements(VisualElement rootElement)
             {
                 root = rootElement;
-                this.options = options;
             }
 
-            public RowButtonsElementsSet this[int index] => new RowButtonsElementsSet(root, options, index);
+            public RowButtonsElementsSet this[int index] => new RowButtonsElementsSet(root, index);
 
             public class RowButtonsElementsSet : IRowButtons
             {
                 private readonly VisualElement root;
-                private readonly ListElementOptions options;
 
                 public Button MoveUp =>
-                    root.Q<Button>(null, options.MoveItemUpButtonClassName);
+                    root.Q<Button>(null, UxmlClassNames.MoveItemUpButtonClassName);
 
                 public Button MoveDown =>
-                    root.Q<Button>(null, options.MoveItemDownButtonClassName);
+                    root.Q<Button>(null, UxmlClassNames.MoveItemDownButtonClassName);
 
                 public Button RemoveItem =>
-                    root.Q<Button>(null, options.RemoveItemButtonClassName);
+                    root.Q<Button>(null, UxmlClassNames.RemoveItemButtonClassName);
 
                 public PropertyField PropertyField =>
                     root.Q<PropertyField>();
@@ -132,10 +127,9 @@ namespace Sibz.ListElement.Internal
                     }
                 }
 
-                public RowButtonsElementsSet(VisualElement listElement, ListElementOptions options, int index)
+                public RowButtonsElementsSet(VisualElement listElement, int index)
                 {
-                    this.options = options;
-                    root = listElement.Q(null, options.ItemsSectionClassName)[index];
+                    root = listElement.Q(null, UxmlClassNames.ItemsSectionClassName)[index];
                 }
             }
         }

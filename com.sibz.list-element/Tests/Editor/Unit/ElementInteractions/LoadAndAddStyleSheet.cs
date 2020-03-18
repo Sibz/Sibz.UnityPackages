@@ -9,13 +9,11 @@ namespace Sibz.ListElement.Tests.Unit.ElementInteractions
 {
     public class LoadAndAddStyleSheet
     {
-        private readonly Internal.ListElementOptions options = new ListElementOptions();
-
         [Test]
         public void WhenNameIsNotEqualToTemplateName_ShouldAddStylesheet()
         {
             VisualElement element = new VisualElement();
-            Handler.LoadAndAddStyleSheet(element, "TestTemplate", options.TemplateName);
+            Handler.LoadAndAddStyleSheet(element, "TestTemplate", ListOptions.DefaultTemplateName);
             Assert.AreEqual(1, element.styleSheets.count);
         }
 
@@ -23,7 +21,7 @@ namespace Sibz.ListElement.Tests.Unit.ElementInteractions
         public void WhenNameIsEqualToTemplateName_ShouldNotAddStyleSheet()
         {
             VisualElement element = new VisualElement();
-            Handler.LoadAndAddStyleSheet(element, options.StyleSheetName, options.TemplateName);
+            Handler.LoadAndAddStyleSheet(element, ListOptions.DefaultStyleSheetName, ListOptions.DefaultTemplateName);
             Assert.AreEqual(0, element.styleSheets.count);
         }
 
@@ -31,7 +29,7 @@ namespace Sibz.ListElement.Tests.Unit.ElementInteractions
         public void WhenStylesheetDoesNotExist_ShouldShowWarning()
         {
             VisualElement element = new VisualElement();
-            Handler.LoadAndAddStyleSheet(element, "TEST43325416436231", options.TemplateName);
+            Handler.LoadAndAddStyleSheet(element, "TEST43325416436231", ListOptions.DefaultTemplateName);
 
             LogAssert.Expect(LogType.Warning, new Regex(".*\n*.*\n*.*\n*.*\n*.*\n*.*\n*.*\n*.*\n*.*"));
         }

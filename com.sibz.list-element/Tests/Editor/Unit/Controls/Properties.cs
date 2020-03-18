@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using Sibz.ListElement.Internal;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 
@@ -11,7 +12,7 @@ namespace Sibz.ListElement.Tests.Unit.Controls
         {
             Assert.That(
                 Controls.HeaderLabel,
-                new IsElementWithClassName<Label>(Options.HeaderLabelClassName));
+                new IsElementWithClassName<Label>(UxmlClassNames.HeaderLabelClassName));
         }
 
         [Test]
@@ -19,7 +20,7 @@ namespace Sibz.ListElement.Tests.Unit.Controls
         {
             Assert.That(
                 Controls.Add,
-                new IsElementWithClassName<Button>(Options.AddItemButtonClassName));
+                new IsElementWithClassName<Button>(UxmlClassNames.AddItemButtonClassName));
         }
 
         [Test]
@@ -27,7 +28,7 @@ namespace Sibz.ListElement.Tests.Unit.Controls
         {
             Assert.That(
                 Controls.ClearList,
-                new IsElementWithClassName<Button>(Options.ClearListButtonClassName));
+                new IsElementWithClassName<Button>(UxmlClassNames.ClearListButtonClassName));
         }
 
         [Test]
@@ -35,7 +36,7 @@ namespace Sibz.ListElement.Tests.Unit.Controls
         {
             Assert.That(
                 Controls.ClearListConfirm,
-                new IsElementWithClassName<Button>(Options.ClearListConfirmButtonClassName));
+                new IsElementWithClassName<Button>(UxmlClassNames.ClearListConfirmButtonClassName));
         }
 
         [Test]
@@ -43,7 +44,7 @@ namespace Sibz.ListElement.Tests.Unit.Controls
         {
             Assert.That(
                 Controls.ClearListCancel,
-                new IsElementWithClassName<Button>(Options.ClearListCancelButtonClassName));
+                new IsElementWithClassName<Button>(UxmlClassNames.ClearListCancelButtonClassName));
         }
 
         [Test]
@@ -51,7 +52,7 @@ namespace Sibz.ListElement.Tests.Unit.Controls
         {
             Assert.That(
                 Controls.AddObjectField,
-                new IsElementWithClassName<ObjectField>(Options.AddItemObjectFieldClassName));
+                new IsElementWithClassName<ObjectField>(UxmlClassNames.AddItemObjectFieldClassName));
         }
 
         [Test]
@@ -60,7 +61,7 @@ namespace Sibz.ListElement.Tests.Unit.Controls
             Assert.IsNotNull(Controls.AddObjectFieldLabel);
             Assert.IsTrue(
                 Controls.AddObjectFieldLabel.GetFirstAncestorOfType<ObjectField>()
-                    .ClassListContains(Options.AddItemObjectFieldClassName));
+                    .ClassListContains(UxmlClassNames.AddItemObjectFieldClassName));
         }
 
         [Test]
@@ -68,7 +69,7 @@ namespace Sibz.ListElement.Tests.Unit.Controls
         {
             Assert.That(
                 Controls.HeaderSection,
-                new IsElementWithClassName<VisualElement>(Options.HeaderSectionClassName));
+                new IsElementWithClassName<VisualElement>(UxmlClassNames.HeaderSectionClassName));
         }
 
         [Test]
@@ -76,7 +77,7 @@ namespace Sibz.ListElement.Tests.Unit.Controls
         {
             Assert.That(
                 Controls.ClearListConfirmSection,
-                new IsElementWithClassName<VisualElement>(Options.ClearListConfirmSectionClassName));
+                new IsElementWithClassName<VisualElement>(UxmlClassNames.ClearListConfirmSectionClassName));
         }
 
         [Test]
@@ -84,7 +85,7 @@ namespace Sibz.ListElement.Tests.Unit.Controls
         {
             Assert.That(
                 Controls.AddSection,
-                new IsElementWithClassName<VisualElement>(Options.AddItemSectionClassName));
+                new IsElementWithClassName<VisualElement>(UxmlClassNames.AddItemSectionClassName));
         }
 
         [Test]
@@ -92,7 +93,7 @@ namespace Sibz.ListElement.Tests.Unit.Controls
         {
             Assert.That(
                 Controls.ItemsSection,
-                new IsElementWithClassName<VisualElement>(Options.ItemsSectionClassName));
+                new IsElementWithClassName<VisualElement>(UxmlClassNames.ItemsSectionClassName));
         }
     }
 }

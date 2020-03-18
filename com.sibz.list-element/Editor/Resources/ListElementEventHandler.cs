@@ -19,7 +19,7 @@ namespace Sibz.ListElement.Events
         {
             outerEventRaisers = CreateRaiserDefinitions(outerControls);
             addObjectFieldDropRaiser = outerEventRaisers.Single(x =>
-                x.Control.ClassListContains(new ListElementOptions().AddItemObjectFieldClassName));
+                x.Control.ClassListContains(UxmlClassNames.AddItemObjectFieldClassName));
             this.outerControls = outerControls;
         }
 

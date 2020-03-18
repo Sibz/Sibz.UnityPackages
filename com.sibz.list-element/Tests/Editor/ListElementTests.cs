@@ -115,7 +115,7 @@ namespace Sibz.ListElement.Tests
         public void ShouldApplyCustomTemplate()
         {
             ListElement testElement =
-                new ListElement(Property, new ListElementOptions {TemplateName = "TestTemplate"});
+                new ListElement(Property, new ListOptions {TemplateName = "TestTemplate"});
             Assert.IsNotNull(
                 testElement.Q<VisualElement>("TestTemplateCheck"));
         }
@@ -124,7 +124,7 @@ namespace Sibz.ListElement.Tests
         public void ShouldApplyCustomItemTemplate()
         {
             ListElement testElement =
-                new ListElement(Property, new ListElementOptions {ItemTemplateName = "TestItemTemplate"});
+                new ListElement(Property, new ListOptions {ItemTemplateName = "TestItemTemplate"});
             Assert.IsNotNull(
                 testElement.Q<VisualElement>("TestItemTemplateCheck"));
         }
