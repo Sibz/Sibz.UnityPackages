@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using NUnit.Framework;
 using UnityEngine.UIElements;
+using Row = Sibz.ListElement.ListRowElement;
 
 namespace Sibz.ListElement.Tests.Unit.Controls
 {
@@ -36,7 +37,7 @@ namespace Sibz.ListElement.Tests.Unit.Controls
         {
             Assert.IsNotNull(Controls.Row[0].PropertyField);
             Assert.IsNotNull(
-                Controls.Row[0].PropertyField.GetFirstAncestorOfType<ListRowElement>());
+                Controls.Row[0].PropertyField.GetFirstAncestorOfType<Row>());
         }
         
         [Test]
@@ -44,7 +45,7 @@ namespace Sibz.ListElement.Tests.Unit.Controls
         {
             Assert.IsNotNull(ControlsForObjectList.Row[0].PropertyField);
             Assert.IsNotNull(
-                ControlsForObjectList.Row[0].PropertyField.GetFirstAncestorOfType<ListRowElement>());
+                ControlsForObjectList.Row[0].PropertyField.GetFirstAncestorOfType<Row>());
         }
 
         [Test]
@@ -52,7 +53,7 @@ namespace Sibz.ListElement.Tests.Unit.Controls
         {
             Assert.IsNotNull(Controls.Row[0].PropertyFieldLabel);
             Assert.IsNotNull(
-                Controls.Row[0].PropertyFieldLabel.GetFirstAncestorOfType<ListRowElement>());
+                Controls.Row[0].PropertyFieldLabel.GetFirstAncestorOfType<Row>());
         }
         
         [Test]
@@ -61,7 +62,7 @@ namespace Sibz.ListElement.Tests.Unit.Controls
             Assert.IsNotNull(ControlsForObjectList.Row[0].PropertyField);
             Assert.IsNotNull(ControlsForObjectList.Row[0].PropertyFieldLabel);
             Assert.IsNotNull(
-                ControlsForObjectList.Row[0].PropertyFieldLabel.GetFirstAncestorOfType<ListRowElement>());
+                ControlsForObjectList.Row[0].PropertyFieldLabel.GetFirstAncestorOfType<Row>());
         }
         
         [Test]
@@ -69,11 +70,11 @@ namespace Sibz.ListElement.Tests.Unit.Controls
         {
             Assert.IsTrue(new[]
             {
-                Controls.Row[row].MoveUp.GetFirstAncestorOfType<ListRowElement>().Index,
-                Controls.Row[row].MoveDown.GetFirstAncestorOfType<ListRowElement>().Index,
-                Controls.Row[row].RemoveItem.GetFirstAncestorOfType<ListRowElement>().Index,
-                Controls.Row[row].PropertyField.GetFirstAncestorOfType<ListRowElement>().Index,
-                Controls.Row[row].PropertyFieldLabel.GetFirstAncestorOfType<ListRowElement>().Index
+                Controls.Row[row].MoveUp.GetFirstAncestorOfType<Row>().Index,
+                Controls.Row[row].MoveDown.GetFirstAncestorOfType<Row>().Index,
+                Controls.Row[row].RemoveItem.GetFirstAncestorOfType<Row>().Index,
+                Controls.Row[row].PropertyField.GetFirstAncestorOfType<Row>().Index,
+                Controls.Row[row].PropertyFieldLabel.GetFirstAncestorOfType<Row>().Index
             }.All(x => x == row));
         }
     }
