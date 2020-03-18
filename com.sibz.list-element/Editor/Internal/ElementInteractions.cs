@@ -1,4 +1,4 @@
-﻿using Sibz.ListElement.Internal;
+using Sibz.ListElement.Internal;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -91,7 +91,7 @@ namespace Sibz.ListElement.Internal
             try
             {
                 element.styleSheets.Add(
-                    SingleAssetLoader.SingleAssetLoader.Load<StyleSheet>(stylesheetName));
+                    SingleAssetLoader.Load<StyleSheet>(stylesheetName));
             }
             catch (System.Exception e)
             {

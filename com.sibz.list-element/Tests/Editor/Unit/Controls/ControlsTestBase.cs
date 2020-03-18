@@ -50,7 +50,7 @@ namespace Sibz.ListElement.Tests.Unit.Controls
         public void OneTime()
         {
             Options = new ListElementOptions();
-            template = SingleAssetLoader.SingleAssetLoader.Load<VisualTreeAsset>(Options.TemplateName);
+            template = SingleAssetLoader.Load<VisualTreeAsset>(Options.TemplateName);
         }
 
         [SetUp]

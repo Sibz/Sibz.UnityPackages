@@ -15,7 +15,7 @@ namespace Sibz.ListElement.Tests
         [UnityTest]
         public IEnumerator ShouldInitialiseWhenLoadedFromUxml()
         {
-            VisualTreeAsset vta = SingleAssetLoader.SingleAssetLoader.Load<VisualTreeAsset>("ListElementTemplateTest");
+            VisualTreeAsset vta = SingleAssetLoader.Load<VisualTreeAsset>("ListElementTemplateTest");
             VisualElement testElement = new VisualElement();
             vta.CloneTree(testElement);
             yield return null;
@@ -87,7 +87,7 @@ namespace Sibz.ListElement.Tests
         public void ShouldLoadConfigFromUxml()
         {
             VisualTreeAsset vta =
-                SingleAssetLoader.SingleAssetLoader.Load<VisualTreeAsset>("sibz.list.tests.config-test");
+                SingleAssetLoader.Load<VisualTreeAsset>("sibz.list.tests.config-test");
             VisualElement root = new VisualElement();
             vta.CloneTree(root);
             ListElement le = root.Q<ListElement>();
@@ -102,7 +102,7 @@ namespace Sibz.ListElement.Tests
         public IEnumerator ShouldNameLabelAsProvidedByUxmlAttribute()
         {
             VisualTreeAsset vta =
-                SingleAssetLoader.SingleAssetLoader.Load<VisualTreeAsset>("sibz.list.tests.config-test");
+                SingleAssetLoader.Load<VisualTreeAsset>("sibz.list.tests.config-test");
             VisualElement root = new VisualElement();
             vta.CloneTree(root);
             ListElement le = root.Q<ListElement>();

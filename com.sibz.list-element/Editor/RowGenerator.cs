@@ -11,7 +11,7 @@ namespace Sibz.ListElement
 
         public RowGenerator(string itemTemplateName)
         {
-            template = SingleAssetLoader.SingleAssetLoader.Load<VisualTreeAsset>(itemTemplateName);
+            template = SingleAssetLoader.Load<VisualTreeAsset>(itemTemplateName);
         }
 
         public virtual ListRowElement NewRow(int index, SerializedProperty property)

@@ -125,7 +125,7 @@ namespace Sibz.ListElement
         {
             try
             {
-                SingleAssetLoader.SingleAssetLoader.Load<VisualTreeAsset>(TemplateName).CloneTree(this);
+                SingleAssetLoader.Load<VisualTreeAsset>(TemplateName).CloneTree(this);
             }
             catch (Exception e)
             {
