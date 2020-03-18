@@ -4,7 +4,7 @@ using Handler = Sibz.ListElement.Internal.ElementInteractions;
 
 // ReSharper disable HeapView.BoxingAllocation
 
-namespace Sibz.ListElement.Tests.Unit.ElementInteractions
+namespace Sibz.ListElement.Tests.Unit.ElementInteractionsTests
 {
     public class SetConfirmSectionVisibility
     {

@@ -3,7 +3,7 @@ using Sibz.ListElement.Internal;
 using UnityEngine.UIElements;
 using Handler = Sibz.ListElement.Internal.ElementInteractions;
 
-namespace Sibz.ListElement.Tests.Unit.ElementInteractions
+namespace Sibz.ListElement.Tests.Unit.ElementInteractionsTests
 {
     public class SetPropertyLabelVisibility
     {
