@@ -16,28 +16,20 @@ namespace Sibz.ListElement.Tests.Integration.ListElementTests
 {
     public class Options
     {
-        private const string TEST_LABEL = "Test";
-        private const string TEST_TEMPLATE_NAME = "sibz.list-element.tests.template";
-        private const string TEST_ITEM_TEMPLATE_NAME = "sibz.list-element.tests.item-template";
-        private const string TEST_CHECK_ELEMENT_NAME = "TestCheckElement";
-
-        private const string
-            TEST_TEMPLATE_WTH_OPTIONS_SET_NAME = "sibz.list-element.tests.list-element-test-with-options-set";
-
         private readonly SerializedProperty property = TestHelpers.GetProperty();
 
         private readonly ListOptions defaults = new ListOptions();
 
         private readonly ListOptions testSet = new ListOptions
         {
-            Label = TEST_LABEL,
+            Label = TestHelpers.DefaultTestLabel,
             EnableDeletions = false,
             EnableReordering = false,
             HidePropertyLabel = false,
             DoNotUseObjectField = true,
-            TemplateName = TEST_TEMPLATE_NAME,
-            StyleSheetName = TEST_TEMPLATE_NAME,
-            ItemTemplateName = TEST_ITEM_TEMPLATE_NAME
+            TemplateName = TestHelpers.DefaultTestTemplateName,
+            StyleSheetName = TestHelpers.DefaultTestTemplateName,
+            ItemTemplateName = TestHelpers.DefaultTestItemTemplateName
         };
 
         private static readonly IEnumerable<PropertyInfo> PropertyInfos = typeof(ListOptions).GetProperties();
@@ -115,7 +107,7 @@ namespace Sibz.ListElement.Tests.Integration.ListElementTests
         public void ShouldBeSetFromFromUxml()
         {
             VisualElement test = new VisualElement();
-            SingleAssetLoader.Load<VisualTreeAsset>(TEST_TEMPLATE_WTH_OPTIONS_SET_NAME).CloneTree(test);
+            SingleAssetLoader.Load<VisualTreeAsset>(TestHelpers.DefaultTestTemplateWthOptionsSetName).CloneTree(test);
 
             ListElement listElement = test.Q<ListElement>();
             listElement.BindProperty(TestHelpers.GetProperty());
@@ -135,20 +127,20 @@ namespace Sibz.ListElement.Tests.Integration.ListElementTests
         public void ShouldApplyCustomTemplate()
         {
             ListElement testElement =
-                new ListElement(property, new ListOptions {TemplateName = TEST_TEMPLATE_NAME});
+                new ListElement(property, new ListOptions {TemplateName = TestHelpers.DefaultTestTemplateName});
             Assert.IsNotNull(
-                testElement.Q<VisualElement>(TEST_CHECK_ELEMENT_NAME));
+                testElement.Q<VisualElement>(TestHelpers.DefaultCheckElementName));
         }
 
         [Test]
         public void ShouldApplyCustomItemTemplate()
         {
             ListElement testElement =
-                new ListElement(property, new ListOptions {ItemTemplateName = TEST_ITEM_TEMPLATE_NAME});
+                new ListElement(property, new ListOptions {ItemTemplateName = TestHelpers.DefaultTestItemTemplateName});
             WindowFixture.RootElement.Add(testElement);
             WindowFixture.RootElement.Remove(testElement);
             Assert.IsNotNull(
-                testElement.Q<VisualElement>(TEST_CHECK_ELEMENT_NAME));
+                testElement.Q<VisualElement>(TestHelpers.DefaultCheckElementName));
         }
     }
 }

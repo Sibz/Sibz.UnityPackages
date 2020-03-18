@@ -9,6 +9,14 @@ namespace Sibz.ListElement.Tests
 {
     public class TestHelpers
     {
+        public const string DefaultTestLabel = "Test";
+        public const string DefaultTestTemplateName = "sibz.list-element.tests.template";
+        public const string DefaultTestItemTemplateName = "sibz.list-element.tests.item-template";
+        public const string DefaultCheckElementName = "TestCheckElement";
+
+        public const string
+            DefaultTestTemplateWthOptionsSetName = "sibz.list-element.tests.list-element-test-with-options-set";
+
         public class TestObject : Object
         {
         }
