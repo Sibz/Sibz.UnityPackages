@@ -13,7 +13,7 @@ namespace Sibz.ListElement.Tests.Unit.ElementInteractions
         public void WhenNameIsNotEqualToTemplateName_ShouldAddStylesheet()
         {
             VisualElement element = new VisualElement();
-            Handler.LoadAndAddStyleSheet(element, "TestTemplate", ListOptions.DefaultTemplateName);
+            Handler.LoadAndAddStyleSheet(element, TestHelpers.DefaultTestTemplateName, ListOptions.DefaultTemplateName);
             Assert.AreEqual(1, element.styleSheets.count);
         }
 
