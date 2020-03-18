@@ -1,5 +1,4 @@
-using Sibz.ListElement.Internal;
-using UnityEditor.UIElements;
+﻿using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -13,7 +12,7 @@ namespace Sibz.ListElement.Internal
             ListElementOptions opts = le.Options;
             
             SetPropertyLabelVisibility(ctl.ItemsSection, opts.HidePropertyLabel);
-            SetDeletionButtonVisibility(le, opts.EnableDeletions);
+            SetRemoveButtonVisibility(le, opts.EnableDeletions);
             SetReorderButtonVisibility(ctl.ItemsSection, opts.EnableReordering);
             SetAddFieldVisibility(ctl.AddSection, le.ListItemType, opts.DoNotUseObjectField);
             InsertLabelInObjectField(ctl.AddObjectField, "Drop to add new item");
@@ -21,7 +20,7 @@ namespace Sibz.ListElement.Internal
             LoadAndAddStyleSheet(le, opts.StyleSheetName, opts.TemplateName);
             SetTypeOnObjectField(ctl.AddObjectField, le.ListItemType);
             
-            void OnReset() => DisableButtonWhenCountIsZero(le.Controls.ClearList, le.Controls.ItemsSection.childCount);
+            void OnReset() => SetButtonStateBasedOnZeroIndex(le.Controls.ClearList, le.Controls.ItemsSection.childCount);
             le.OnReset += OnReset;
         }
         
@@ -33,11 +32,11 @@ namespace Sibz.ListElement.Internal
             }
         }
         
-        public static void SetDeletionButtonVisibility(VisualElement listElement, bool enableDeletionsOption)
+        public static void SetRemoveButtonVisibility(VisualElement listElement, bool enableDeletionsOption)
         {
             if (!enableDeletionsOption)
             {
-                listElement.AddToClassList(UxmlClassNames.HideRemoveButtons);
+                listElement?.AddToClassList(UxmlClassNames.HideRemoveButtons);
             }
         }
 
@@ -45,7 +44,7 @@ namespace Sibz.ListElement.Internal
         {
             if (!enableReorderingOption)
             {
-                itemSection.AddToClassList(UxmlClassNames.HideReorderButtons);
+                itemSection?.AddToClassList(UxmlClassNames.HideReorderButtons);
             }
         }
 
@@ -108,11 +107,7 @@ namespace Sibz.ListElement.Internal
             
             field.objectType = type;
         }
-        
-        public static void DisableButtonWhenCountIsZero(Button button, int itemCount)
-        {
-            button?.SetEnabled(itemCount != 0);
-        }
+
         
         public static void SetAddObjectFieldValueToNull(ObjectField field)
         {
