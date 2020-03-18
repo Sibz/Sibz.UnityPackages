@@ -219,7 +219,7 @@ namespace Sibz.ListElement.Events
             var eventRaiserDefinitions = eventRaisers as EventRaiserDefinition[] ?? eventRaisers.ToArray();
             if (eventRaiserDefinitions.Any(x => x.Control == target))
             {
-                //eventRaiserDefinitions.Single(x => x.Control == target).RaiseEvent();
+                eventRaiserDefinitions.Single(x => x.Control == target).RaiseEvent();
             }
         }
 
