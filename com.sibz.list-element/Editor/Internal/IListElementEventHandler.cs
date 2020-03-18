@@ -1,8 +1,8 @@
-﻿using Sibz.ListElement.Internal;
+﻿using Sibz.ListElement.Events;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Sibz.ListElement.Events
+namespace Sibz.ListElement.Internal
 {
     public interface IListElementEventHandler
     {
