@@ -24,28 +24,6 @@ namespace Sibz.ListElement.Tests
         }
 
         [Test]
-        public void ShouldBeInitialisedWhenConstructedWithSerializedProperty()
-        {
-            Assert.IsTrue(ListElement.IsInitialised);
-        }
-
-        [Test]
-        public void ShouldNotBeInitialisedWhenConstructedWithOutSerializedProperty()
-        {
-            ListElement testListElement = new ListElement();
-            Assert.IsFalse(testListElement.IsInitialised);
-        }
-
-        [Test]
-        public void ShouldCallResetWhenSerializedPropertyIsRebound()
-        {
-            //bool hasReset = false;
-            ListElement.Unbind();
-            ListElement.BindProperty(Property);
-            Assert.IsTrue(false);
-        }
-
-        [Test]
         public void ShouldHaveOneArraySizeField()
         {
             Assert.AreEqual(1,
@@ -60,13 +38,6 @@ namespace Sibz.ListElement.Tests
                 .Where(x => x.bindingPath.Contains("Array.size"))
                 .First();
             Assert.IsTrue(arraySize.style.display == DisplayStyle.None);
-        }
-
-        [Test]
-        public void ShouldContainDefaultTemplateItems()
-        {
-            ListElement.BindProperty(TestSerializedGameObject.FindProperty(nameof(MyTestObject.myList)));
-            Assert.IsTrue(CheckForDefaultTemplateItems());
         }
 
         private bool CheckForDefaultTemplateItems()
@@ -109,20 +80,6 @@ namespace Sibz.ListElement.Tests
             yield return null;
             Assert.IsNotNull(le.Controls.HeaderLabel);
             Assert.AreEqual("TestLabel", le.Controls.HeaderLabel.text);
-        }
-
-        [Test]
-        public void ShouldCorrectlyDetermineTypeOfListAsString()
-        {
-            Assert.AreEqual(typeof(string), ListElement.ListItemType);
-        }
-
-        [Test]
-        public void ShouldCorrectlyDetermineTypeOfListAsCustomObject()
-        {
-            ListElement testElement =
-                new ListElement(TestSerializedGameObject.FindProperty(nameof(MyTestObject.myCustomList)));
-            Assert.AreEqual(typeof(CustomObject), testElement.ListItemType);
         }
 
         [Test]
