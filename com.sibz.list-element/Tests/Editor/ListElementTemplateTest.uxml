@@ -1,8 +1,0 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
-    <Sibz.ListElement.ListElement binding-path="MyList">
-        <Style src="ListElementTemplateTest.uss" />
-    </Sibz.ListElement.ListElement>
-    <Sibz.ListElement.ListElement binding-path="MyObjectList" hide-property-label="false">
-        <Style src="ListElementTemplateTest.uss" />
-    </Sibz.ListElement.ListElement>
-</ui:UXML>

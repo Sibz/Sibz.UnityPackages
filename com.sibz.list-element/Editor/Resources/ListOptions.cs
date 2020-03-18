@@ -11,7 +11,7 @@ namespace Sibz.ListElement
         public string TemplateName { get; set; } = DefaultTemplateName;
         public string ItemTemplateName { get; set; } = DefaultItemTemplateName;
         public string StyleSheetName { get; set; } = DefaultStyleSheetName;
-        public string Label { get; set; }
+        public string Label { get; set; } = "";
         public bool HidePropertyLabel { get; set; } = true;
         public bool DoNotUseObjectField { get; set; }
         public bool EnableReordering { get; set; } = true;

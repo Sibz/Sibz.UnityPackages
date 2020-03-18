@@ -1,6 +1,6 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
     <ui:VisualElement class="header">
-        <Style src="TestTemplate.uss" />
+        <Style src="sibz.list-element.tests.template.uss" />
         <ui:Label text="List" class="header-label" />
         <ui:Button text="Clear List" class="clear-list" />
         <ui:VisualElement class="clear-list-confirm-section">
@@ -17,7 +17,7 @@
         <ui:Button text="Add New Item" class="add-button" />
         <uie:ObjectField class="add-field" />
     </ui:VisualElement>
-    <ui:VisualElement name="TestTemplateCheck">
+    <ui:VisualElement name="TestCheckElement">
         <Style src="TestTemplate.uss" />
     </ui:VisualElement>
 </ui:UXML>

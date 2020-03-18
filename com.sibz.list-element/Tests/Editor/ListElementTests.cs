@@ -112,24 +112,6 @@ namespace Sibz.ListElement.Tests
         }
 
         [Test]
-        public void ShouldApplyCustomTemplate()
-        {
-            ListElement testElement =
-                new ListElement(Property, new ListOptions {TemplateName = "TestTemplate"});
-            Assert.IsNotNull(
-                testElement.Q<VisualElement>("TestTemplateCheck"));
-        }
-
-        [Test]
-        public void ShouldApplyCustomItemTemplate()
-        {
-            ListElement testElement =
-                new ListElement(Property, new ListOptions {ItemTemplateName = "TestItemTemplate"});
-            Assert.IsNotNull(
-                testElement.Q<VisualElement>("TestItemTemplateCheck"));
-        }
-
-        [Test]
         public void ShouldCorrectlyDetermineTypeOfListAsString()
         {
             Assert.AreEqual(typeof(string), ListElement.ListItemType);

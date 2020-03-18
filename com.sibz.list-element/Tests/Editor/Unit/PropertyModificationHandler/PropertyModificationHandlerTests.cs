@@ -7,7 +7,7 @@ using UnityEngine;
 using Handler = Sibz.ListElement.Internal.PropertyModificationHandler;
 using Object = UnityEngine.Object;
 
-namespace Sibz.ListElement.Tests.PropertyModificationHandler
+namespace Sibz.ListElement.Tests.Unit.PropertyModificationHandler
 {
     [SuppressMessage("ReSharper", "HeapView.BoxingAllocation")]
     public class PropertyModificationHandlerTests

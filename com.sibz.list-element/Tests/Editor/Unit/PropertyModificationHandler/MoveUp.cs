@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using Sibz.ListElement.Tests.Unit.PropertyModificationHandler;
 
-namespace Sibz.ListElement.Tests.PropertyModificationHandler
+namespace Sibz.ListElement.Tests.Unit.PropertyModificationHandler
 {
     public class MoveUp : PropertyModificationHandlerBase
     {

@@ -120,7 +120,7 @@ namespace Sibz.ListElement
 
             Clear();
 
-            SingleAssetLoader.Load<VisualTreeAsset>(TemplateName)
+            SingleAssetLoader.Load<VisualTreeAsset>(Options.TemplateName)
                 .CloneTree(this);
 
             Controls = new Controls(this);

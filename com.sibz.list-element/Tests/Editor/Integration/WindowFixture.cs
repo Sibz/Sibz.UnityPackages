@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Sibz.ListElement.Tests.Integration
 {
@@ -12,6 +13,7 @@ namespace Sibz.ListElement.Tests.Integration
         }
 
         public static TestWindow Window;
+        public static VisualElement RootElement => Window.rootVisualElement;
 
         [OneTimeSetUp]
         public void SetUp()
