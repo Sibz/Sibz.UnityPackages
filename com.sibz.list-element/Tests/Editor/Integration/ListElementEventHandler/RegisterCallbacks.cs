@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.TestTools;
 using UnityEngine.UIElements;
 
-namespace Sibz.ListElement.Tests.Integration.ListElementEventHandler
+namespace Sibz.ListElement.Tests.Integration.ListElementEventHandlerTests
 {
     public class RegisterCallbacks
     {

@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using Handler = Sibz.ListElement.Internal.PropertyModificationHandler;
 
-namespace Sibz.ListElement.Tests.Integration.ListElementEventHandler
+namespace Sibz.ListElement.Tests.Integration.ListElementEventHandlerTests
 {
     public class TestEventHandler : IListElementEventHandler
     {

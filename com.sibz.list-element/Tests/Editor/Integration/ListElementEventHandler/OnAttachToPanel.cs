@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEditor.UIElements;
 
-namespace Sibz.ListElement.Tests.Integration.ListElementEventHandler
+namespace Sibz.ListElement.Tests.Integration.ListElementEventHandlerTests
 {
     public class OnAttachToPanel
     {
