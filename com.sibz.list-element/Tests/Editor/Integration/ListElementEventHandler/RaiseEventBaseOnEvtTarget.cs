@@ -15,12 +15,12 @@ namespace Sibz.ListElement.Tests.Integration.ListElementEventHandlerTests
         {
             VisualElement control = new VisualElement();
             EventRaiserDefinition def = EventRaiserDefinition.Create<RaiseEventTestEvent>(control, null, control);
-            control.RegisterCallback<RaiseEventTestEvent>((e) =>
+            control.RegisterCallback<RaiseEventTestEvent>(e =>
             {
                 Assert.Pass($"{nameof(RaiseEventTestEvent)} was raised");
             });
-            WindowFixture.RootElement.AddAndRemove(control, ()=>
-                ListElementEventHandler.RaiseEventBaseOnEvtTarget(control, new [] {def}));
+            WindowFixture.RootElement.AddAndRemove(control, () =>
+                ListElementEventHandler.RaiseEventBaseOnEvtTarget(control, new[] {def}));
 
             Assert.Fail($"{nameof(RaiseEventTestEvent)} was NOT raised");
         }

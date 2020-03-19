@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using Sibz.ListElement.Internal;
 using UnityEditor;
-using UnityEditor.PackageManager.UI;
 using UnityEditor.UIElements;
-using UnityEngine;
-using UnityEngine.TestTools;
 using UnityEngine.UIElements;
 
 namespace Sibz.ListElement.Tests.Integration.ListElementTests
@@ -36,11 +32,13 @@ namespace Sibz.ListElement.Tests.Integration.ListElementTests
 
         private static List<PropertyInfo> CompareSetsAreEqual(ReadOnlyOptions a, ListOptions b,
             PropertyInfo ignore = null)
-            => CompareSetsAreEqual(GetListOptions(a), b, ignore);
+        {
+            return CompareSetsAreEqual(GetListOptions(a), b, ignore);
+        }
 
         private static List<PropertyInfo> CompareSetsAreEqual(ListOptions a, ListOptions b, PropertyInfo ignore = null)
         {
-            List<PropertyInfo> results = new List<PropertyInfo>();
+            var results = new List<PropertyInfo>();
             //Debug.Log("Comparing sets are equal");
             foreach (PropertyInfo propertyInfo in PropertyInfos)
             {
@@ -62,7 +60,9 @@ namespace Sibz.ListElement.Tests.Integration.ListElementTests
         }
 
         private static bool ComparePropertiesAreEqual(PropertyInfo propInfo, ReadOnlyOptions obj1, object obj2)
-            => ComparePropertiesAreEqual(propInfo, GetListOptions(obj1), obj2);
+        {
+            return ComparePropertiesAreEqual(propInfo, GetListOptions(obj1), obj2);
+        }
 
         private static bool ComparePropertiesAreEqual(PropertyInfo propInfo, object obj1, object obj2)
         {

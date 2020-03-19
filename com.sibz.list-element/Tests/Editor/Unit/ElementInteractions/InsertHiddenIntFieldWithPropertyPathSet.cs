@@ -11,9 +11,9 @@ namespace Sibz.ListElement.Tests.Unit.ElementInteractionsTests
         [Test]
         public void ShouldAddIntField()
         {
-           VisualElement root = new VisualElement();
-           ElementInteractions.InsertHiddenIntFieldWithPropertyPathSet(root, "");
-           Assert.IsNotNull(root.Q<IntegerField>());
+            VisualElement root = new VisualElement();
+            ElementInteractions.InsertHiddenIntFieldWithPropertyPathSet(root, "");
+            Assert.IsNotNull(root.Q<IntegerField>());
         }
 
         [Test]

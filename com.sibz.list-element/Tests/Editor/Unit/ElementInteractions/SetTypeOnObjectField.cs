@@ -11,7 +11,7 @@ namespace Sibz.ListElement.Tests.Unit.ElementInteractionsTests
         {
             Handler.SetTypeOnObjectField(null, typeof(TestHelpers.TestObject));
         }
-        
+
         [Test]
         public void WhenSettingTypeOnObjectField_ShouldSetTypeToTypeProvided()
         {

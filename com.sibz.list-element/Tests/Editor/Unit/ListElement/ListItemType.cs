@@ -13,7 +13,8 @@ namespace Sibz.ListElement.Tests.Unit.ListElementTests.Properties
         [Test]
         public void WhenListItemTypeIsObject_ShouldReturnObjectType()
         {
-            Assert.AreEqual(typeof(TestHelpers.TestObject), new ListElement(TestHelpers.GetProperty(nameof(TestHelpers.TestComponent.myCustomList))).ListItemType);
+            Assert.AreEqual(typeof(TestHelpers.TestObject),
+                new ListElement(TestHelpers.GetProperty(nameof(TestHelpers.TestComponent.myCustomList))).ListItemType);
         }
     }
 }

@@ -18,7 +18,7 @@ namespace Sibz.ListElement.Tests.Integration.ListElementEventHandlerTests
 
             TestEventHandler handler = new TestEventHandler();
 
-            Events.ListElementEventHandler.RegisterCallbacks(element, handler);
+            ListElementEventHandler.RegisterCallbacks(element, handler);
 
             element.SendEvent(new ClearListRequestedEvent {target = element});
             element.SendEvent(new ClearListEvent {target = element});

@@ -9,7 +9,7 @@ namespace Sibz.ListElement.Tests.Unit.ListElementTests.Properties
         public void ShouldReturnNicifiedNameOfBoundPropertyOnComponent()
         {
             Assert.AreEqual(
-                 ObjectNames.NicifyVariableName(nameof(TestHelpers.TestComponent.myList)),
+                ObjectNames.NicifyVariableName(nameof(TestHelpers.TestComponent.myList)),
                 new ListElement(TestHelpers.GetProperty()).ListName);
         }
     }

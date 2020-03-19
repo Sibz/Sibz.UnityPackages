@@ -213,7 +213,7 @@ namespace Sibz.ListElement.Events
         {
             if (eventRaisers is null || target is null)
             {
-                throw new ArgumentNullException(eventRaisers is null?nameof(eventRaisers):nameof(target));
+                throw new ArgumentNullException(eventRaisers is null ? nameof(eventRaisers) : nameof(target));
             }
 
             var eventRaiserDefinitions = eventRaisers as EventRaiserDefinition[] ?? eventRaisers.ToArray();
