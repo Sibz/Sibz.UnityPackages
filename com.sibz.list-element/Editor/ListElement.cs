@@ -183,24 +183,20 @@ namespace Sibz.ListElement
             });
         }
 
-        public void MoveItemUp(int index)
-        {
-            SendEvent(new MoveItemEvent
-            {
-                target = this,
-                Direction = MoveItemEvent.MoveDirection.Up,
-                Index = index
-            });
-        }
+        public void MoveItemUp(int index) => MoveItem(index, MoveItemEvent.MoveDirection.Up);
+        public void MoveItemDown(int index) => MoveItem(index, MoveItemEvent.MoveDirection.Down);
 
-        public void MoveItemDown(int index)
+        private void MoveItem(int index, MoveItemEvent.MoveDirection direction)
         {
-            SendEvent(new MoveItemEvent
+            if (EnableReordering)
             {
-                target = this,
-                Direction = MoveItemEvent.MoveDirection.Down,
-                Index = index
-            });
+                SendEvent(new MoveItemEvent
+                {
+                    target = this,
+                    Direction = MoveItemEvent.MoveDirection.Down,
+                    Index = index
+                });
+            }
         }
 
         public void AddNewItemToList()
@@ -219,6 +215,7 @@ namespace Sibz.ListElement
             {
                 throw new IndexOutOfRangeException();
             }
+
             return SerializedProperty.GetArrayElementAtIndex(index);
         }
 
