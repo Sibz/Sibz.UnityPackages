@@ -1,8 +1,11 @@
-﻿using NUnit.Framework;
+﻿using System.Collections;
+using System.Linq;
+using NUnit.Framework;
 using Sibz.ListElement.Events;
 using Sibz.ListElement.Internal;
 using UnityEditor;
 using UnityEditor.UIElements;
+using UnityEngine.TestTools;
 using UnityEngine.UIElements;
 
 namespace Sibz.ListElement.Tests.Acceptance
@@ -96,7 +99,7 @@ namespace Sibz.ListElement.Tests.Acceptance
         public void MoveDownButtonForLastRow_ShouldBeDisabled()
         {
             WindowFixture.RootElement.AddAndRemove(listElement,
-                () => { Assert.IsFalse(listElement.Controls.Row[property.arraySize-1].MoveDown.enabledSelf); });
+                () => { Assert.IsFalse(listElement.Controls.Row[property.arraySize - 1].MoveDown.enabledSelf); });
         }
 
         [Test]
@@ -109,7 +112,7 @@ namespace Sibz.ListElement.Tests.Acceptance
 
             WindowFixture.RootElement.AddAndRemove(listElement, () =>
             {
-                listElement.MoveItemUp(property.arraySize-1);
+                listElement.MoveItemUp(property.arraySize - 1);
                 listElement.MoveItemDown(0);
 
                 if (count != property.arraySize ||
@@ -119,6 +122,24 @@ namespace Sibz.ListElement.Tests.Acceptance
                     Assert.Fail("Order must have changed");
                 }
             });
+        }
+
+        [UnityTest]
+        public IEnumerator ShouldDisplayBasedOnOptions([Values(true, false)] bool enableReordering)
+        {
+            listElement = new ListElement(property, new ListOptions {EnableReordering = enableReordering});
+            WindowFixture.RootElement.Add(listElement);
+            yield return null;
+            WindowFixture.RootElement.Remove(listElement);
+            if (listElement.Query(null, UxmlClassNames.MoveItemUpButtonClassName).ToList().Any(x =>
+                    x.resolvedStyle.display == (enableReordering ? DisplayStyle.None : DisplayStyle.Flex))
+                ||
+                listElement.Query(null, UxmlClassNames.MoveItemDownButtonClassName).ToList().Any(x =>
+                    x.resolvedStyle.display == (enableReordering ? DisplayStyle.None : DisplayStyle.Flex)))
+            {
+                Assert.Fail(
+                    $"Buttons {(enableReordering ? "should" : "shouldn't")} be displayed with option {enableReordering}");
+            }
         }
     }
 }
