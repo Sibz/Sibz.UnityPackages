@@ -3,10 +3,10 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Sibz.ListElement.Tests.Integration
+namespace Sibz.ListElement.Tests
 {
     [SetUpFixture]
-    public class WindowFixture
+    public abstract class WindowFixture
     {
         public class TestWindow : EditorWindow
         {

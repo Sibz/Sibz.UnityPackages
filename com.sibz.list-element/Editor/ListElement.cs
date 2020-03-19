@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Object = System.Object;
 
 namespace Sibz.ListElement
 {
@@ -210,6 +211,15 @@ namespace Sibz.ListElement
         public void ClearListItems()
         {
             SendEvent(new ClearListEvent {target = this});
+        }
+
+        public SerializedProperty GetPropertyAt(int index)
+        {
+            if (index < 0 || index >= SerializedProperty.arraySize)
+            {
+                throw new IndexOutOfRangeException();
+            }
+            return SerializedProperty.GetArrayElementAtIndex(index);
         }
 
         #endregion
