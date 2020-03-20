@@ -1,10 +1,10 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using Sibz.ListElement.Events;
 using Sibz.ListElement.Internal;
 using UnityEditor;
-using UnityEditor.UIElements;
 using UnityEngine.TestTools;
 using UnityEngine.UIElements;
 
@@ -13,21 +13,18 @@ namespace Sibz.ListElement.Tests.Acceptance
     public class MoveItem
     {
         private ListElement listElement;
-        private readonly SerializedProperty property = TestHelpers.GetProperty();
-
-        [SetUp]
-        public void SetUp()
-        {
-            listElement = new ListElement(property);
-        }
+        private static SerializedProperty Property => TestHelpers.GetProperty();
+        private static readonly IEnumerable<ListOptions> WorkingOptionSet =
+            AcceptanceFixture.GetWorkingOptionSetExcl(nameof(ListOptions.EnableReordering));
 
         [Test]
-        public void MoveItemFromTopToBottom_ShouldWork()
+        public void MoveItemFromTopToBottom_ShouldWork([ValueSource(nameof(WorkingOptionSet))] ListOptions options)
         {
+            listElement = new ListElement(Property, options);
             WindowFixture.RootElement.AddAndRemove(listElement, () =>
             {
                 string itemBeingMoved = listElement.GetPropertyAt(0).stringValue;
-                for (int i = 0; i < property.arraySize - 1; i++)
+                for (int i = 0; i < Property.arraySize - 1; i++)
                 {
                     listElement.MoveItemDown(i);
                     if (itemBeingMoved == listElement.GetPropertyAt(i + 1).stringValue)
@@ -41,12 +38,13 @@ namespace Sibz.ListElement.Tests.Acceptance
         }
 
         [Test]
-        public void MoveItemFromBottomToTop_ShouldWork()
+        public void MoveItemFromBottomToTop_ShouldWork([ValueSource(nameof(WorkingOptionSet))] ListOptions options)
         {
+            listElement = new ListElement(Property, options);
             WindowFixture.RootElement.AddAndRemove(listElement, () =>
             {
-                string itemBeingMoved = listElement.GetPropertyAt(property.arraySize - 1).stringValue;
-                for (int i = property.arraySize - 1; i > 0; i--)
+                string itemBeingMoved = listElement.GetPropertyAt(Property.arraySize - 1).stringValue;
+                for (int i = Property.arraySize - 1; i > 0; i--)
                 {
                     listElement.MoveItemUp(i);
                     if (itemBeingMoved == listElement.GetPropertyAt(i - 1).stringValue)
@@ -62,11 +60,12 @@ namespace Sibz.ListElement.Tests.Acceptance
         [Test]
         public void MoveFirstUpOrLastDown_ShouldDoNothing(
             [Values(MoveItemEvent.MoveDirection.Down, MoveItemEvent.MoveDirection.Up)]
-            MoveItemEvent.MoveDirection direction)
+            MoveItemEvent.MoveDirection direction, [ValueSource(nameof(WorkingOptionSet))] ListOptions options)
         {
-            string val1 = property.GetArrayElementAtIndex(0).stringValue;
-            string val2 = property.GetArrayElementAtIndex(property.arraySize - 1).stringValue;
-            int count = property.arraySize;
+            listElement = new ListElement(Property, options);
+            string val1 = Property.GetArrayElementAtIndex(0).stringValue;
+            string val2 = Property.GetArrayElementAtIndex(Property.arraySize - 1).stringValue;
+            int count = Property.arraySize;
 
             WindowFixture.RootElement.AddAndRemove(listElement, () =>
             {
@@ -76,12 +75,12 @@ namespace Sibz.ListElement.Tests.Acceptance
                 }
                 else
                 {
-                    listElement.MoveItemDown(property.arraySize - 1);
+                    listElement.MoveItemDown(Property.arraySize - 1);
                 }
 
-                if (count != property.arraySize ||
-                    val1 != property.GetArrayElementAtIndex(0).stringValue ||
-                    val2 != property.GetArrayElementAtIndex(property.arraySize - 1).stringValue)
+                if (count != Property.arraySize ||
+                    val1 != Property.GetArrayElementAtIndex(0).stringValue ||
+                    val2 != Property.GetArrayElementAtIndex(Property.arraySize - 1).stringValue)
                 {
                     Assert.Fail("Order must have changed");
                 }
@@ -89,35 +88,37 @@ namespace Sibz.ListElement.Tests.Acceptance
         }
 
         [Test]
-        public void MoveUpButtonForTopRow_ShouldBeDisabled()
+        public void MoveUpButtonForTopRow_ShouldBeDisabled([ValueSource(nameof(WorkingOptionSet))] ListOptions options)
         {
+            listElement = new ListElement(Property, options);
             WindowFixture.RootElement.AddAndRemove(listElement,
                 () => { Assert.IsFalse(listElement.Controls.Row[0].MoveUp.enabledSelf); });
         }
 
         [Test]
-        public void MoveDownButtonForLastRow_ShouldBeDisabled()
+        public void MoveDownButtonForLastRow_ShouldBeDisabled([ValueSource(nameof(WorkingOptionSet))] ListOptions options)
         {
+            listElement = new ListElement(Property, options);
             WindowFixture.RootElement.AddAndRemove(listElement,
-                () => { Assert.IsFalse(listElement.Controls.Row[property.arraySize - 1].MoveDown.enabledSelf); });
+                () => { Assert.IsFalse(listElement.Controls.Row[Property.arraySize - 1].MoveDown.enabledSelf); });
         }
 
         [Test]
         public void WhenDisabled_MoveShouldNotWork()
         {
-            listElement = new ListElement(property, new ListOptions {EnableReordering = false});
-            string val1 = property.GetArrayElementAtIndex(0).stringValue;
-            string val2 = property.GetArrayElementAtIndex(property.arraySize - 1).stringValue;
-            int count = property.arraySize;
+            listElement = new ListElement(Property, new ListOptions {EnableReordering = false});
+            string val1 = Property.GetArrayElementAtIndex(0).stringValue;
+            string val2 = Property.GetArrayElementAtIndex(Property.arraySize - 1).stringValue;
+            int count = Property.arraySize;
 
             WindowFixture.RootElement.AddAndRemove(listElement, () =>
             {
-                listElement.MoveItemUp(property.arraySize - 1);
+                listElement.MoveItemUp(Property.arraySize - 1);
                 listElement.MoveItemDown(0);
 
-                if (count != property.arraySize ||
-                    val1 != property.GetArrayElementAtIndex(0).stringValue ||
-                    val2 != property.GetArrayElementAtIndex(property.arraySize - 1).stringValue)
+                if (count != Property.arraySize ||
+                    val1 != Property.GetArrayElementAtIndex(0).stringValue ||
+                    val2 != Property.GetArrayElementAtIndex(Property.arraySize - 1).stringValue)
                 {
                     Assert.Fail("Order must have changed");
                 }
@@ -127,7 +128,7 @@ namespace Sibz.ListElement.Tests.Acceptance
         [UnityTest]
         public IEnumerator ShouldDisplayBasedOnOptions([Values(true, false)] bool enableReordering)
         {
-            listElement = new ListElement(property, new ListOptions {EnableReordering = enableReordering});
+            listElement = new ListElement(Property, new ListOptions {EnableReordering = enableReordering});
             WindowFixture.RootElement.Add(listElement);
             yield return null;
             WindowFixture.RootElement.Remove(listElement);
