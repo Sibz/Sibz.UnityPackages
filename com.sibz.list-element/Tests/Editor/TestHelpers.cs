@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -42,6 +43,13 @@ namespace Sibz.ListElement.Tests
         {
             root.Add(element);
             beforeRemove?.Invoke();
+            root.Remove(element);
+        }
+
+        public static IEnumerator AddAndRemove(this VisualElement root, VisualElement element, Func<IEnumerator> beforeRemove = null)
+        {
+            root.Add(element);
+            yield return beforeRemove?.Invoke();
             root.Remove(element);
         }
     }
