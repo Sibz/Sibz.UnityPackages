@@ -193,7 +193,7 @@ namespace Sibz.ListElement
                 SendEvent(new MoveItemEvent
                 {
                     target = this,
-                    Direction = MoveItemEvent.MoveDirection.Down,
+                    Direction = direction,
                     Index = index
                 });
             }
