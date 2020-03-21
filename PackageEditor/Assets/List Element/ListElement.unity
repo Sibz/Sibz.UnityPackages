@@ -392,15 +392,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MyList:
   - 1
+  - 4
   - 2
   - 3
-  - 4
+  - 5
   - 5
   - 5
   - 5
   MyObjectList:
+  - {fileID: 1839769265}
+  - {fileID: 533557754}
   - {fileID: 533557754}
   - {fileID: 1839769265}
+  - {fileID: 1839769265}
+  - {fileID: 533557754}
+  - {fileID: 368866786}
   - {fileID: 1839769265}
 --- !u!4 &1839769267
 Transform:

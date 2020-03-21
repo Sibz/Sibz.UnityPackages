@@ -6,3 +6,18 @@
     margin-top: 1px;
     margin-bottom: 0;
 }
+
+.default-style .move-up {
+    -unity-background-image-tint-color: rgba(5, 63, 137, 255);
+    background-image: resource('Icons/up');
+}
+
+.default-style .move-down {
+    background-image: resource('Icons/down');
+    -unity-background-image-tint-color: rgba(5, 63, 137, 255);
+}
+
+.default-style .remove {
+    background-image: resource('Icons/remove');
+    -unity-background-image-tint-color: rgba(221, 51, 22, 255);
+}

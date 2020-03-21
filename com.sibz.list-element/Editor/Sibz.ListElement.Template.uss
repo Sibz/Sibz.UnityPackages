@@ -66,3 +66,38 @@
 .add-section.hide-add-section {
     display: none;
 }
+
+.default-style .clear-list {
+    overflow: hidden;
+    font-size: 0;
+    -unity-background-image-tint-color: rgba(177, 14, 14, 255);
+    background-image: resource('Icons/bin');
+    -unity-background-scale-mode: scale-to-fit;
+    width: 30px;
+    height: 22px;
+}
+
+.default-style .add-button {
+    height: 23px;
+    -unity-background-image-tint-color: rgba(1, 178, 1, 255);
+    background-image: resource('Icons/add');
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.default-style .clear-list-cancel {
+    background-image: resource('Icons/no');
+    -unity-background-image-tint-color: rgba(255, 1, 1, 255);
+    width: 30px;
+    -unity-background-scale-mode: scale-to-fit;
+    margin-left: 1px;
+    height: 22px;
+}
+
+.default-style .clear-list-confirm {
+    width: 30px;
+    background-image: resource('Icons/yes');
+    -unity-background-image-tint-color: rgba(12, 178, 11, 255);
+    -unity-background-scale-mode: scale-to-fit;
+    margin-right: 0;
+    height: 22px;
+}

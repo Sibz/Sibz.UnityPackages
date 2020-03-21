@@ -22,6 +22,7 @@ namespace Sibz.ListElement.Internal
             LoadAndAddStyleSheet(le, opts.StyleSheetName, opts.TemplateName);
             SetTypeOnObjectField(ctl.AddObjectField, le.ListItemType);
             SetAddSectionVisibility(le.Controls.AddSection, opts.EnableAdditions);
+            SetDefaultStyle(le);
         }
 
         public static void SetPropertyLabelVisibility(VisualElement itemSection, bool enablePropertyLabelOption)
@@ -169,6 +170,11 @@ namespace Sibz.ListElement.Internal
         public static void SetStateBasedOnOption(VisualElement element, bool option)
         {
             element?.SetEnabled(option);
+        }
+
+        public static void SetDefaultStyle(VisualElement element)
+        {
+            element?.AddToClassList(UxmlClassNames.DefaultStyle);
         }
     }
 }
