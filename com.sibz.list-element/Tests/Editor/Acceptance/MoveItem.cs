@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
@@ -10,6 +11,7 @@ using UnityEngine.UIElements;
 
 namespace Sibz.ListElement.Tests.Acceptance
 {
+
     public class MoveItem
     {
         private ListElement listElement;
@@ -17,8 +19,15 @@ namespace Sibz.ListElement.Tests.Acceptance
         private static readonly IEnumerable<ListOptions> WorkingOptionSet =
             AcceptanceFixture.GetWorkingOptionSetExcl(nameof(ListOptions.EnableReordering));
 
+        public enum CmdType
+        {
+            Click,
+            Program
+        }
+
+
         [Test]
-        public void MoveItemFromTopToBottom_ShouldWork([ValueSource(nameof(WorkingOptionSet))] ListOptions options)
+        public void MoveItemFromTopToBottom_ShouldWork([ValueSource(nameof(WorkingOptionSet))] ListOptions options, [Values(CmdType.Click,CmdType.Program)] CmdType cmdType)
         {
             listElement = new ListElement(Property, options);
             WindowFixture.RootElement.AddAndRemove(listElement, () =>
@@ -26,7 +35,16 @@ namespace Sibz.ListElement.Tests.Acceptance
                 string itemBeingMoved = listElement.GetPropertyAt(0).stringValue;
                 for (int i = 0; i < Property.arraySize - 1; i++)
                 {
-                    listElement.Controls.Row[i].MoveDown.SendEvent(new ClickEvent { target = listElement.Controls.Row[i].MoveDown });
+                    if (cmdType == CmdType.Click)
+                    {
+                        listElement.Controls.Row[i].MoveDown.SendEvent(new ClickEvent
+                            {target = listElement.Controls.Row[i].MoveDown});
+                    }
+                    else
+                    {
+                        listElement.MoveItemDown(i);
+                    }
+
                     if (itemBeingMoved == listElement.GetPropertyAt(i + 1).stringValue)
                     {
                         continue;
@@ -38,7 +56,7 @@ namespace Sibz.ListElement.Tests.Acceptance
         }
 
         [Test]
-        public void MoveItemFromBottomToTop_ShouldWork([ValueSource(nameof(WorkingOptionSet))] ListOptions options)
+        public void MoveItemFromBottomToTop_ShouldWork([ValueSource(nameof(WorkingOptionSet))] ListOptions options, [Values(CmdType.Click,CmdType.Program)] CmdType cmdType)
         {
             listElement = new ListElement(Property, options);
             WindowFixture.RootElement.AddAndRemove(listElement, () =>
@@ -46,7 +64,16 @@ namespace Sibz.ListElement.Tests.Acceptance
                 string itemBeingMoved = listElement.GetPropertyAt(Property.arraySize - 1).stringValue;
                 for (int i = Property.arraySize - 1; i > 0; i--)
                 {
-                    listElement.Controls.Row[i].MoveUp.SendEvent(new ClickEvent { target = listElement.Controls.Row[i].MoveUp });
+                    if (cmdType == CmdType.Click)
+                    {
+                        listElement.Controls.Row[i].MoveUp.SendEvent(new ClickEvent
+                            {target = listElement.Controls.Row[i].MoveUp});
+                    }
+                    else
+                    {
+                        listElement.MoveItemUp(i);
+                    }
+
                     if (itemBeingMoved == listElement.GetPropertyAt(i - 1).stringValue)
                     {
                         continue;
