@@ -18,6 +18,12 @@ namespace Sibz.ListElement.Tests
         public const string
             DefaultTestTemplateWthOptionsSetName = "sibz.list-element.tests.list-element-test-with-options-set";
 
+        public enum CmdType
+        {
+            Click,
+            Program
+        }
+
         public class TestObject : Object
         {
         }

@@ -19,15 +19,8 @@ namespace Sibz.ListElement.Tests.Acceptance
         private static readonly IEnumerable<ListOptions> WorkingOptionSet =
             AcceptanceFixture.GetWorkingOptionSetExcl(nameof(ListOptions.EnableReordering));
 
-        public enum CmdType
-        {
-            Click,
-            Program
-        }
-
-
         [Test]
-        public void MoveItemFromTopToBottom_ShouldWork([ValueSource(nameof(WorkingOptionSet))] ListOptions options, [Values(CmdType.Click,CmdType.Program)] CmdType cmdType)
+        public void MoveItemFromTopToBottom_ShouldWork([ValueSource(nameof(WorkingOptionSet))] ListOptions options, [Values(TestHelpers.CmdType.Click,TestHelpers.CmdType.Program)] TestHelpers.CmdType cmdType)
         {
             listElement = new ListElement(Property, options);
             WindowFixture.RootElement.AddAndRemove(listElement, () =>
@@ -35,7 +28,7 @@ namespace Sibz.ListElement.Tests.Acceptance
                 string itemBeingMoved = listElement.GetPropertyAt(0).stringValue;
                 for (int i = 0; i < Property.arraySize - 1; i++)
                 {
-                    if (cmdType == CmdType.Click)
+                    if (cmdType == TestHelpers.CmdType.Click)
                     {
                         listElement.Controls.Row[i].MoveDown.SendEvent(new ClickEvent
                             {target = listElement.Controls.Row[i].MoveDown});
@@ -56,7 +49,7 @@ namespace Sibz.ListElement.Tests.Acceptance
         }
 
         [Test]
-        public void MoveItemFromBottomToTop_ShouldWork([ValueSource(nameof(WorkingOptionSet))] ListOptions options, [Values(CmdType.Click,CmdType.Program)] CmdType cmdType)
+        public void MoveItemFromBottomToTop_ShouldWork([ValueSource(nameof(WorkingOptionSet))] ListOptions options, [Values(TestHelpers.CmdType.Click,TestHelpers.CmdType.Program)] TestHelpers.CmdType cmdType)
         {
             listElement = new ListElement(Property, options);
             WindowFixture.RootElement.AddAndRemove(listElement, () =>
@@ -64,7 +57,7 @@ namespace Sibz.ListElement.Tests.Acceptance
                 string itemBeingMoved = listElement.GetPropertyAt(Property.arraySize - 1).stringValue;
                 for (int i = Property.arraySize - 1; i > 0; i--)
                 {
-                    if (cmdType == CmdType.Click)
+                    if (cmdType == TestHelpers.CmdType.Click)
                     {
                         listElement.Controls.Row[i].MoveUp.SendEvent(new ClickEvent
                             {target = listElement.Controls.Row[i].MoveUp});
