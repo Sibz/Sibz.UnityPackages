@@ -16,7 +16,7 @@ namespace Sibz.ListElement.Tests.Acceptance
         private static SerializedProperty Property => TestHelpers.GetProperty();
 
         private static readonly IEnumerable<ListOptions> WorkingOptionSet =
-            AcceptanceFixture.GetWorkingOptionSetExcl(nameof(ListOptions.EnableDeletions));
+            AcceptanceFixture.GetWorkingOptionSetExcl(nameof(ListOptions.EnableDeletions)).ToArray();
 
         private Button ClearButton => listElement.Controls.ClearList;
         private Button Yes => listElement.Controls.ClearListConfirm;
@@ -135,11 +135,9 @@ namespace Sibz.ListElement.Tests.Acceptance
         }
 
         [UnityTest]
-        public IEnumerator ShouldCorrectButtonVisibilityBasedOnOption([ValueSource(nameof(WorkingOptionSet))]
-            ListOptions options, [Values(true, false)] bool option)
+        public IEnumerator ShouldCorrectButtonVisibilityBasedOnOption([Values(true, false)] bool option)
         {
-            options.EnableDeletions = option;
-            listElement = new ListElement(Property, options);
+            listElement = new ListElement(Property, new ListOptions { EnableDeletions =  option});
             WindowFixture.RootElement.Add(listElement);
             return WindowFixture.RootElement.AddAndRemove(listElement, () =>
             {

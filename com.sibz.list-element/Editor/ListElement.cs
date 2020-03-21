@@ -179,11 +179,14 @@ namespace Sibz.ListElement
 
         public void RemoveItem(int index)
         {
-            SendEvent(new RemoveItemEvent
+            if (EnableDeletions)
             {
-                target = this,
-                Index = index
-            });
+                SendEvent(new RemoveItemEvent
+                {
+                    target = this,
+                    Index = index
+                });
+            }
         }
 
         public void MoveItemUp(int index)
@@ -224,7 +227,10 @@ namespace Sibz.ListElement
 
         public void ClearListItems()
         {
-            SendEvent(new ClearListEvent {target = this});
+            if (EnableDeletions)
+            {
+                SendEvent(new ClearListEvent {target = this});
+            }
         }
 
         public SerializedProperty GetPropertyAt(int index)

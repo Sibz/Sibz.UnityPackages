@@ -37,11 +37,9 @@ namespace Sibz.ListElement.Tests.Acceptance
         }
 
         [Test]
-        public void WhenDisabled_ShouldNotRemoveItem([ValueSource(nameof(WorkingOptionSet))]
-            ListOptions options)
+        public void WhenDisabled_ShouldNotRemoveItem()
         {
-            options.EnableDeletions = false;
-            listElement = new ListElement(Property, options);
+            listElement = new ListElement(Property, new ListOptions { EnableDeletions = false});
 
             WindowFixture.RootElement.AddAndRemove(listElement, () =>
             {

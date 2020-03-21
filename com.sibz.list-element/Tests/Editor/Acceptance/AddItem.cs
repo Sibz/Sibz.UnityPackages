@@ -64,11 +64,10 @@ namespace Sibz.ListElement.Tests.Acceptance
         }
 
         [Test]
-        public void WhenDisabled_ShouldNotWork([ValueSource(nameof(EnableAdditionsOptionSet))]
-            ListOptions options)
+        public void WhenDisabled_ShouldNotWork()
         {
             SerializedProperty property = Property;
-            listElement = new ListElement(property, options);
+            listElement = new ListElement(property, new ListOptions {EnableAdditions = false});
             WindowFixture.RootElement.AddAndRemove(listElement, () =>
             {
                 int initialSize = property.arraySize;
@@ -79,12 +78,10 @@ namespace Sibz.ListElement.Tests.Acceptance
         }
 
         [UnityTest]
-        public IEnumerator ShouldDisplayButtonAndFieldBasedOnOption([ValueSource(nameof(EnableAdditionsOptionSet))]
-            ListOptions options, [Values(true, false)] bool option)
+        public IEnumerator ShouldDisplayButtonAndFieldBasedOnOption([Values(true, false)] bool option)
         {
-            options.EnableAdditions = option;
             DisplayStyle expectedDisplayStyle = option ? DisplayStyle.Flex : DisplayStyle.None;
-            listElement = new ListElement(Property, options);
+            listElement = new ListElement(Property, new ListOptions {EnableAdditions = option});
             return WindowFixture.RootElement.AddAndRemove(listElement, () =>
             {
                 Assert.AreEqual(expectedDisplayStyle, listElement.Controls.AddSection.resolvedStyle.display);
@@ -93,13 +90,11 @@ namespace Sibz.ListElement.Tests.Acceptance
         }
 
         [UnityTest]
-        public IEnumerator ShouldDisplayFieldBasedOnOption([ValueSource(nameof(ObjectFieldOptionSet))]
-            ListOptions options, [Values(true, false)] bool option)
+        public IEnumerator ShouldDisplayFieldBasedOnOption([Values(true, false)] bool option)
         {
-            options.EnableObjectField = option;
             DisplayStyle expectedDisplayStyle = option ? DisplayStyle.Flex : DisplayStyle.None;
             listElement = new ListElement(TestHelpers.GetProperty(nameof(TestHelpers.TestComponent.myCustomList)),
-                options);
+                new ListOptions{EnableObjectField = option});
             return WindowFixture.RootElement.AddAndRemove(listElement, () =>
             {
                 Assert.AreEqual(expectedDisplayStyle, listElement.Controls.AddObjectField.resolvedStyle.display);

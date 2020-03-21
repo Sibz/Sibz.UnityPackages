@@ -32,30 +32,21 @@ namespace Sibz.ListElement.Tests.Acceptance
             });
 
         [Test]
-        public void Label_ShouldHaveCorrectText(
-            [ValueSource(nameof(LabelWorkingOptionSet))]
-            ListOptions options,
-            [ValueSource(nameof(Labels))] string label)
+        public void Label_ShouldHaveCorrectText([ValueSource(nameof(Labels))] string label)
         {
-            options.Label = label;
             string expectedLabel = string.IsNullOrEmpty(label)
                 ? ObjectNames.NicifyVariableName(nameof(TestHelpers.TestComponent.myList))
                 : label;
-            listElement = new ListElement(Property, options);
+            listElement = new ListElement(Property, new ListOptions(){ Label = label});
             WindowFixture.RootElement.AddAndRemove(listElement,
                 () => { Assert.AreEqual(expectedLabel, listElement.Controls.HeaderLabel.text); });
         }
 
         [UnityTest]
-        public IEnumerator PropertyLabel_ShouldHaveCorrectVisibility(
-            [ValueSource(nameof(RowLabelWorkingOptionSet))]
-            ListOptions options,
-            [Values(true, false)] bool option
-        )
+        public IEnumerator PropertyLabel_ShouldHaveCorrectVisibility([Values(true, false)] bool option)
         {
-            options.EnableRowLabel = option;
             DisplayStyle expectedDisplayStyle = option ? DisplayStyle.Flex : DisplayStyle.None;
-            listElement = new ListElement(Property, options);
+            listElement = new ListElement(Property, new ListOptions{EnableRowLabel = option});
             yield return WindowFixture.RootElement.AddAndRemove(listElement, () =>
             {
                 for (int i = 0; i < listElement.Controls.ItemsSection.childCount; i++)
@@ -69,13 +60,9 @@ namespace Sibz.ListElement.Tests.Acceptance
         }
 
         [UnityTest]
-        public IEnumerator EnableModify_ShouldSetPropertyFieldStateBasedOnOption(
-            [ValueSource(nameof(RowLabelWorkingOptionSet))]
-            ListOptions options,
-            [Values(true, false)] bool option)
+        public IEnumerator EnableModify_ShouldSetPropertyFieldStateBasedOnOption([Values(true, false)] bool option)
         {
-            options.EnableModify = option;
-            listElement = new ListElement(Property, options);
+            listElement = new ListElement(Property, new ListOptions{ EnableModify = option });
             yield return WindowFixture.RootElement.AddAndRemove(listElement, () =>
             {
                 for (int i = 0; i < listElement.Controls.ItemsSection.childCount; i++)
