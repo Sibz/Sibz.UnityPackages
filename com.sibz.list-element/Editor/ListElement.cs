@@ -201,11 +201,15 @@ namespace Sibz.ListElement
             }
         }
 
-        public void AddNewItemToList()
+        public void AddNewItemToList(UnityEngine.Object obj = null)
         {
             if (EnableAdditions)
             {
-                SendEvent(new AddItemEvent {target = this});
+                if (obj != null && obj.GetType() != ListItemType)
+                {
+                    throw new ArgumentException($"Expected type: {ListItemType.Name}", nameof(obj));
+                }
+                SendEvent(new AddItemEvent {target = this, Item = obj});
             }
         }
 

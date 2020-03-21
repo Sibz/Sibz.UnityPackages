@@ -39,11 +39,18 @@ namespace Sibz.ListElement.Tests.Acceptance
             });
         }
 
-        // TODO AddItem(object)
         [Test]
-        public void ShouldAddObjectToList([ValueSource(nameof(WorkingOptionSet))] ListOptions options)
+        public void ShouldAddObjectToList()
         {
-
+            SerializedProperty property = TestHelpers.GetProperty(nameof(TestHelpers.TestComponent.myCustomList));
+            listElement = new ListElement(property);
+            WindowFixture.RootElement.AddAndRemove(listElement, () =>
+            {
+                int initialSize = property.arraySize;
+                TestHelpers.TestObject test = ScriptableObject .CreateInstance<TestHelpers.TestObject>();
+                listElement.AddNewItemToList(test);
+                Assert.AreSame(test, listElement.GetPropertyAt(initialSize).objectReferenceValue);
+            });
         }
 
         [Test]

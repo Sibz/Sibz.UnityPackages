@@ -24,7 +24,7 @@ namespace Sibz.ListElement.Tests
             Program
         }
 
-        public class TestObject : Object
+        public class TestObject : ScriptableObject
         {
         }
 
@@ -33,8 +33,13 @@ namespace Sibz.ListElement.Tests
         {
             public List<string> myList = new List<string> {"item1", "item2", "item3"};
 
-            public List<TestObject> myCustomList = new List<TestObject>
-                {new TestObject(), new TestObject(), new TestObject()};
+            public List<TestObject> myCustomList;
+
+            private void OnEnable()
+            {
+                myCustomList = new List<TestObject>
+                    {CreateInstance<TestObject>(), CreateInstance<TestObject>(), CreateInstance<TestObject>()};
+            }
         }
 
         public static SerializedProperty GetProperty(string name = nameof(TestComponent.myList))
