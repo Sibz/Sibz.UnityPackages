@@ -26,7 +26,7 @@ namespace Sibz.ListElement.Tests.Acceptance
                 string itemBeingMoved = listElement.GetPropertyAt(0).stringValue;
                 for (int i = 0; i < Property.arraySize - 1; i++)
                 {
-                    listElement.MoveItemDown(i);
+                    listElement.Controls.Row[i].MoveDown.SendEvent(new ClickEvent { target = listElement.Controls.Row[i].MoveDown });
                     if (itemBeingMoved == listElement.GetPropertyAt(i + 1).stringValue)
                     {
                         continue;
@@ -46,7 +46,7 @@ namespace Sibz.ListElement.Tests.Acceptance
                 string itemBeingMoved = listElement.GetPropertyAt(Property.arraySize - 1).stringValue;
                 for (int i = Property.arraySize - 1; i > 0; i--)
                 {
-                    listElement.MoveItemUp(i);
+                    listElement.Controls.Row[i].MoveUp.SendEvent(new ClickEvent { target = listElement.Controls.Row[i].MoveUp });
                     if (itemBeingMoved == listElement.GetPropertyAt(i - 1).stringValue)
                     {
                         continue;
@@ -71,11 +71,11 @@ namespace Sibz.ListElement.Tests.Acceptance
             {
                 if (direction == MoveItemEvent.MoveDirection.Up)
                 {
-                    listElement.MoveItemUp(0);
+                    listElement.Controls.Row[0].MoveUp.SendEvent(new ClickEvent { target = listElement.Controls.Row[0].MoveUp });
                 }
                 else
                 {
-                    listElement.MoveItemDown(Property.arraySize - 1);
+                    listElement.Controls.Row[Property.arraySize - 1].MoveDown.SendEvent(new ClickEvent { target = listElement.Controls.Row[Property.arraySize - 1].MoveDown });
                 }
 
                 if (count != Property.arraySize ||
@@ -113,8 +113,8 @@ namespace Sibz.ListElement.Tests.Acceptance
 
             WindowFixture.RootElement.AddAndRemove(listElement, () =>
             {
-                listElement.MoveItemUp(Property.arraySize - 1);
-                listElement.MoveItemDown(0);
+                listElement.Controls.Row[Property.arraySize - 1].MoveUp.SendEvent(new ClickEvent { target = listElement.Controls.Row[Property.arraySize - 1].MoveUp });
+                listElement.Controls.Row[0].MoveDown.SendEvent(new ClickEvent { target = listElement.Controls.Row[0].MoveDown });
 
                 if (count != Property.arraySize ||
                     val1 != Property.GetArrayElementAtIndex(0).stringValue ||
