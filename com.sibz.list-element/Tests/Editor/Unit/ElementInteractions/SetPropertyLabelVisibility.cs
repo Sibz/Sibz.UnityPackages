@@ -8,7 +8,7 @@ namespace Sibz.ListElement.Tests.Unit.ElementInteractionsTests
     public class SetPropertyLabelVisibility
     {
         [Test]
-        public void WhenSettingPropertyLabelVisibilityWithOptionFalse_ShouldNotRemoveClass()
+        public void WhenOptionFalse_ShouldNotRemoveClass()
         {
             VisualElement itemSection = new VisualElement();
             itemSection.AddToClassList(UxmlClassNames.HidePropertyLabel);
@@ -17,7 +17,7 @@ namespace Sibz.ListElement.Tests.Unit.ElementInteractionsTests
         }
 
         [Test]
-        public void WhenSettingPropertyLabelVisibilityWithOptionTrue_ShouldRemoveClass()
+        public void WhenOptionTrue_ShouldRemoveClass()
         {
             VisualElement itemSection = new VisualElement();
             itemSection.AddToClassList(UxmlClassNames.HidePropertyLabel);
