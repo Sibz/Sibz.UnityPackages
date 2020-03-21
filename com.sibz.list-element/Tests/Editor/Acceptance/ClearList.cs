@@ -38,8 +38,7 @@ namespace Sibz.ListElement.Tests.Acceptance
         [Test]
         public void WhenConfirmed_ShouldClearTheList([ValueSource(nameof(WorkingOptionSet))] ListOptions options, [Values(TestHelpers.CmdType.Click, TestHelpers.CmdType.Program)] TestHelpers.CmdType cmdType)
         {
-            SerializedProperty property = Property;
-            listElement = new ListElement(property, options);
+            listElement = new ListElement(Property, options);
 
             WindowFixture.RootElement.AddAndRemove(listElement, () =>
             {
@@ -54,7 +53,7 @@ namespace Sibz.ListElement.Tests.Acceptance
                 }
 
                 listElement.SendEvent(new ListResetEvent {target = listElement});
-                Assert.AreEqual(0, property.arraySize); // TODO Replace with listElement.ListItemCount
+                Assert.AreEqual(0, listElement.Count);
                 Assert.AreEqual(0, listElement.Controls.ItemsSection.childCount);
             });
         }
@@ -76,15 +75,14 @@ namespace Sibz.ListElement.Tests.Acceptance
         public void WhenCancelled_ShouldNotClearList([ValueSource(nameof(WorkingOptionSet))]
             ListOptions options)
         {
-            SerializedProperty property = Property;
-            listElement = new ListElement(property, options);
+            listElement = new ListElement(Property, options);
             WindowFixture.RootElement.AddAndRemove(listElement, () =>
             {
-                int initialSize = property.arraySize;
+                int initialSize = listElement.Count;
                 ClearButton.SendEvent(new ClickEvent {target = ClearButton});
                 No.SendEvent(new ClickEvent {target = No});
                 listElement.SendEvent(new ListResetEvent {target = listElement});
-                Assert.AreEqual(initialSize, property.arraySize); // TODO Replace with listElement.ListItemCount
+                Assert.AreEqual(initialSize, listElement.Count);
                 Assert.AreEqual(initialSize, listElement.Controls.ItemsSection.childCount);
             });
         }
