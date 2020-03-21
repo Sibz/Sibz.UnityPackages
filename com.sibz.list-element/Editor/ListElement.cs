@@ -67,7 +67,7 @@ namespace Sibz.ListElement
         private string TemplateName => Options.TemplateName;
         private string ItemTemplateName => Options.ItemTemplateName;
         private string StyleSheetName => Options.StyleSheetName;
-        private bool HidePropertyLabel => Options.HidePropertyLabel;
+        private bool EnableRowLabel => Options.EnableRowLabel;
         private bool EnableObjectField => Options.EnableObjectField;
         private bool EnableReordering => Options.EnableReordering;
 
@@ -231,7 +231,7 @@ namespace Sibz.ListElement
         public new class UxmlTraits : BindableElement.UxmlTraits
         {
             private readonly UxmlBoolAttributeDescription enableObjectField;
-            private readonly UxmlBoolAttributeDescription hidePropertyLabel;
+            private readonly UxmlBoolAttributeDescription enableRowLabel;
             private readonly UxmlBoolAttributeDescription enableReordering;
             private readonly UxmlBoolAttributeDescription enableDeletions;
             private readonly UxmlStringAttributeDescription itemTemplateName;
@@ -249,8 +249,8 @@ namespace Sibz.ListElement
                     {name = "stylesheet-name", defaultValue = defaults.StyleSheetName};
                 templateName = new UxmlStringAttributeDescription
                     {name = "template-name", defaultValue = defaults.TemplateName};
-                hidePropertyLabel = new UxmlBoolAttributeDescription
-                    {name = "hide-property-label", defaultValue = defaults.HidePropertyLabel};
+                enableRowLabel = new UxmlBoolAttributeDescription
+                    {name = "enable-row-label", defaultValue = defaults.EnableRowLabel};
                 enableObjectField = new UxmlBoolAttributeDescription
                     {name = "enable-object-field", defaultValue = defaults.EnableObjectField};
                 enableReordering = new UxmlBoolAttributeDescription
@@ -269,7 +269,7 @@ namespace Sibz.ListElement
                 }
 
                 le.Options.BaseOptions.Label = label.GetValueFromBag(bag, cc);
-                le.Options.BaseOptions.HidePropertyLabel = hidePropertyLabel.GetValueFromBag(bag, cc);
+                le.Options.BaseOptions.EnableRowLabel = enableRowLabel.GetValueFromBag(bag, cc);
                 le.Options.BaseOptions.EnableObjectField = enableObjectField.GetValueFromBag(bag, cc);
                 le.Options.BaseOptions.EnableDeletions = enableDeletions.GetValueFromBag(bag, cc);
                 le.Options.BaseOptions.EnableReordering = enableReordering.GetValueFromBag(bag, cc);

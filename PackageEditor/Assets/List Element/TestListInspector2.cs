@@ -32,11 +32,9 @@ namespace Sibz.UXMLList
             m_Root.Clear();
             m_Root.Bind(serializedObject);
             SingleAssetLoader.Load<VisualTreeAsset>("ListTest").CloneTree(m_Root);
-            m_Root.Add(new ListElement.ListElement(serializedObject.FindProperty(nameof(TestListBehaviour2.MyList)),
-                new ListOptions {HidePropertyLabel = true}));
+            m_Root.Add(new ListElement.ListElement(serializedObject.FindProperty(nameof(TestListBehaviour2.MyList))));
             m_Root.Add(new ListElement.ListElement(
-                serializedObject.FindProperty(nameof(TestListBehaviour2.MyObjectList)),
-                new ListOptions {HidePropertyLabel = true}));
+                serializedObject.FindProperty(nameof(TestListBehaviour2.MyObjectList))));
         }
     }
 }

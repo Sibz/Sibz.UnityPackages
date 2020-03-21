@@ -8,20 +8,20 @@ namespace Sibz.ListElement.Tests.Unit.ElementInteractionsTests
     public class SetPropertyLabelVisibility
     {
         [Test]
-        public void WhenSettingPropertyLabelVisibilityWithOptionTrue_ShouldNotRemoveClass()
-        {
-            VisualElement itemSection = new VisualElement();
-            itemSection.AddToClassList(UxmlClassNames.HidePropertyLabel);
-            Handler.SetPropertyLabelVisibility(itemSection, true);
-            Assert.IsTrue(itemSection.ClassListContains(UxmlClassNames.HidePropertyLabel));
-        }
-
-        [Test]
-        public void WhenSettingPropertyLabelVisibilityWithOptionFalse_ShouldRemoveClass()
+        public void WhenSettingPropertyLabelVisibilityWithOptionFalse_ShouldNotRemoveClass()
         {
             VisualElement itemSection = new VisualElement();
             itemSection.AddToClassList(UxmlClassNames.HidePropertyLabel);
             Handler.SetPropertyLabelVisibility(itemSection, false);
+            Assert.IsTrue(itemSection.ClassListContains(UxmlClassNames.HidePropertyLabel));
+        }
+
+        [Test]
+        public void WhenSettingPropertyLabelVisibilityWithOptionTrue_ShouldRemoveClass()
+        {
+            VisualElement itemSection = new VisualElement();
+            itemSection.AddToClassList(UxmlClassNames.HidePropertyLabel);
+            Handler.SetPropertyLabelVisibility(itemSection, true);
             Assert.IsFalse(itemSection.ClassListContains(UxmlClassNames.HidePropertyLabel));
         }
     }

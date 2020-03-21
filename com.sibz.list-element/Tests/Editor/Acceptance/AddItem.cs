@@ -65,7 +65,6 @@ namespace Sibz.ListElement.Tests.Acceptance
             listElement =  new ListElement(TestHelpers.GetProperty(nameof(TestHelpers.TestComponent.myCustomList)), options);
             return WindowFixture.RootElement.AddAndRemove(listElement, () =>
             {
-                Debug.Log($"{options.Label}\n{options.EnableDeletions}\n{options.EnableReordering}\n{options.EnableObjectField}\n{options.HidePropertyLabel}\n{options.TemplateName}\n{options.ItemTemplateName}\n");
                 Assert.AreEqual(expectedDisplayStyle, listElement.Controls.AddObjectField.resolvedStyle.display);
                 return null;
             });

@@ -13,7 +13,7 @@ namespace Sibz.ListElement.Internal
             Controls ctl = le.Controls;
             ReadOnlyOptions opts = le.Options;
 
-            SetPropertyLabelVisibility(ctl.ItemsSection, opts.HidePropertyLabel);
+            SetPropertyLabelVisibility(ctl.ItemsSection, opts.EnableRowLabel);
             SetRemoveButtonVisibility(le, opts.EnableDeletions);
             SetReorderButtonVisibility(ctl.ItemsSection, opts.EnableReordering);
             SetAddFieldVisibility(ctl.AddSection, le.ListItemType, opts.EnableObjectField);
@@ -23,9 +23,9 @@ namespace Sibz.ListElement.Internal
             SetTypeOnObjectField(ctl.AddObjectField, le.ListItemType);
         }
 
-        public static void SetPropertyLabelVisibility(VisualElement itemSection, bool hidePropertyLabelOption)
+        public static void SetPropertyLabelVisibility(VisualElement itemSection, bool enablePropertyLabelOption)
         {
-            if (!hidePropertyLabelOption)
+            if (enablePropertyLabelOption)
             {
                 itemSection.RemoveFromClassList(UxmlClassNames.HidePropertyLabel);
             }

@@ -21,7 +21,7 @@ namespace Sibz.ListElement.Tests.Integration.ListElementTests
             Label = TestHelpers.DefaultTestLabel,
             EnableDeletions = false,
             EnableReordering = false,
-            HidePropertyLabel = false,
+            EnableRowLabel = false,
             EnableObjectField = false,
             TemplateName = TestHelpers.DefaultTestTemplateName,
             StyleSheetName = TestHelpers.DefaultTestTemplateName,
