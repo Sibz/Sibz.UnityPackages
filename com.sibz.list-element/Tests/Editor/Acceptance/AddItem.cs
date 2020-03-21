@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 using Sibz.ListElement.Events;
+using Sibz.ListElement.Internal;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -19,6 +20,8 @@ namespace Sibz.ListElement.Tests.Acceptance
 
         private static readonly IEnumerable<ListOptions> ObjectFieldOptionSet =
             AcceptanceFixture.GetWorkingOptionSetExcl(new[] {nameof(ListOptions.EnableObjectField), nameof(ListOptions.TemplateName), nameof(ListOptions.ItemTemplateName), nameof(ListOptions.StyleSheetName)});
+        private static readonly IEnumerable<ListOptions> EnableAdditionsOptionSet =
+            AcceptanceFixture.GetWorkingOptionSetExcl(new[] {nameof(ListOptions.EnableAdditions), nameof(ListOptions.TemplateName), nameof(ListOptions.ItemTemplateName), nameof(ListOptions.StyleSheetName)});
 
         private Button Add => listElement.Controls.Add;
 
@@ -43,18 +46,31 @@ namespace Sibz.ListElement.Tests.Acceptance
 
         }
 
-        // TODO Enable Additions
         [Test]
-        public void WhenDisabled_ShouldNotWork([ValueSource(nameof(WorkingOptionSet))] ListOptions options)
+        public void WhenDisabled_ShouldNotWork([ValueSource(nameof(EnableAdditionsOptionSet))] ListOptions options)
         {
-
+            SerializedProperty property = Property;
+            listElement = new ListElement(property, options);
+            WindowFixture.RootElement.AddAndRemove(listElement, () =>
+            {
+                int initialSize = property.arraySize;
+                listElement.AddNewItemToList();
+                listElement.SendEvent(new ListResetEvent {target = listElement});
+                Assert.AreEqual(initialSize, listElement.Controls.ItemsSection.childCount);
+            });
         }
 
-        // TODO Enable Additions
-        [Test]
-        public void ShouldDisplayButtonAndFieldBasedOnOption([ValueSource(nameof(WorkingOptionSet))] ListOptions options, [Values(true,false)] bool option)
+        [UnityTest]
+        public IEnumerator ShouldDisplayButtonAndFieldBasedOnOption([ValueSource(nameof(EnableAdditionsOptionSet))] ListOptions options, [Values(true,false)] bool option)
         {
-
+            options.EnableAdditions = option;
+            DisplayStyle expectedDisplayStyle = option ? DisplayStyle.Flex : DisplayStyle.None;
+            listElement =  new ListElement(Property, options);
+            return WindowFixture.RootElement.AddAndRemove(listElement, () =>
+            {
+                Assert.AreEqual(expectedDisplayStyle, listElement.Controls.AddSection.resolvedStyle.display);
+                return null;
+            });
         }
 
         [UnityTest]

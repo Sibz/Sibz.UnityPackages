@@ -23,6 +23,7 @@ namespace Sibz.ListElement.Tests.Integration.ListElementTests
             EnableReordering = false,
             EnableRowLabel = false,
             EnableObjectField = false,
+            EnableAdditions = false,
             TemplateName = TestHelpers.DefaultTestTemplateName,
             StyleSheetName = TestHelpers.DefaultTestTemplateName,
             ItemTemplateName = TestHelpers.DefaultTestItemTemplateName

@@ -16,5 +16,6 @@ namespace Sibz.ListElement
         public bool EnableObjectField { get; set; } = true;
         public bool EnableReordering { get; set; } = true;
         public bool EnableDeletions { get; set; } = true;
+        public bool EnableAdditions { get; set; } = true;
     }
 }

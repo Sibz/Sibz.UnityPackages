@@ -1,5 +1,5 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
-    <Sibz.ListElement.ListElement binding-path="MyList" enable-deletions="false">
+    <Sibz.ListElement.ListElement binding-path="MyList" enable-deletions="false" enable-additions="false">
         <Style src="/Assets/ListTest.uss" />
     </Sibz.ListElement.ListElement>
 </ui:UXML>

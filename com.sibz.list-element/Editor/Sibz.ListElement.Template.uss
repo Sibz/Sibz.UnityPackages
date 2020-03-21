@@ -62,3 +62,7 @@
 .hide-object-field ObjectField {
     display: none;
 }
+
+.add-section.hide-add-section {
+    display: none;
+}

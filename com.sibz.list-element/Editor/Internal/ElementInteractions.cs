@@ -21,6 +21,7 @@ namespace Sibz.ListElement.Internal
             SetHeaderLabelText(ctl.HeaderLabel, le.ListName, opts.Label);
             LoadAndAddStyleSheet(le, opts.StyleSheetName, opts.TemplateName);
             SetTypeOnObjectField(ctl.AddObjectField, le.ListItemType);
+            SetAddSectionVisibility(le.Controls.AddSection, opts.EnableAdditions);
         }
 
         public static void SetPropertyLabelVisibility(VisualElement itemSection, bool enablePropertyLabelOption)
@@ -28,6 +29,14 @@ namespace Sibz.ListElement.Internal
             if (enablePropertyLabelOption)
             {
                 itemSection.RemoveFromClassList(UxmlClassNames.HidePropertyLabel);
+            }
+        }
+
+        public static void SetAddSectionVisibility(VisualElement addSection, bool enableAddSectionOption)
+        {
+            if (!enableAddSectionOption)
+            {
+                addSection?.AddToClassList(UxmlClassNames.HideAddSection);
             }
         }
 

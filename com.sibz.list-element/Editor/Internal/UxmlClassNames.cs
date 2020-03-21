@@ -19,5 +19,6 @@
         public static string AddItemSectionClassName => "add-section";
         public static string AddItemButtonClassName => "add-button";
         public static string AddItemObjectFieldClassName => "add-field";
+        public static string HideAddSection => "hide-add-section";
     }
 }

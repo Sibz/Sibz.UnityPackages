@@ -70,8 +70,8 @@ namespace Sibz.ListElement
         private bool EnableRowLabel => Options.EnableRowLabel;
         private bool EnableObjectField => Options.EnableObjectField;
         private bool EnableReordering => Options.EnableReordering;
-
         private bool EnableDeletions => Options.EnableDeletions;
+        private bool EnableAdditions => Options.EnableAdditions;
         // ReSharper restore UnusedMember.Local
 
         #endregion
@@ -201,7 +201,10 @@ namespace Sibz.ListElement
 
         public void AddNewItemToList()
         {
-            SendEvent(new AddItemEvent {target = this});
+            if (EnableAdditions)
+            {
+                SendEvent(new AddItemEvent {target = this});
+            }
         }
 
         public void ClearListItems()
@@ -234,6 +237,7 @@ namespace Sibz.ListElement
             private readonly UxmlBoolAttributeDescription enableRowLabel;
             private readonly UxmlBoolAttributeDescription enableReordering;
             private readonly UxmlBoolAttributeDescription enableDeletions;
+            private readonly UxmlBoolAttributeDescription enableAdditions;
             private readonly UxmlStringAttributeDescription itemTemplateName;
             private readonly UxmlStringAttributeDescription label;
             private readonly UxmlStringAttributeDescription styleSheetName;
@@ -257,6 +261,8 @@ namespace Sibz.ListElement
                     {name = "enable-reordering", defaultValue = defaults.EnableReordering};
                 enableDeletions = new UxmlBoolAttributeDescription
                     {name = "enable-deletions", defaultValue = defaults.EnableDeletions};
+                enableAdditions = new UxmlBoolAttributeDescription
+                    {name = "enable-additions", defaultValue = defaults.EnableAdditions};
             }
 
             public override void Init(VisualElement ve, IUxmlAttributes bag, CreationContext cc)
@@ -273,6 +279,7 @@ namespace Sibz.ListElement
                 le.Options.BaseOptions.EnableObjectField = enableObjectField.GetValueFromBag(bag, cc);
                 le.Options.BaseOptions.EnableDeletions = enableDeletions.GetValueFromBag(bag, cc);
                 le.Options.BaseOptions.EnableReordering = enableReordering.GetValueFromBag(bag, cc);
+                le.Options.BaseOptions.EnableAdditions = enableAdditions.GetValueFromBag(bag, cc);
 
                 string itn = itemTemplateName.GetValueFromBag(bag, cc);
                 string ssn = styleSheetName.GetValueFromBag(bag, cc);

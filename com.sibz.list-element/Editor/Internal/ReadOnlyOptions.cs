@@ -17,5 +17,6 @@
         public bool EnableObjectField => BaseOptions.EnableObjectField;
         public bool EnableReordering => BaseOptions.EnableReordering;
         public bool EnableDeletions => BaseOptions.EnableDeletions;
+        public bool EnableAdditions => BaseOptions.EnableAdditions;
     }
 }
