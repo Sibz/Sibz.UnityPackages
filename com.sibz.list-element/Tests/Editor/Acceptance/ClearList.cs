@@ -36,16 +36,23 @@ namespace Sibz.ListElement.Tests.Acceptance
         }
 
         [Test]
-        public void WhenConfirmed_ShouldClearTheList([ValueSource(nameof(WorkingOptionSet))]
-            ListOptions options)
+        public void WhenConfirmed_ShouldClearTheList([ValueSource(nameof(WorkingOptionSet))] ListOptions options, [Values(TestHelpers.CmdType.Click, TestHelpers.CmdType.Program)] TestHelpers.CmdType cmdType)
         {
             SerializedProperty property = Property;
             listElement = new ListElement(property, options);
 
             WindowFixture.RootElement.AddAndRemove(listElement, () =>
             {
-                ClearButton.SendEvent(new ClickEvent {target = ClearButton});
-                Yes.SendEvent(new ClickEvent {target = Yes});
+                if (cmdType == TestHelpers.CmdType.Click)
+                {
+                    ClearButton.SendEvent(new ClickEvent {target = ClearButton});
+                    Yes.SendEvent(new ClickEvent {target = Yes});
+                }
+                else
+                {
+                    listElement.ClearListItems();
+                }
+
                 listElement.SendEvent(new ListResetEvent {target = listElement});
                 Assert.AreEqual(0, property.arraySize); // TODO Replace with listElement.ListItemCount
                 Assert.AreEqual(0, listElement.Controls.ItemsSection.childCount);
