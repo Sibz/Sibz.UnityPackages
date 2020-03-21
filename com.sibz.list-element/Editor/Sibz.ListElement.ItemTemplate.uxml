@@ -2,8 +2,8 @@
     <ui:VisualElement style="flex-direction: row;&#10;">
         <Style src="Sibz.ListElement.ItemTemplate.uss" />
         <uie:PropertyField style="flex-grow: 1;&#10;" />
-        <ui:Button text="↑" class="sibz-list-item-buttons move-up" />
-        <ui:Button text="↓" class="sibz-list-item-buttons move-down" />
-        <ui:Button text="X" class="sibz-list-item-buttons remove" />
+        <ui:Button text="↑" tooltip="Move this item up" class="sibz-list-item-buttons move-up" />
+        <ui:Button text="↓" tooltip="Move this item down" class="sibz-list-item-buttons move-down" />
+        <ui:Button text="X" tooltip="Remove this item from the list." class="sibz-list-item-buttons remove" />
     </ui:VisualElement>
 </ui:UXML>
