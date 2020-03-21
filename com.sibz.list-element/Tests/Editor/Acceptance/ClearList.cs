@@ -36,7 +36,9 @@ namespace Sibz.ListElement.Tests.Acceptance
         }
 
         [Test]
-        public void WhenConfirmed_ShouldClearTheList([ValueSource(nameof(WorkingOptionSet))] ListOptions options, [Values(TestHelpers.CmdType.Click, TestHelpers.CmdType.Program)] TestHelpers.CmdType cmdType)
+        public void WhenConfirmed_ShouldClearTheList([ValueSource(nameof(WorkingOptionSet))]
+            ListOptions options, [Values(TestHelpers.CmdType.Click, TestHelpers.CmdType.Program)]
+            TestHelpers.CmdType cmdType)
         {
             listElement = new ListElement(Property, options);
 

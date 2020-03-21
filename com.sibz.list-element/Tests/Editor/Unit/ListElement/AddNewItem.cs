@@ -19,6 +19,7 @@ namespace Sibz.ListElement.Tests.Unit.ListElementTests
                 Assert.AreEqual("obj", e.ParamName);
                 return;
             }
+
             Assert.Fail($"{nameof(ArgumentException)} not thrown");
         }
     }

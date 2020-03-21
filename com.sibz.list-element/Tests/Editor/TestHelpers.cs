@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
-using Object = UnityEngine.Object;
 
 namespace Sibz.ListElement.Tests
 {
@@ -57,7 +56,8 @@ namespace Sibz.ListElement.Tests
             root.Remove(element);
         }
 
-        public static IEnumerator AddAndRemove(this VisualElement root, VisualElement element, Func<IEnumerator> beforeRemove = null)
+        public static IEnumerator AddAndRemove(this VisualElement root, VisualElement element,
+            Func<IEnumerator> beforeRemove = null)
         {
             root.Add(element);
             yield return null;

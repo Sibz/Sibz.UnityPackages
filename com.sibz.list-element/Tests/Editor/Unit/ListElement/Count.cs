@@ -1,5 +1,4 @@
 ﻿using NUnit.Framework;
-using Sibz.ListElement.Tests;
 using UnityEditor;
 
 namespace Sibz.ListElement.Tests.Unit.ListElementTests

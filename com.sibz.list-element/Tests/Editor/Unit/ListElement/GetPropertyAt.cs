@@ -6,16 +6,17 @@ namespace Sibz.ListElement.Tests.Unit.ListElementTests
 {
     public class GetPropertyAt
     {
-        private SerializedProperty property = TestHelpers.GetProperty();
+        private readonly SerializedProperty property = TestHelpers.GetProperty();
+
         [Test]
-        public void ShouldGetProperty([Values(0,1,2)] int row)
+        public void ShouldGetProperty([Values(0, 1, 2)] int row)
         {
             Assert.AreEqual(property.GetArrayElementAtIndex(row).stringValue,
                 new ListElement(property).GetPropertyAt(row).stringValue);
         }
 
         [Test]
-        public void WhenIndexOutOfRange_ShouldThrowIndexOutOfRangeException([Values(-1,1000)] int index)
+        public void WhenIndexOutOfRange_ShouldThrowIndexOutOfRangeException([Values(-1, 1000)] int index)
         {
             try
             {

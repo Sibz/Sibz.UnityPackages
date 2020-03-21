@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using NUnit.Framework;
-using NUnit.Framework.Internal;
-using Sibz.ListElement.Internal;
 using UnityEditor;
 using UnityEngine.TestTools;
 using UnityEngine.UIElements;
@@ -13,7 +9,7 @@ namespace Sibz.ListElement.Tests.Acceptance
 {
     public class Options
     {
-        private static readonly string[] Labels = new[] {string.Empty, TestHelpers.DefaultTestLabel};
+        private static readonly string[] Labels = {string.Empty, TestHelpers.DefaultTestLabel};
 
         private ListElement listElement;
         private static SerializedProperty Property => TestHelpers.GetProperty();

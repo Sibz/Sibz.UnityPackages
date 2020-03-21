@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
@@ -11,16 +10,18 @@ using UnityEngine.UIElements;
 
 namespace Sibz.ListElement.Tests.Acceptance
 {
-
     public class MoveItem
     {
         private ListElement listElement;
         private static SerializedProperty Property => TestHelpers.GetProperty();
+
         private static readonly IEnumerable<ListOptions> WorkingOptionSet =
             AcceptanceFixture.GetWorkingOptionSetExcl(nameof(ListOptions.EnableReordering));
 
         [Test]
-        public void MoveItemFromTopToBottom_ShouldWork([ValueSource(nameof(WorkingOptionSet))] ListOptions options, [Values(TestHelpers.CmdType.Click,TestHelpers.CmdType.Program)] TestHelpers.CmdType cmdType)
+        public void MoveItemFromTopToBottom_ShouldWork([ValueSource(nameof(WorkingOptionSet))]
+            ListOptions options, [Values(TestHelpers.CmdType.Click, TestHelpers.CmdType.Program)]
+            TestHelpers.CmdType cmdType)
         {
             listElement = new ListElement(Property, options);
             WindowFixture.RootElement.AddAndRemove(listElement, () =>
@@ -49,7 +50,9 @@ namespace Sibz.ListElement.Tests.Acceptance
         }
 
         [Test]
-        public void MoveItemFromBottomToTop_ShouldWork([ValueSource(nameof(WorkingOptionSet))] ListOptions options, [Values(TestHelpers.CmdType.Click,TestHelpers.CmdType.Program)] TestHelpers.CmdType cmdType)
+        public void MoveItemFromBottomToTop_ShouldWork([ValueSource(nameof(WorkingOptionSet))]
+            ListOptions options, [Values(TestHelpers.CmdType.Click, TestHelpers.CmdType.Program)]
+            TestHelpers.CmdType cmdType)
         {
             listElement = new ListElement(Property, options);
             WindowFixture.RootElement.AddAndRemove(listElement, () =>
@@ -80,7 +83,8 @@ namespace Sibz.ListElement.Tests.Acceptance
         [Test]
         public void MoveFirstUpOrLastDown_ShouldDoNothing(
             [Values(MoveItemEvent.MoveDirection.Down, MoveItemEvent.MoveDirection.Up)]
-            MoveItemEvent.MoveDirection direction, [ValueSource(nameof(WorkingOptionSet))] ListOptions options)
+            MoveItemEvent.MoveDirection direction, [ValueSource(nameof(WorkingOptionSet))]
+            ListOptions options)
         {
             listElement = new ListElement(Property, options);
             string val1 = Property.GetArrayElementAtIndex(0).stringValue;
@@ -91,11 +95,13 @@ namespace Sibz.ListElement.Tests.Acceptance
             {
                 if (direction == MoveItemEvent.MoveDirection.Up)
                 {
-                    listElement.Controls.Row[0].MoveUp.SendEvent(new ClickEvent { target = listElement.Controls.Row[0].MoveUp });
+                    listElement.Controls.Row[0].MoveUp.SendEvent(new ClickEvent
+                        {target = listElement.Controls.Row[0].MoveUp});
                 }
                 else
                 {
-                    listElement.Controls.Row[Property.arraySize - 1].MoveDown.SendEvent(new ClickEvent { target = listElement.Controls.Row[Property.arraySize - 1].MoveDown });
+                    listElement.Controls.Row[Property.arraySize - 1].MoveDown.SendEvent(new ClickEvent
+                        {target = listElement.Controls.Row[Property.arraySize - 1].MoveDown});
                 }
 
                 if (count != Property.arraySize ||
@@ -108,7 +114,8 @@ namespace Sibz.ListElement.Tests.Acceptance
         }
 
         [Test]
-        public void MoveUpButtonForTopRow_ShouldBeDisabled([ValueSource(nameof(WorkingOptionSet))] ListOptions options)
+        public void MoveUpButtonForTopRow_ShouldBeDisabled([ValueSource(nameof(WorkingOptionSet))]
+            ListOptions options)
         {
             listElement = new ListElement(Property, options);
             WindowFixture.RootElement.AddAndRemove(listElement,
@@ -116,7 +123,8 @@ namespace Sibz.ListElement.Tests.Acceptance
         }
 
         [Test]
-        public void MoveDownButtonForLastRow_ShouldBeDisabled([ValueSource(nameof(WorkingOptionSet))] ListOptions options)
+        public void MoveDownButtonForLastRow_ShouldBeDisabled([ValueSource(nameof(WorkingOptionSet))]
+            ListOptions options)
         {
             listElement = new ListElement(Property, options);
             WindowFixture.RootElement.AddAndRemove(listElement,
@@ -133,8 +141,10 @@ namespace Sibz.ListElement.Tests.Acceptance
 
             WindowFixture.RootElement.AddAndRemove(listElement, () =>
             {
-                listElement.Controls.Row[Property.arraySize - 1].MoveUp.SendEvent(new ClickEvent { target = listElement.Controls.Row[Property.arraySize - 1].MoveUp });
-                listElement.Controls.Row[0].MoveDown.SendEvent(new ClickEvent { target = listElement.Controls.Row[0].MoveDown });
+                listElement.Controls.Row[Property.arraySize - 1].MoveUp.SendEvent(new ClickEvent
+                    {target = listElement.Controls.Row[Property.arraySize - 1].MoveUp});
+                listElement.Controls.Row[0].MoveDown
+                    .SendEvent(new ClickEvent {target = listElement.Controls.Row[0].MoveDown});
 
                 if (count != Property.arraySize ||
                     val1 != Property.GetArrayElementAtIndex(0).stringValue ||

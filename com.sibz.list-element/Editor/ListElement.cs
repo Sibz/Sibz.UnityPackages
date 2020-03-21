@@ -5,7 +5,7 @@ using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
-using Object = System.Object;
+using Object = UnityEngine.Object;
 
 namespace Sibz.ListElement
 {
@@ -186,8 +186,15 @@ namespace Sibz.ListElement
             });
         }
 
-        public void MoveItemUp(int index) => MoveItem(index, MoveItemEvent.MoveDirection.Up);
-        public void MoveItemDown(int index) => MoveItem(index, MoveItemEvent.MoveDirection.Down);
+        public void MoveItemUp(int index)
+        {
+            MoveItem(index, MoveItemEvent.MoveDirection.Up);
+        }
+
+        public void MoveItemDown(int index)
+        {
+            MoveItem(index, MoveItemEvent.MoveDirection.Down);
+        }
 
         private void MoveItem(int index, MoveItemEvent.MoveDirection direction)
         {
@@ -202,7 +209,7 @@ namespace Sibz.ListElement
             }
         }
 
-        public void AddNewItemToList(UnityEngine.Object obj = null)
+        public void AddNewItemToList(Object obj = null)
         {
             if (EnableAdditions)
             {
@@ -210,6 +217,7 @@ namespace Sibz.ListElement
                 {
                     throw new ArgumentException($"Expected type: {ListItemType.Name}", nameof(obj));
                 }
+
                 SendEvent(new AddItemEvent {target = this, Item = obj});
             }
         }

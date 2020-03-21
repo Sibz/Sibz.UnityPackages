@@ -26,21 +26,29 @@ namespace Sibz.ListElement.Tests.Acceptance
                 {
                     nameof(ListOptions.ItemTemplateName),
                     new ListOptions {ItemTemplateName = TestHelpers.DefaultTestItemTemplateName}
-                },
+                }
             };
 
         public static IEnumerable<ListOptions> GetWorkingOptionSet(string optionName)
-            => GetWorkingOptionSet(new[] {optionName});
-        public static IEnumerable<ListOptions> GetWorkingOptionSet(IEnumerable<string> optionNames, bool exclude = false)
+        {
+            return GetWorkingOptionSet(new[] {optionName});
+        }
+
+        public static IEnumerable<ListOptions> GetWorkingOptionSet(IEnumerable<string> optionNames,
+            bool exclude = false)
         {
             return OptionSets.Where(x => exclude ? !optionNames.Contains(x.Key) : optionNames.Contains(x.Key))
                 .Select(x => x.Value);
         }
 
-        public static IEnumerable<ListOptions> GetWorkingOptionSetExcl(string optionName) =>
-            GetWorkingOptionSet(new[] {optionName}, true);
+        public static IEnumerable<ListOptions> GetWorkingOptionSetExcl(string optionName)
+        {
+            return GetWorkingOptionSet(new[] {optionName}, true);
+        }
 
-        public static IEnumerable<ListOptions> GetWorkingOptionSetExcl(IEnumerable<string> optionNames)=>
-            GetWorkingOptionSet(optionNames, true);
+        public static IEnumerable<ListOptions> GetWorkingOptionSetExcl(IEnumerable<string> optionNames)
+        {
+            return GetWorkingOptionSet(optionNames, true);
+        }
     }
 }
