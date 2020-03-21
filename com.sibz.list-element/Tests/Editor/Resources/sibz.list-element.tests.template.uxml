@@ -1,0 +1,23 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:VisualElement class="header">
+        <Style src="sibz.list-element.tests.template.uss" />
+        <ui:Label text="List" class="header-label" />
+        <ui:Button text="Clear List" class="clear-list" />
+        <ui:VisualElement class="clear-list-confirm-section">
+            <ui:Label text="Are you sure?" />
+            <ui:Button text="Yes" class="clear-list-confirm" />
+            <ui:Button text="No" class="clear-list-cancel" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:VisualElement class="items">
+        <Style src="TestTemplate.uss" />
+    </ui:VisualElement>
+    <ui:VisualElement class="add-section">
+        <Style src="TestTemplate.uss" />
+        <ui:Button text="Add New Item" class="add-button" />
+        <uie:ObjectField class="add-field" />
+    </ui:VisualElement>
+    <ui:VisualElement name="TestCheckElement">
+        <Style src="TestTemplate.uss" />
+    </ui:VisualElement>
+</ui:UXML>

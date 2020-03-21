@@ -19,8 +19,136 @@
     <e p="C:\Users\steve\Documents\UnityProjects\Sibz.UnityPackages\com.sibz.editorlist\Runtime" t="Include">
       <e p="EditorList.cs" t="Include" />
     </e>
+    <e p="C:\Users\steve\Documents\UnityProjects\Sibz.UnityPackages\com.sibz.list-element\Editor" t="Include">
+      <e p="internal" t="Include">
+        <e p="Controls.cs" t="Include" />
+        <e p="ElementInteractions.cs" t="Include" />
+        <e p="IListElementEventHandler.cs" t="Include" />
+        <e p="IOuterControls.cs" t="Include" />
+        <e p="PropertyModificationHandler.cs" t="Include" />
+        <e p="ReadOnlyOptions.cs" t="Include" />
+        <e p="UxmlClassNames.cs" t="Include" />
+      </e>
+      <e p="ListElement.cs" t="Include" />
+      <e p="Resources" t="Include">
+        <e p="EventRaiserDefinition.cs" t="Include" />
+        <e p="Events" t="Include">
+          <e p="AddItemEvent.cs" t="Include" />
+          <e p="ClearListCancelledEvent.cs" t="Include" />
+          <e p="ClearListEvent.cs" t="Include" />
+          <e p="ClearListRequestedEvent.cs" t="Include" />
+          <e p="ItemEventBase.cs" t="Include" />
+          <e p="ListResetEvent.cs" t="Include" />
+          <e p="MoveItemEvent.cs" t="Include" />
+          <e p="RemoveItemEvent.cs" t="Include" />
+          <e p="RowInsertedEvent.cs" t="Include" />
+        </e>
+        <e p="IRowButtons.cs" t="Include" />
+        <e p="IRowGenerator.cs" t="Include" />
+        <e p="ListElementEventHandler.cs" t="Include" />
+        <e p="ListOptions.cs" t="Include" />
+        <e p="ListRowElement.cs" t="Include" />
+        <e p="RowGenerator.cs" t="Include" />
+      </e>
+      <e p="Sibz.ListElement.ItemTemplate.uss" t="Include" />
+      <e p="Sibz.ListElement.ItemTemplate.uxml" t="Include" />
+      <e p="Sibz.ListElement.Template.uss" t="Include" />
+      <e p="Sibz.ListElement.Template.uxml" t="Include" />
+      <e p="UxmlHelpers" t="Include">
+        <e p="Util.cs" t="Include" />
+      </e>
+    </e>
+    <e p="C:\Users\steve\Documents\UnityProjects\Sibz.UnityPackages\com.sibz.list-element\Tests\Editor" t="Include">
+      <e p="Acceptance" t="Include">
+        <e p="AcceptanceFixture.cs" t="Include" />
+        <e p="MoveItem.cs" t="Include" />
+      </e>
+      <e p="Integration" t="Include">
+        <e p="ElementInteractions" t="Include">
+          <e p="SetAddObjectFieldValueToNull.cs" t="Include" />
+        </e>
+        <e p="IntegrationFixture.cs" t="Include" />
+        <e p="ListElement" t="Include">
+          <e p="Initialise.cs" t="Include" />
+          <e p="Options.cs" t="Include" />
+        </e>
+        <e p="ListElementEventHandler" t="Include">
+          <e p="OnAttachToPanel.cs" t="Include" />
+          <e p="RaiseEventBaseOnEvtTarget.cs" t="Include" />
+          <e p="RegisterCallbacks.cs" t="Include" />
+          <e p="TestEventHandler.cs" t="Include" />
+        </e>
+      </e>
+      <e p="Resources" t="Include">
+        <e p="sibz.list-element.tests.item-template.uss" t="Include" />
+        <e p="sibz.list-element.tests.item-template.uxml" t="Include" />
+        <e p="sibz.list-element.tests.list-element-test-with-options-set.uss" t="Include" />
+        <e p="sibz.list-element.tests.list-element-test-with-options-set.uxml" t="Include" />
+        <e p="sibz.list-element.tests.template.uss" t="Include" />
+        <e p="sibz.list-element.tests.template.uxml" t="Include" />
+      </e>
+      <e p="TestHelpers.cs" t="Include" />
+      <e p="Unit" t="Include">
+        <e p="Controls" t="Include">
+          <e p="ControlsTestBase.cs" t="Include" />
+          <e p="Properties.cs" t="Include" />
+          <e p="RowOrderTest.cs" t="Include" />
+        </e>
+        <e p="ElementInteractions" t="Include">
+          <e p="InsertHiddenIntFieldWithPropertyPathSet.cs" t="Include" />
+          <e p="InsertLabelIntoObjectField.cs" t="Include" />
+          <e p="LoadAndAddStyleSheet.cs" t="Include" />
+          <e p="SetAddFieldVisibility.cs" t="Include" />
+          <e p="SetAddObjectFieldValueToNull.cs" t="Include" />
+          <e p="SetButtonStateBasedOnBeingLastPositionInArray.cs" t="Include" />
+          <e p="SetButtonStateBasedOnZeroIndex.cs" t="Include" />
+          <e p="SetConfirmSectionVisibility.cs" t="Include" />
+          <e p="SetHeaderLabelText.cs" t="Include" />
+          <e p="SetPropertyLabelVisibility.cs" t="Include" />
+          <e p="SetRemoveButtonVisibility.cs" t="Include" />
+          <e p="SetReorderButtonVisibility.cs" t="Include" />
+          <e p="SetTypeOnObjectField.cs" t="Include" />
+        </e>
+        <e p="EventRaiserDefinition" t="Include">
+          <e p="CreateDefinition.cs" t="Include" />
+          <e p="CreateRaiseEvent.cs" t="Include" />
+          <e p="TestEvent.cs" t="Include" />
+        </e>
+        <e p="ListElement" t="Include">
+          <e p="Constructor.cs" t="Include" />
+          <e p="GetPropertyAt.cs" t="Include" />
+          <e p="ListItemType.cs" t="Include" />
+          <e p="ListName.cs" t="Include" />
+        </e>
+        <e p="ListElementEventHandler" t="Include">
+          <e p="CreateRaiserDefinitions.cs" t="Include" />
+          <e p="CreateRaiserDefinitionsForRow.cs" t="Include" />
+          <e p="PopulateList.cs" t="Include" />
+          <e p="RaiseEventBaseOnEvtTarget.cs" t="Include" />
+        </e>
+        <e p="ListRowElement" t="Include">
+          <e p="ListRowElement.cs" t="Include" />
+        </e>
+        <e p="PropertyModificationHandler" t="Include">
+          <e p="Add.cs" t="Include" />
+          <e p="Clear.cs" t="Include" />
+          <e p="MoveDown.cs" t="Include" />
+          <e p="MoveUp.cs" t="Include" />
+          <e p="PropertyModificationHandlerBase.cs" t="Include" />
+          <e p="PropertyModificationHandlerTests.cs" t="Include" />
+          <e p="Remove.cs" t="Include" />
+        </e>
+        <e p="RowGenerator" t="Include">
+          <e p="RowGeneratorTests.cs" t="Include" />
+        </e>
+      </e>
+      <e p="WindowFixture.cs" t="Include" />
+    </e>
     <e p="C:\Users\steve\Documents\UnityProjects\Sibz.UnityPackages\com.sibz.single-asset-loader\Editor" t="Include">
       <e p="SingleAssetLoader.cs" t="Include" />
+    </e>
+    <e p="C:\Users\steve\Documents\UnityProjects\Sibz.UnityPackages\com.sibz.single-asset-loader\Tests\Editor" t="Include">
+      <e p="SingleAssetLoaderTests.cs" t="Include" />
     </e>
     <e p="C:\Users\steve\Documents\UnityProjects\Sibz.UnityPackages\com.sibz.uxml-list\Editor" t="Include">
       <e p="Base" t="Include">
@@ -34,6 +162,15 @@
     </e>
     <e p="C:\Users\steve\Documents\UnityProjects\Sibz.UnityPackages\PackageEditor" t="IncludeRecursive">
       <e p="Assets" t="Include">
+        <e p="List Element" t="Include">
+          <e p="ListTest.uss" t="Include" />
+          <e p="ListTest.uxml" t="Include" />
+          <e p="MyTestList.cs" t="Include" />
+          <e p="TestItem.uss" t="Include" />
+          <e p="TestItem.uxml" t="Include" />
+          <e p="TestListBehaviour2.cs" t="Include" />
+          <e p="TestListInspector2.cs" t="Include" />
+        </e>
         <e p="UXML List" t="Include">
           <e p="ListTest.uss" t="Include" />
           <e p="ListTest.uxml" t="Include" />
@@ -44,6 +181,7 @@
           <e p="TestListInspector.cs" t="Include" />
         </e>
       </e>
+      <e p="ListElement.csproj" t="IncludeRecursive" />
       <e p="obj" t="ExcludeRecursive" />
       <e p="PackageEditor.sln" t="IncludeFlat" />
       <e p="Packages" t="ExcludeRecursive" />
@@ -51,7 +189,10 @@
       <e p="Sibz.Child-Subset.Runtime.csproj" t="IncludeRecursive" />
       <e p="Sibz.ChildSubset.Tests.csproj" t="IncludeRecursive" />
       <e p="Sibz.EditorList.Runtime.csproj" t="IncludeRecursive" />
+      <e p="Sibz.ListElement.Editor.csproj" t="IncludeRecursive" />
+      <e p="Sibz.ListElement.Tests.csproj" t="IncludeRecursive" />
       <e p="Sibz.SingleAssetLoader.Editor.csproj" t="IncludeRecursive" />
+      <e p="Sibz.SingleAssetLoader.Tests.csproj" t="IncludeRecursive" />
       <e p="Sibz.UXML-List.Editor.csproj" t="IncludeRecursive" />
       <e p="Temp\bin" t="ExcludeRecursive" />
       <e p="UXMLList.csproj" t="IncludeRecursive" />

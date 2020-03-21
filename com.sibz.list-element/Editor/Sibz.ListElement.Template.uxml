@@ -1,0 +1,20 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:VisualElement class="header">
+        <Style src="Sibz.ListElement.Template.uss" />
+        <ui:Label text="List" class="header-label" />
+        <ui:Button tooltip="Remove all items from the list." class="clear-list" />
+        <ui:VisualElement class="clear-list-confirm-section" style="-unity-background-scale-mode: scale-to-fit;&#10;">
+            <ui:Label text="Are you sure?" />
+            <ui:Button class="clear-list-confirm" />
+            <ui:Button class="clear-list-cancel" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:VisualElement class="items hide-field-label">
+        <Style src="Sibz.ListElement.Template.uss" />
+    </ui:VisualElement>
+    <ui:VisualElement class="add-section hide-object-field">
+        <Style src="Sibz.ListElement.Template.uss" />
+        <ui:Button tooltip="Add new item to the list (will copy last items value)." class="add-button" />
+        <uie:ObjectField tooltip="Drop and item here to add it to the list or use the picker (when using the picker double click to insert and close picker, single click will insert but picker will stay open so you can add multiple objects)." class="add-field" />
+    </ui:VisualElement>
+</ui:UXML>

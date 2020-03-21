@@ -1,0 +1,16 @@
+{
+  "name": "com.sibz.list-element",
+  "displayName": "Sibz: List Element",
+  "version": "1.0.1",
+  "description": "Simple list element bindable to list or array properties",
+  "author": "",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Sibz/Sibz.UnityPackages.git",
+    "directory": "com.sibz.uxml-list"
+  },
+  "dependencies": {
+    "com.sibz.single-asset-loader": "1.0.0"
+  }
+}

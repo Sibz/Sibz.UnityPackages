@@ -1,0 +1,12 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:VisualElement style="flex-direction: row;&#10;">
+        <Style src="sibz.list-element.tests.item-template.uss" />
+        <uie:PropertyField style="flex-grow: 1;&#10;" />
+        <ui:Button text="↑" class="sibz-list-item-buttons move-up" />
+        <ui:Button text="↓" class="sibz-list-item-buttons move-down" />
+        <ui:Button text="X" class="sibz-list-item-buttons remove" />
+    </ui:VisualElement>
+    <ui:VisualElement name="TestCheckElement">
+        <Style src="sibz.list-element.tests.item-template.uss" />
+    </ui:VisualElement>
+</ui:UXML>

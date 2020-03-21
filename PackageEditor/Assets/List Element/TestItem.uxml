@@ -1,0 +1,6 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:VisualElement>
+        <Style src="TestItem.uss" />
+        <ui:Label text="Label" />
+    </ui:VisualElement>
+</ui:UXML>

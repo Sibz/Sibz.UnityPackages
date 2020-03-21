@@ -1,0 +1,103 @@
+.header-label {
+    flex-grow: 1;
+}
+
+.clear-list-confirm-section {
+    flex-direction: row;
+    justify-content: flex-end;
+    -unity-text-align: middle-left;
+    display: none;
+}
+
+.items.hide-field-label TextField > Label {
+    display: none;
+}
+
+.header {
+    flex-direction: row;
+    -unity-text-align: middle-left;
+}
+
+.hide-remove-buttons .remove {
+    display: none;
+}
+
+.hide-remove-buttons .clear-list {
+    display: none;
+}
+
+.hide-reorder-buttons .move-up {
+    display: none;
+}
+
+.hide-reorder-buttons .move-down {
+    display: none;
+}
+
+.hide-field-label .unity-object-field__label {
+    display: none;
+}
+
+.items.hide-field-label PropertyField .unity-object-field__label {
+    display: none;
+}
+
+.add-field .unity-object-field-display {
+    align-items: center;
+    justify-content: center;
+}
+
+.add-field .unity-object-field-display__label {
+    display: none;
+}
+
+.add-section.use-object-field .add-field {
+    display: flex;
+}
+
+.add-section.use-object-field .add-button {
+    display: none;
+}
+
+.hide-object-field ObjectField {
+    display: none;
+}
+
+.add-section.hide-add-section {
+    display: none;
+}
+
+.default-style .clear-list {
+    overflow: hidden;
+    font-size: 0;
+    -unity-background-image-tint-color: rgba(177, 14, 14, 255);
+    background-image: resource('Icons/bin');
+    -unity-background-scale-mode: scale-to-fit;
+    width: 30px;
+    height: 22px;
+}
+
+.default-style .add-button {
+    height: 23px;
+    -unity-background-image-tint-color: rgba(1, 178, 1, 255);
+    background-image: resource('Icons/add');
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.default-style .clear-list-cancel {
+    background-image: resource('Icons/no');
+    -unity-background-image-tint-color: rgba(255, 1, 1, 255);
+    width: 30px;
+    -unity-background-scale-mode: scale-to-fit;
+    margin-left: 1px;
+    height: 22px;
+}
+
+.default-style .clear-list-confirm {
+    width: 30px;
+    background-image: resource('Icons/yes');
+    -unity-background-image-tint-color: rgba(12, 178, 11, 255);
+    -unity-background-scale-mode: scale-to-fit;
+    margin-right: 0;
+    height: 22px;
+}
