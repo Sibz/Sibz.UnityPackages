@@ -11,7 +11,7 @@ namespace Sibz.ListElement.Tests.Unit.ElementInteractionsTests
         public void WhenTypeIsObject_ShouldAddClass()
         {
             VisualElement itemSection = new VisualElement();
-            Handler.SetAddFieldVisibility(itemSection, typeof(TestHelpers.TestObject), false);
+            Handler.SetAddFieldVisibility(itemSection, typeof(TestHelpers.TestObject), true);
             Assert.IsTrue(itemSection.ClassListContains(UxmlClassNames.UseObjectField));
         }
 
@@ -19,7 +19,7 @@ namespace Sibz.ListElement.Tests.Unit.ElementInteractionsTests
         public void WhenTypeIsObjectAndOptionSet_ShouldNotAddClass()
         {
             VisualElement itemSection = new VisualElement();
-            Handler.SetAddFieldVisibility(itemSection, typeof(TestHelpers.TestObject), true);
+            Handler.SetAddFieldVisibility(itemSection, typeof(TestHelpers.TestObject), false);
             Assert.IsFalse(itemSection.ClassListContains(UxmlClassNames.UseObjectField));
         }
 

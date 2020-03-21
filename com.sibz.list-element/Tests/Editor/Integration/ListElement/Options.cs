@@ -22,7 +22,7 @@ namespace Sibz.ListElement.Tests.Integration.ListElementTests
             EnableDeletions = false,
             EnableReordering = false,
             HidePropertyLabel = false,
-            DoNotUseObjectField = true,
+            EnableObjectField = false,
             TemplateName = TestHelpers.DefaultTestTemplateName,
             StyleSheetName = TestHelpers.DefaultTestTemplateName,
             ItemTemplateName = TestHelpers.DefaultTestItemTemplateName

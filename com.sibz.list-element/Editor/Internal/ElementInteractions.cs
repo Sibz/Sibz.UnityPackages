@@ -16,7 +16,7 @@ namespace Sibz.ListElement.Internal
             SetPropertyLabelVisibility(ctl.ItemsSection, opts.HidePropertyLabel);
             SetRemoveButtonVisibility(le, opts.EnableDeletions);
             SetReorderButtonVisibility(ctl.ItemsSection, opts.EnableReordering);
-            SetAddFieldVisibility(ctl.AddSection, le.ListItemType, opts.DoNotUseObjectField);
+            SetAddFieldVisibility(ctl.AddSection, le.ListItemType, opts.EnableObjectField);
             InsertLabelInObjectField(ctl.AddObjectField, "Drop to add new item");
             SetHeaderLabelText(ctl.HeaderLabel, le.ListName, opts.Label);
             LoadAndAddStyleSheet(le, opts.StyleSheetName, opts.TemplateName);
@@ -48,9 +48,9 @@ namespace Sibz.ListElement.Internal
         }
 
         public static void SetAddFieldVisibility(
-            VisualElement itemSection, Type type, bool doNotUseObjectFieldOption)
+            VisualElement itemSection, Type type, bool enableObjectField)
         {
-            if (doNotUseObjectFieldOption)
+            if (!enableObjectField)
             {
                 return;
             }

@@ -14,7 +14,7 @@
         public string StyleSheetName => BaseOptions.StyleSheetName;
         public string Label => BaseOptions.Label;
         public bool HidePropertyLabel => BaseOptions.HidePropertyLabel;
-        public bool DoNotUseObjectField => BaseOptions.DoNotUseObjectField;
+        public bool EnableObjectField => BaseOptions.EnableObjectField;
         public bool EnableReordering => BaseOptions.EnableReordering;
         public bool EnableDeletions => BaseOptions.EnableDeletions;
     }

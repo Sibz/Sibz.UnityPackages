@@ -13,7 +13,7 @@ namespace Sibz.ListElement
         public string StyleSheetName { get; set; } = DefaultStyleSheetName;
         public string Label { get; set; } = "";
         public bool HidePropertyLabel { get; set; } = true;
-        public bool DoNotUseObjectField { get; set; }
+        public bool EnableObjectField { get; set; } = true;
         public bool EnableReordering { get; set; } = true;
         public bool EnableDeletions { get; set; } = true;
     }

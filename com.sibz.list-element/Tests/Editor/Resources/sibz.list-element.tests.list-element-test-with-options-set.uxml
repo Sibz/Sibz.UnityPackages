@@ -1,5 +1,5 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
-    <Sibz.ListElement.ListElement template-name="sibz.list-element.tests.template" item-template-name="sibz.list-element.tests.item-template" label="Test" stylesheet-name="sibz.list-element.tests.template" enable-deletions="false" enable-reordering="false" hide-property-label="false" do-not-use-object-field="true">
+    <Sibz.ListElement.ListElement template-name="sibz.list-element.tests.template" item-template-name="sibz.list-element.tests.item-template" label="Test" stylesheet-name="sibz.list-element.tests.template" enable-deletions="false" enable-reordering="false" hide-property-label="false" do-not-use-object-field="true" enable-object-field="false">
         <Style src="sibz.list-element.tests.list-element-test-with-options-set.uss" />
     </Sibz.ListElement.ListElement>
 </ui:UXML>

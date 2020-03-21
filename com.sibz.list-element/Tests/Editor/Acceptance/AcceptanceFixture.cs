@@ -13,7 +13,7 @@ namespace Sibz.ListElement.Tests.Acceptance
                 {nameof(ListOptions.EnableReordering), new ListOptions {EnableReordering = false}},
                 {nameof(ListOptions.EnableDeletions), new ListOptions {EnableDeletions = false}},
                 {nameof(ListOptions.HidePropertyLabel), new ListOptions {HidePropertyLabel = false}},
-                {nameof(ListOptions.DoNotUseObjectField), new ListOptions {DoNotUseObjectField = true}},
+                {nameof(ListOptions.EnableObjectField), new ListOptions {EnableObjectField = true}},
                 {nameof(ListOptions.Label), new ListOptions {Label = TestHelpers.DefaultTestLabel}},
                 {
                     nameof(ListOptions.TemplateName),
