@@ -20,6 +20,7 @@ namespace Sibz.ListElement
         internal SerializedProperty SerializedProperty { get; private set; }
         public readonly ReadOnlyOptions Options = new ReadOnlyOptions(new ListOptions());
         public bool IsInitialised { get; private set; }
+        public int Count => SerializedProperty.arraySize;
 
         public virtual IRowGenerator RowGenerator
         {
