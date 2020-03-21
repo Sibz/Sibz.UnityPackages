@@ -24,5 +24,11 @@ namespace Sibz.ListElement.Tests.Unit.ElementInteractionsTests
             Handler.SetPropertyLabelVisibility(itemSection, true);
             Assert.IsFalse(itemSection.ClassListContains(UxmlClassNames.HidePropertyLabel));
         }
+
+        [Test]
+        public void WhenElementNull_ShouldNotThrowError()
+        {
+            Handler.SetPropertyLabelVisibility(null, true);
+        }
     }
 }

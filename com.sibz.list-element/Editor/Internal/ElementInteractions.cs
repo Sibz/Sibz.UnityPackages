@@ -28,7 +28,7 @@ namespace Sibz.ListElement.Internal
         {
             if (enablePropertyLabelOption)
             {
-                itemSection.RemoveFromClassList(UxmlClassNames.HidePropertyLabel);
+                itemSection?.RemoveFromClassList(UxmlClassNames.HidePropertyLabel);
             }
         }
 
