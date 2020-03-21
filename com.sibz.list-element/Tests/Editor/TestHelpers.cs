@@ -49,6 +49,7 @@ namespace Sibz.ListElement.Tests
         public static IEnumerator AddAndRemove(this VisualElement root, VisualElement element, Func<IEnumerator> beforeRemove = null)
         {
             root.Add(element);
+            yield return null;
             yield return beforeRemove?.Invoke();
             root.Remove(element);
         }
