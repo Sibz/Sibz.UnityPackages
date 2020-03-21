@@ -72,6 +72,8 @@ namespace Sibz.ListElement
         private bool EnableReordering => Options.EnableReordering;
         private bool EnableDeletions => Options.EnableDeletions;
         private bool EnableAdditions => Options.EnableAdditions;
+
+        private bool EnableModify => Options.EnableModify;
         // ReSharper restore UnusedMember.Local
 
         #endregion
@@ -238,6 +240,7 @@ namespace Sibz.ListElement
             private readonly UxmlBoolAttributeDescription enableReordering;
             private readonly UxmlBoolAttributeDescription enableDeletions;
             private readonly UxmlBoolAttributeDescription enableAdditions;
+            private readonly UxmlBoolAttributeDescription enableModify;
             private readonly UxmlStringAttributeDescription itemTemplateName;
             private readonly UxmlStringAttributeDescription label;
             private readonly UxmlStringAttributeDescription styleSheetName;
@@ -263,6 +266,8 @@ namespace Sibz.ListElement
                     {name = "enable-deletions", defaultValue = defaults.EnableDeletions};
                 enableAdditions = new UxmlBoolAttributeDescription
                     {name = "enable-additions", defaultValue = defaults.EnableAdditions};
+                enableModify = new UxmlBoolAttributeDescription
+                    {name = "enable-modify", defaultValue = defaults.EnableModify};
             }
 
             public override void Init(VisualElement ve, IUxmlAttributes bag, CreationContext cc)
@@ -280,6 +285,7 @@ namespace Sibz.ListElement
                 le.Options.BaseOptions.EnableDeletions = enableDeletions.GetValueFromBag(bag, cc);
                 le.Options.BaseOptions.EnableReordering = enableReordering.GetValueFromBag(bag, cc);
                 le.Options.BaseOptions.EnableAdditions = enableAdditions.GetValueFromBag(bag, cc);
+                le.Options.BaseOptions.EnableModify = enableModify.GetValueFromBag(bag, cc);
 
                 string itn = itemTemplateName.GetValueFromBag(bag, cc);
                 string ssn = styleSheetName.GetValueFromBag(bag, cc);

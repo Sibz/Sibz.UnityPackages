@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Sibz.ListElement.Internal;
 using UnityEditor;
+using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 
@@ -92,6 +93,10 @@ namespace Sibz.ListElement.Events
             ElementInteractions.SetButtonStateBasedOnZeroIndex(evt.Buttons.MoveUp, evt.Index);
             ElementInteractions.SetButtonStateBasedOnBeingLastPositionInArray(evt.Buttons.MoveDown, evt.Index,
                 evt.ListLength);
+            if (evt.target is ListElement le)
+            {
+                ElementInteractions.SetStateBasedOnOption(evt.PropertyField, le.Options.EnableModify);
+            }
         }
 
         public void OnListLengthChanged(ChangeEvent<int> evt)
@@ -135,6 +140,7 @@ namespace Sibz.ListElement.Events
                 {
                     target = listElement,
                     Buttons = controls.Row[i],
+                    PropertyField = controls.Row[i].PropertyField,
                     Index = i,
                     ListLength = property.arraySize
                 });

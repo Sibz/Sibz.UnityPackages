@@ -165,5 +165,10 @@ namespace Sibz.ListElement.Internal
 
             element.Add(integerField);
         }
+
+        public static void SetStateBasedOnOption(VisualElement element, bool option)
+        {
+            element?.SetEnabled(option);
+        }
     }
 }
