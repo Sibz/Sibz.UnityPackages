@@ -1,8 +1,8 @@
 {
   "name": "com.sibz.child-subset",
   "displayName": "Sibz: Child Subset",
-  "version": "0.1.0",
-  "description": "Simple mono behaviour to create a list of children from the gameobject hierarchy in the scene.",
+  "version": "0.2.0",
+  "description": "Class to retrieve children from a GameObject based on having component type and/or custom filter. Can also sort the results.",
   "author": "",
   "license": "ISC",
   "repository": {
