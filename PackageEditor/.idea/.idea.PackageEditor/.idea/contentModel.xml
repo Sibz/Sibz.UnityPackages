@@ -3,18 +3,17 @@
   <component name="ContentModelStore">
     <e p="C:\Users\steve\.Rider2019.2\system\extResources" t="IncludeRecursive" />
     <e p="C:\Users\steve\.Rider2019.2\system\resharper-host\local\Transient\ReSharperHost\v192\SolutionCaches\_PackageEditor.648069271.00" t="ExcludeRecursive" />
-    <e p="C:\Users\steve\Documents\UnityProjects\Sibz.UnityPackages\com.sibz.child-subset\Editor" t="Include">
-      <e p="ChildSubsetInspector.cs" t="Include" />
-      <e p="ChildSubsetInspector.uss" t="Include" />
-      <e p="ChildSubsetInspector.uxml" t="Include" />
-      <e p="ChildSubsetPingButton.uxml" t="Include" />
-    </e>
     <e p="C:\Users\steve\Documents\UnityProjects\Sibz.UnityPackages\com.sibz.child-subset\Runtime" t="Include">
       <e p="ChildSubset.cs" t="Include" />
-      <e p="ChildSubsetUpdater.cs" t="Include" />
     </e>
-    <e p="C:\Users\steve\Documents\UnityProjects\Sibz.UnityPackages\com.sibz.child-subset\Tests\Editor" t="Include">
-      <e p="ChildSubset.cs" t="Include" />
+    <e p="C:\Users\steve\Documents\UnityProjects\Sibz.UnityPackages\com.sibz.child-subset\Tests\Editor\Acceptance" t="Include">
+      <e p="ChildSubsetTests.cs" t="Include" />
+    </e>
+    <e p="C:\Users\steve\Documents\UnityProjects\Sibz.UnityPackages\com.sibz.child-subset\Tests\Editor\Integration" t="Include">
+      <e p="GetChildren.cs" t="Include" />
+    </e>
+    <e p="C:\Users\steve\Documents\UnityProjects\Sibz.UnityPackages\com.sibz.child-subset\Tests\Editor\Unit" t="Include">
+      <e p="GetChildren.cs" t="Include" />
     </e>
     <e p="C:\Users\steve\Documents\UnityProjects\Sibz.UnityPackages\com.sibz.editorlist\Runtime" t="Include">
       <e p="EditorList.cs" t="Include" />
@@ -61,7 +60,11 @@
     <e p="C:\Users\steve\Documents\UnityProjects\Sibz.UnityPackages\com.sibz.list-element\Tests\Editor" t="Include">
       <e p="Acceptance" t="Include">
         <e p="AcceptanceFixture.cs" t="Include" />
+        <e p="AddItem.cs" t="Include" />
+        <e p="ClearList.cs" t="Include" />
         <e p="MoveItem.cs" t="Include" />
+        <e p="Options.cs" t="Include" />
+        <e p="RemoveItem.cs" t="Include" />
       </e>
       <e p="Integration" t="Include">
         <e p="ElementInteractions" t="Include">
@@ -100,13 +103,16 @@
           <e p="LoadAndAddStyleSheet.cs" t="Include" />
           <e p="SetAddFieldVisibility.cs" t="Include" />
           <e p="SetAddObjectFieldValueToNull.cs" t="Include" />
+          <e p="SetAddSectionVisibility.cs" t="Include" />
           <e p="SetButtonStateBasedOnBeingLastPositionInArray.cs" t="Include" />
           <e p="SetButtonStateBasedOnZeroIndex.cs" t="Include" />
           <e p="SetConfirmSectionVisibility.cs" t="Include" />
+          <e p="SetDefaultStyle.cs" t="Include" />
           <e p="SetHeaderLabelText.cs" t="Include" />
           <e p="SetPropertyLabelVisibility.cs" t="Include" />
           <e p="SetRemoveButtonVisibility.cs" t="Include" />
           <e p="SetReorderButtonVisibility.cs" t="Include" />
+          <e p="SetStateBasedOnOption.cs" t="Include" />
           <e p="SetTypeOnObjectField.cs" t="Include" />
         </e>
         <e p="EventRaiserDefinition" t="Include">
@@ -115,7 +121,9 @@
           <e p="TestEvent.cs" t="Include" />
         </e>
         <e p="ListElement" t="Include">
+          <e p="AddNewItem.cs" t="Include" />
           <e p="Constructor.cs" t="Include" />
+          <e p="Count.cs" t="Include" />
           <e p="GetPropertyAt.cs" t="Include" />
           <e p="ListItemType.cs" t="Include" />
           <e p="ListName.cs" t="Include" />
@@ -185,7 +193,6 @@
       <e p="obj" t="ExcludeRecursive" />
       <e p="PackageEditor.sln" t="IncludeFlat" />
       <e p="Packages" t="ExcludeRecursive" />
-      <e p="Sibz.Child-Subset.Editor.csproj" t="IncludeRecursive" />
       <e p="Sibz.Child-Subset.Runtime.csproj" t="IncludeRecursive" />
       <e p="Sibz.ChildSubset.Tests.csproj" t="IncludeRecursive" />
       <e p="Sibz.EditorList.Runtime.csproj" t="IncludeRecursive" />
