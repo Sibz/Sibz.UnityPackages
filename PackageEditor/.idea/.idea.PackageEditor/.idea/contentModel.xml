@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ContentModelStore">
-    <e p="C:\Users\steve\.Rider2019.2\system\extResources" t="IncludeRecursive" />
-    <e p="C:\Users\steve\.Rider2019.2\system\resharper-host\local\Transient\ReSharperHost\v192\SolutionCaches\_PackageEditor.648069271.00" t="ExcludeRecursive" />
+    <e p="C:\Users\steve\AppData\local\JetBrains\Rider2020.1\extResources" t="IncludeRecursive" />
+    <e p="C:\Users\steve\AppData\local\JetBrains\Rider2020.1\resharper-host\local\Transient\ReSharperHost\v201\SolutionCaches\_PackageEditor.648069271.00" t="ExcludeRecursive" />
     <e p="C:\Users\steve\Documents\UnityProjects\Sibz.UnityPackages\com.sibz.child-subset\Runtime" t="Include">
       <e p="ChildSubset.cs" t="Include" />
     </e>
@@ -89,6 +89,7 @@
         <e p="sibz.list-element.tests.list-element-test-with-options-set.uxml" t="Include" />
         <e p="sibz.list-element.tests.template.uss" t="Include" />
         <e p="sibz.list-element.tests.template.uxml" t="Include" />
+        <e p="TestTemplate.uss" t="Include" />
       </e>
       <e p="TestHelpers.cs" t="Include" />
       <e p="Unit" t="Include">

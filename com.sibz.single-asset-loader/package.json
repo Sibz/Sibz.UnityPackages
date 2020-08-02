@@ -1,7 +1,7 @@
 {
   "name": "com.sibz.single-asset-loader",
   "displayName": "Sibz: Single Asset Loader",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Uses AssetDatabase to load an asset by name and type.",
   "author": "",
   "license": "ISC",
