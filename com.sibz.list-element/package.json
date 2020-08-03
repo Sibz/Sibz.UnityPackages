@@ -1,7 +1,7 @@
 {
   "name": "com.sibz.list-element",
   "displayName": "Sibz: List Element",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Simple list element bindable to list or array properties",
   "author": "",
   "license": "ISC",

@@ -36,6 +36,7 @@
           <e p="ClearListCancelledEvent.cs" t="Include" />
           <e p="ClearListEvent.cs" t="Include" />
           <e p="ClearListRequestedEvent.cs" t="Include" />
+          <e p="ItemAddedEvent.cs" t="Include" />
           <e p="ItemEventBase.cs" t="Include" />
           <e p="ListResetEvent.cs" t="Include" />
           <e p="MoveItemEvent.cs" t="Include" />

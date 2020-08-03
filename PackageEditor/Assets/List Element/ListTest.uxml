@@ -1,4 +1,4 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
     <Sibz.ListElement.ListElement binding-path="MyList" enable-deletions="true" enable-additions="true" enable-modify="false" enable-reordering="false">
         <Style src="/Assets/ListTest.uss" />
     </Sibz.ListElement.ListElement>

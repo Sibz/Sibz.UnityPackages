@@ -29,6 +29,13 @@ namespace Sibz.ListElement.Events
         {
             Handler?.Add(evt.Item);
             ElementInteractions.SetAddObjectFieldValueToNull(outerControls.AddObjectField);
+
+            ListElement le;
+            if (evt.target is VisualElement ve && (!((le = ve.GetFirstAncestorOfType<ListElement>()) is null) ||
+                                                   !((le = evt.target as ListElement) is null)))
+            {
+                le.SendEvent(new ItemAddedEvent {Index = le.Count - 1, target = le});
+            }
         }
 
         public void OnClearListRequested(ClearListRequestedEvent evt)

@@ -101,5 +101,24 @@ namespace Sibz.ListElement.Tests.Acceptance
                 return null;
             });
         }
+
+        [UnityTest]
+        public IEnumerator ShouldRaiseItemAddedEvent()
+        {
+            //DisplayStyle expectedDisplayStyle = option ? DisplayStyle.Flex : DisplayStyle.None;
+            listElement = new ListElement(TestHelpers.GetProperty(nameof(TestHelpers.TestComponent.myCustomList)));
+            var added = false;
+            listElement.RegisterCallback((ItemAddedEvent e) =>
+            {
+                added = true;
+            });
+
+            return WindowFixture.RootElement.AddAndRemove(listElement, () =>
+            {
+                listElement.AddNewItemToList();
+                Assert.IsTrue(added);
+                return null;
+            });
+        }
     }
 }

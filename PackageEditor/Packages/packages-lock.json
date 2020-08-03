@@ -17,7 +17,7 @@
       "depth": 0,
       "source": "local",
       "dependencies": {
-        "com.sibz.single-asset-loader": "1.0.0"
+        "com.sibz.single-asset-loader": "1.0.1"
       }
     },
     "com.sibz.single-asset-loader": {
